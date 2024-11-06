@@ -8,6 +8,9 @@
 
     <title>{{ $title ?? 'Page Title' }}</title>
 
+    <!-- jquery -->
+    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+
     <!-- base:css -->
     <link rel="stylesheet" href="{{ asset('assets/vendors/typicons/typicons.css') }}" />
     <link rel="stylesheet" href="{{ asset('assets/vendors/css/vendor.bundle.base.css') }}" />
@@ -18,6 +21,12 @@
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
     <!-- endinject -->
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
+
+    <!-- Grid.js -->
+    <link href="https://cdn.jsdelivr.net/npm/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
+
+    <!-- Sweetalert2 -->
+    <link rel="stylesheet" href="{{ asset('sweetalert2/sweetalert2.all.min.css') }}">
 
     <style>
         /* Random Profile Picture */
@@ -71,6 +80,33 @@
         }
 
         /* End Cursor */
+
+        /* Navbar */
+        .navbar-breadcrumb {
+            background: #66ABAC;
+        }
+
+        /* End Navbar */
+
+        /* Buttons */
+        .btn-primary {
+            --bs-btn-color: #fff;
+            --bs-btn-bg: #66ABAC;
+            --bs-btn-border-color: #66ABAC;
+            --bs-btn-hover-color: #fff;
+            --bs-btn-hover-bg: #7043a4;
+            --bs-btn-hover-border-color: #6a3f9a;
+            --bs-btn-focus-shadow-rgb: 150, 105, 202;
+            --bs-btn-active-color: #fff;
+            --bs-btn-active-bg: #6a3f9a;
+            --bs-btn-active-border-color: #633b91;
+            --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+            --bs-btn-disabled-color: #fff;
+            --bs-btn-disabled-bg: #66ABAC;
+            --bs-btn-disabled-border-color: #66ABAC;
+        }
+
+        /* End Buttons */
     </style>
 </head>
 
@@ -116,6 +152,97 @@
     <!-- Custom js for this page-->
     <script src="{{ asset('assets/js/dashboard.js') }}"></script>
     <!-- End custom js for this page-->
+
+    <!-- Grid.js -->
+    <script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script>
+
+    <!-- Sweetalert2 -->
+    <script src="{{ asset('sweetalert2/sweetalert2.all.min.js') }}"></script>
+
+    <script>
+        document.addEventListener('livewire:init', () => {
+            Livewire.on('show-success-save-message-toast', (event) => {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: "Saved successfully."
+                });
+            });
+
+            Livewire.on('show-success-update-message-toast', (event) => {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: "Record updated successfully."
+                });
+            });
+
+            Livewire.on('show-error-duplicate-entry-message-toast', (event) => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Duplicate entry."
+                });
+            });
+
+            Livewire.on('show-something-went-wrong-toast', (event) => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "Something went wrong."
+                });
+            });
+
+            Livewire.on('show-overlapping-venu-request-toast', (event) => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Oops...",
+                    text: "There's already a request made for this venue during the specified time."
+                });
+            });
+
+            /* -------------------------------------------------------------------------- */
+
+            /**
+             * NOTE
+             * Interactions for the history modal is made global because history modal would likely come accross in every pages.
+             * I also made it as an independent file. I mean we will just `include` it if it's applicable.
+             * 
+             * LINK - resources\views\livewire\history_modal\history_modal.blade.php
+             * LINK - resources\views\livewire\incoming\documents.blade.php#96
+             */
+
+            Livewire.on('show-historyModal', (event) => {
+                $('#historyModal').modal('show');
+            });
+
+            Livewire.on('hide-historyModal', (event) => {
+                $('#historyModal').modal('hide');
+            });
+
+            /* -------------------------------------------------------------------------- */
+        });
+    </script>
 </body>
 
 </html>

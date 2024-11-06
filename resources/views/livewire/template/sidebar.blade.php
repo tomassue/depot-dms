@@ -3,7 +3,7 @@
     <nav class="sidebar sidebar-offcanvas" id="sidebar">
         <ul class="nav">
             <li class="nav-item">
-                <a class="nav-link" href="index.html">
+                <a class="nav-link" href="{{ route('dashboard') }}">
                     <i
                         class="typcn typcn-device-desktop menu-icon"></i>
                     <span class="menu-title">Dashboard</span>
@@ -136,8 +136,8 @@
                     aria-expanded="false"
                     aria-controls="auth">
                     <i
-                        class="typcn typcn-user-add-outline menu-icon"></i>
-                    <span class="menu-title">User Pages</span>
+                        class="typcn typcn-cog-outline menu-icon"></i>
+                    <span class="menu-title">Settings</span>
                     <i class="menu-arrow"></i>
                 </a>
                 <div class="collapse" id="auth">
@@ -145,36 +145,26 @@
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                href="pages/samples/blank-page.html">
-                                Blank Page
+                                href="{{ route('user-management') }}">
+                                User Management
                             </a>
                         </li>
+                    </ul>
+                    <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                href="pages/samples/error-404.html">
-                                404
+                                href="{{ route('roles') }}">
+                                Roles
                             </a>
                         </li>
+                    </ul>
+                    <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                href="pages/samples/error-500.html">
-                                500
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="pages/samples/login.html">
-                                Login
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="pages/samples/register.html">
-                                Register
+                                href="#">
+                                Permissions
                             </a>
                         </li>
                     </ul>
