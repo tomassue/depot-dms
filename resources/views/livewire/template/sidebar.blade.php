@@ -163,7 +163,7 @@
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                href="#">
+                                href="{{ route('permissions') }}">
                                 Permissions
                             </a>
                         </li>
