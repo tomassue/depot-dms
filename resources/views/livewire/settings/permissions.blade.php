@@ -19,7 +19,7 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="clear"></button>
                 </div>
                 <div class="modal-body">
-                    <form class="forms-sample" wire:submit="{{ $editMode ? 'updatePermission' : 'createPermission' }}">
+                    <form class="forms-sample" wire:submit="{{ $editMode ? 'updatePermission' : 'createPermission' }}" novalidate>
                         <div class="form-group">
                             <label for="exampleInputPermission">Permission</label>
                             <input type="text" class="form-control @error('permission') is-invalid @enderror" id="exampleInputPermission" placeholder="Permission" wire:model="permission">
@@ -58,17 +58,7 @@
                 name: "ID",
                 hidden: true
             },
-            "Permission",
-            {
-                name: "Actions",
-                formatter: (cell, row) => {
-                    // Directly access the ID from the first column (index 0)
-                    const id = row.cells[0].data; // Since ID is in the first column
-                    return gridjs.html(`
-                    <button class="btn btn-success btn-sm btn-icon-text me-3" wire:click="readPermission('${id}')"> Edit <i class="typcn typcn-edit btn-icon-append"></i></button>
-                    `);
-                }
-            }
+            "Permission"
         ],
         search: true,
         pagination: {

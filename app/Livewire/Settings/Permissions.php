@@ -58,10 +58,10 @@ class Permissions extends Component
     public function readPermission($key)
     { // Modal
         try {
-            $permission       = Permission::findOrFail($key);
-            $permission->name = $this->permission;
-            $permission->id   = $this->id_permission;
-            //TODO - Edit Modal for permission
+            $permission          = Permission::findOrFail($key);
+            $this->permission    = $permission->name;
+            $this->id_permission = $permission->id;
+            $this->showAddPermissionsModal();
         } catch (\Exception $e) {
             $this->dispatch('show-something-went-wrong-toast');
         }

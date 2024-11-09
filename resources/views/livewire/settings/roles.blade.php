@@ -38,6 +38,30 @@
             </div>
         </div>
     </div>
+
+    <!-- permissionsModal -->
+    <div class="modal fade" id="permissionsModal" tabindex="-1" aria-labelledby="permissionsModalLabel" aria-hidden="true" wire:ignore.self>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="permissionsModalLabel">Permissions</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="clear"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="forms-sample" wire:submit="assignPermissions" novalidate>
+                        <div class="form-group">
+                            <label for="exampleInputPermissions">Permissions</label>
+                            <div id="permissions_select" wire:ignore></div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear">Close</button>
+                    <button type="submit" class="btn btn-primary">Assign</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
 @script
@@ -48,6 +72,14 @@
 
     $wire.on('hideAddRolesModal', () => {
         $('#rolesModal').modal('hide');
+    });
+
+    $wire.on('showPermissionsModal', () => {
+        $('#permissionsModal').modal('show');
+    });
+
+    $wire.on('hidePermissionsModal', () => {
+        $('#permissionsModal').modal('hide');
     });
 
     /* -------------------------------------------------------------------------- */
@@ -66,6 +98,7 @@
                     const id = row.cells[0].data; // Since ID is in the first column
                     return gridjs.html(`
                     <button class="btn btn-success btn-sm btn-icon-text me-3" wire:click="readRole('${id}')"> Edit <i class="typcn typcn-edit btn-icon-append"></i></button>
+                    <button class="btn btn-dark btn-sm btn-icon-text me-3" wire:click="readPermission('${id}')"> Permissions <i class="typcn typcn-spanner btn-icon-append"></i></button>
                     `);
                 }
             }
@@ -96,6 +129,26 @@
                 });
             }
         }).forceRender();
+    });
+
+    /* -------------------------------------------------------------------------- */
+
+    VirtualSelect.init({
+        ele: '#permissions_select',
+        maxWidth: '100%',
+        multiple: true, // Enable multi-select
+        options: @json($permissions),
+        popupDropboxBreakpoint: '3000px'
+    });
+
+    let selectedPermissions = document.querySelector('#permissions_select');
+    selectedPermissions.addEventListener('change', () => {
+        let data = selectedPermissions.value;
+        @this.set('selectedPermissions', data);
+    });
+
+    $wire.on('refresh-plugins', () => {
+        document.querySelector('#permissions_select').reset();
     });
 </script>
 @endscript

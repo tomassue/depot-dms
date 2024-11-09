@@ -28,6 +28,9 @@
     <!-- Sweetalert2 -->
     <link rel="stylesheet" href="{{ asset('sweetalert2/sweetalert2.all.min.css') }}">
 
+    <!-- Virtual Select -->
+    <link rel="stylesheet" href="{{ asset('virtual-select/virtual-select.min.css') }}">
+
     <style>
         /* Random Profile Picture */
         .profile-picture {
@@ -158,6 +161,9 @@
 
     <!-- Sweetalert2 -->
     <script src="{{ asset('sweetalert2/sweetalert2.all.min.js') }}"></script>
+
+    <!-- Virtual Select -->
+    <script src="{{ asset('virtual-select/virtual-select.min.js') }}"></script>
 
     <script>
         document.addEventListener('livewire:init', () => {
