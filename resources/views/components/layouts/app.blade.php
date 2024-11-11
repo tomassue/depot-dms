@@ -110,6 +110,12 @@
         }
 
         /* End Buttons */
+
+        .custom-invalid-feedback {
+            color: #dc3545;
+            margin-top: 0.25rem;
+            font-size: 0.875em;
+        }
     </style>
 </head>
 

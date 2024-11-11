@@ -15,12 +15,11 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-Route::group(['auth'], function () {
+// Apply the 'auth' middleware to ensure only authenticated users can access these routes
+Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
-});
 
-/* --------------------------- Super Admin Access --------------------------- */
-Route::group(['auth'], function () {
+    /* --------------------------- Super Admin Access --------------------------- */
     Route::get('/settings/user-management', UserManagement::class)->name('user-management');
     Route::get('/settings/roles', Roles::class)->name('roles');
     Route::get('/settings/permissions', Permissions::class)->name('permissions');

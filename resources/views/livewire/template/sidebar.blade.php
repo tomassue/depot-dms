@@ -141,6 +141,7 @@
                     <i class="menu-arrow"></i>
                 </a>
                 <div class="collapse" id="auth">
+                    @can('can read user management')
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
                             <a
@@ -150,6 +151,7 @@
                             </a>
                         </li>
                     </ul>
+                    @endcan
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
                             <a

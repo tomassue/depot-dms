@@ -3,6 +3,7 @@
 namespace App\Livewire\Settings;
 
 use App\Models\User;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
@@ -11,17 +12,25 @@ use Spatie\Permission\Models\Role;
 
 class UserManagement extends Component
 {
+    use AuthorizesRequests;
+
     public $editMode, $disableInput;
     public $id_user;
 
     public $username, $name, $email, $role;
+
+    public function mount()
+    {
+        $this->authorize('can read user management'); // This will throw a 403 error if the user doesn't have permission
+    }
 
     public function rules()
     {
         $rules = [
             'username' => ['required', Rule::unique('users', 'username')->ignore($this->id_user, 'id')],
             'name'     => 'required',
-            'email'    => ['required', Rule::unique('users', 'email')->ignore($this->id_user, 'id')]
+            'email'    => ['required', Rule::unique('users', 'email')->ignore($this->id_user, 'id')],
+            'role'     => 'required'
         ];
 
         return $rules;
@@ -40,6 +49,7 @@ class UserManagement extends Component
     public function clear()
     {
         $this->reset();
+        $this->resetValidation();
     }
 
     public function refreshTableUsers()
@@ -74,6 +84,8 @@ class UserManagement extends Component
     public function readUser($key)
     {
         try {
+            $this->editMode = true;
+
             $user           = User::find($key);
             $this->id_user  = $user->id;
             $this->username = $user->username;
@@ -86,16 +98,39 @@ class UserManagement extends Component
         }
     }
 
+    public function updateUser()
+    {
+        $this->validate();
+
+        DB::beginTransaction();
+        try {
+            $user = User::find($this->id_user);
+            $user->username = $this->username;
+            $user->name = $this->name;
+            $user->email = $this->email;
+            $user->save();
+
+            if ($this->role) {
+                $role = Role::findById($this->role); // Retrieve the role instance by ID
+                $user->assignRole($role);
+            }
+
+            DB::commit();
+            $this->clear();
+            $this->hideAddUserModal();
+            $this->dispatch('show-success-update-message-toast');
+            $this->refreshTableUsers();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->dispatch('show-something-went-wrong-toast');
+        }
+    }
+
     public function readUserRole($key)
     {
         $this->id_user = $key;
 
         $this->dispatch('showRoleModal');
-    }
-
-    public function assignUserRole($key)
-    {
-        $user = User::find($key);
     }
 
     public function readUsers()

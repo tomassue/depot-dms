@@ -147,6 +147,12 @@
         @this.set('selectedPermissions', data);
     });
 
+    $wire.on('show-allPermissions', (key) => {
+        console.log(key[0]);
+    });
+
+    /* -------------------------------------------------------------------------- */
+
     $wire.on('refresh-plugins', () => {
         document.querySelector('#permissions_select').reset();
     });

@@ -102,10 +102,13 @@ class Roles extends Component
     public function readPermission($key)
     { // Modal - permission
         try {
-            $role = Role::findById($key);
-            $this->id_role = $role->id;
+            $role                      = Role::findById($key); // Retrieve the role by its ID
+            $this->id_role             = $role->id; // Set the role ID
+            $this->selectedPermissions = $role->permissions->pluck('id')->toArray(); // Get permissions currently assigned to the role
 
-            $this->dispatch('showPermissionsModal');
+            $this->dispatch('show-allPermissions', $this->selectedPermissions);
+
+            // $this->dispatch('showPermissionsModal');
         } catch (\Exception $e) {
             $this->dispatch('show-something-went-wrong-toast');
         }
