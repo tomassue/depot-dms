@@ -3,6 +3,7 @@
 namespace App\Livewire\Settings;
 
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -50,6 +51,7 @@ class UserManagement extends Component
     {
         $this->reset();
         $this->resetValidation();
+        $this->dispatch('refresh-plugins');
     }
 
     public function refreshTableUsers()
@@ -59,6 +61,7 @@ class UserManagement extends Component
 
     public function createUser()
     {
+        $this->authorize('create', User::class); // UserPolicy. Proceed with creating a new user if authorized
         $this->validate();
 
         DB::beginTransaction();
@@ -70,10 +73,25 @@ class UserManagement extends Component
             $user->password = Hash::make('password');
             $user->save();
 
+            if ($this->role) {
+                $role = Role::findById($this->role); // Retrieve the role instance by ID
+                $user->syncRoles($role);
+
+                // Log the role assignment
+                // We can't have it the same with User Model where we use the trait and have getActivitylogOptions() method. Roles and Permission, their models are automatically included because it is a package. It is much safer if we just manually log them if there are changes in the role or permission because modifying the models in the package can lead to errors.
+                activity()
+                    ->causedBy(Auth::user()) // Who made the change. Should be an instance.
+                    ->performedOn($user) // The affected user
+                    ->withProperties(['role' => $role->name])
+                    ->event('assigned role')
+                    ->log("Role '{$role->name}' assigned to user '{$user->name}'");
+            }
+
             DB::commit();
             $this->clear();
             $this->hideAddUserModal();
             $this->dispatch('show-success-save-message-toast');
+            $this->dispatch('refresh-plugins');
             $this->refreshTableUsers();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -91,6 +109,7 @@ class UserManagement extends Component
             $this->username = $user->username;
             $this->name     = $user->name;
             $this->email    = $user->email;
+            $this->dispatch('select-role', $user->roles->pluck('id')->toArray());
 
             $this->dispatch('showUserModal');
         } catch (\Exception $e) {
@@ -100,6 +119,8 @@ class UserManagement extends Component
 
     public function updateUser()
     {
+        $this->authorize('update', User::class); // UserPolicy. Proceed with updating a new user if authorized
+
         $this->validate();
 
         DB::beginTransaction();
@@ -112,13 +133,23 @@ class UserManagement extends Component
 
             if ($this->role) {
                 $role = Role::findById($this->role); // Retrieve the role instance by ID
-                $user->assignRole($role);
+                $user->syncRoles($role);
+
+                // Log the role assignment
+                // We can't have it the same with User Model where we use the trait and have getActivitylogOptions() method. Roles and Permission, their models are automatically included because it is a package. It is much safer if we just manually log them if there are changes in the role or permission because modifying the models in the package can lead to errors.
+                activity()
+                    ->causedBy(Auth::user()) // Who made the change. Should be an instance.
+                    ->performedOn($user) // The affected user
+                    ->withProperties(['role' => $role->name])
+                    ->event('granted role')
+                    ->log("Role '{$role->name}' granted to user '{$user->name}'");
             }
 
             DB::commit();
             $this->clear();
             $this->hideAddUserModal();
             $this->dispatch('show-success-update-message-toast');
+            $this->dispatch('refresh-plugins');
             $this->refreshTableUsers();
         } catch (\Exception $e) {
             DB::rollBack();

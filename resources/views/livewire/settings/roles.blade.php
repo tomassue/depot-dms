@@ -1,9 +1,11 @@
 <div>
     <div class="row">
         <div class="card">
+            @can('can create roles')
             <div class="col-md-12 my-2 d-inline-flex align-content-center justify-content-end">
                 <button class="btn btn-primary btn-md btn-icon-text" wire:click="showAddRolesModal"> Add <i class="typcn typcn-plus-outline btn-icon-append"></i></button>
             </div>
+            @endcan
             <div class="col-md-12 my-2">
                 <div id="table_roles" wire:ignore></div>
             </div>
@@ -97,8 +99,10 @@
                     // Directly access the ID from the first column (index 0)
                     const id = row.cells[0].data; // Since ID is in the first column
                     return gridjs.html(`
+                    @can('can update roles')
                     <button class="btn btn-success btn-sm btn-icon-text me-3" wire:click="readRole('${id}')"> Edit <i class="typcn typcn-edit btn-icon-append"></i></button>
                     <button class="btn btn-dark btn-sm btn-icon-text me-3" wire:click="readPermission('${id}')"> Permissions <i class="typcn typcn-spanner btn-icon-append"></i></button>
+                    @endcan
                     `);
                 }
             }
@@ -147,8 +151,8 @@
         @this.set('selectedPermissions', data);
     });
 
-    $wire.on('show-allPermissions', (key) => {
-        console.log(key[0]);
+    $wire.on('show-permissions', (key) => {
+        document.querySelector('#permissions_select').setValue(key[0]);
     });
 
     /* -------------------------------------------------------------------------- */

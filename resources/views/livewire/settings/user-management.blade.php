@@ -2,7 +2,9 @@
     <div class="row">
         <div class="card">
             <div class="col-md-12 my-2 d-inline-flex align-content-center justify-content-end">
+                @can('can create user management')
                 <button class="btn btn-primary btn-md btn-icon-text" wire:click="showAddUserModal"> Add <i class="typcn typcn-plus-outline btn-icon-append"></i></button>
+                @endcan
             </div>
             <div class="col-md-12 my-2">
                 <div id="table_users" wire:ignore></div>
@@ -126,7 +128,9 @@
                     // Directly access the ID from the first column (index 0)
                     const id = row.cells[0].data; // Since ID is in the first column
                     return gridjs.html(`
+                    @can('can update user management')
                     <button class="btn btn-success btn-sm btn-icon-text me-3" wire:click="readUser('${id}')"> Edit <i class="typcn typcn-edit btn-icon-append"></i></button>
+                    @endcan
                     `);
                 }
             }
@@ -170,6 +174,16 @@
     role.addEventListener('change', () => {
         let data = role.value;
         @this.set('role', data);
+    });
+
+    $wire.on('select-role', (key) => {
+        document.querySelector('#role-select').setValue(key[0]);
+    });
+
+    /* -------------------------------------------------------------------------- */
+
+    $wire.on('refresh-plugins', () => {
+        document.querySelector('#role-select').reset();
     });
 </script>
 @endscript

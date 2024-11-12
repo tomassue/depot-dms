@@ -152,6 +152,7 @@
                         </li>
                     </ul>
                     @endcan
+                    @can('can read roles')
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
                             <a
@@ -161,6 +162,7 @@
                             </a>
                         </li>
                     </ul>
+                    @endcan
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
                             <a

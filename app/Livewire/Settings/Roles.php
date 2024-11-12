@@ -47,6 +47,8 @@ class Roles extends Component
         $this->dispatch('refresh-plugins');
     }
 
+    /* ---------------------------------- CRUD ---------------------------------- */
+
     public function createRole()
     {
         $this->validate();
@@ -106,16 +108,15 @@ class Roles extends Component
             $this->id_role             = $role->id; // Set the role ID
             $this->selectedPermissions = $role->permissions->pluck('id')->toArray(); // Get permissions currently assigned to the role
 
-            $this->dispatch('show-allPermissions', $this->selectedPermissions);
-
-            // $this->dispatch('showPermissionsModal');
+            $this->dispatch('show-permissions', $this->selectedPermissions);
+            $this->showPermissionsModal();
         } catch (\Exception $e) {
             $this->dispatch('show-something-went-wrong-toast');
         }
     }
 
     public function assignPermissions()
-    {
+    { // This method, at least for this component, this is where the super admin can assign or update permissions to a role. There's no need to  have a separate method for assigning and updating assigned permissions because of the syncPermissions().
         try {
             $role        = Role::findById($this->id_role); // Retrieve the role instance
             $permissions = Permission::whereIn('id', $this->selectedPermissions)->get(); // Retrieve permissions as models based on selected IDs
@@ -125,11 +126,12 @@ class Roles extends Component
             $this->clear();
             $this->hideAddRolesModal();
             $this->dispatch('show-success-update-message-toast');
+            $this->hidePermissionsModal();
+            $this->refreshTableRoles();
         } catch (\Exception $e) {
             $this->dispatch('show-something-went-wrong-toast');
         }
     }
-
 
     public function readRoles()
     {
@@ -137,6 +139,10 @@ class Roles extends Component
 
         return $roles;
     }
+
+    /* -------------------------------- End CRUD -------------------------------- */
+
+    /* --------------------------------- Modals --------------------------------- */
 
     public function readPermissions()
     { // Select
@@ -189,4 +195,16 @@ class Roles extends Component
     {
         $this->dispatch('hideAddRolesModal');
     }
+
+    public function showPermissionsModal()
+    {
+        $this->dispatch('showPermissionsModal');
+    }
+
+    public function hidePermissionsModal()
+    {
+        $this->dispatch('hidePermissionsModal');
+    }
+
+    /* ------------------------------- End Modals ------------------------------- */
 }
