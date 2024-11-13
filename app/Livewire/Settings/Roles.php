@@ -140,14 +140,43 @@ class Roles extends Component
         return $roles;
     }
 
-    /* -------------------------------- End CRUD -------------------------------- */
-
-    /* --------------------------------- Modals --------------------------------- */
-
     public function readPermissions()
     { // Select
         // I will be using option group in virtual select but I will be making it manually since we are working on the permissions. This is for the front-end sake only.
         $permissions = [
+            [
+                'label' => 'Mechanics Page',
+                'options' => Permission::whereIn('id', [10, 11, 12, 19, 20])
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'label' => $item->name,
+                            'value' => $item->id
+                        ];
+                    })->toArray()
+            ],
+            [
+                'label' => 'Category Page',
+                'options' => Permission::whereIn('id', [13, 14, 15])
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'label' => $item->name,
+                            'value' => $item->id
+                        ];
+                    })->toArray()
+            ],
+            [
+                'label' => 'Location Page',
+                'options' => Permission::whereIn('id', ['16', '17', '18'])
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'label' => $item->name,
+                            'value' => $item->id
+                        ];
+                    })->toArray()
+            ],
             [
                 'label' => 'User Management Page',
                 'options' => Permission::whereIn('id', [1, 2, 3])
@@ -185,6 +214,10 @@ class Roles extends Component
 
         return $permissions;
     }
+
+    /* -------------------------------- End CRUD -------------------------------- */
+
+    /* --------------------------------- Modals --------------------------------- */
 
     public function showAddRolesModal()
     {

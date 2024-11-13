@@ -166,7 +166,7 @@ class UserManagement extends Component
 
     public function readUsers()
     {
-        $users = User::all();
+        $users = User::with('roles')->get(); // I'm using Laravel Permission and here's how we retrieve the user's role
 
         return $users;
     }

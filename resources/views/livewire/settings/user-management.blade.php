@@ -122,6 +122,7 @@
             },
             "Name",
             "Email",
+            "Role",
             {
                 name: "Actions",
                 formatter: (cell, row) => {
@@ -142,7 +143,12 @@
             return new Promise(resolve => { // This is for the loading state
                 setTimeout(() =>
                     resolve(
-                        users.map(user => [user.id, user.name, user.email])
+                        users.map(user => [
+                            user.id,
+                            user.name,
+                            user.email,
+                            user.roles.map(role => role.name).join(', ') || 'No role assigned' // Retrieve roles here.
+                        ])
                     ), 3000);
             });
         }

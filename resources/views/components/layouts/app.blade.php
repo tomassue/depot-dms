@@ -22,6 +22,14 @@
     <!-- endinject -->
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
 
+    <!-- Google Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet">
+
+    <!-- Boxicons CSS -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
     <!-- Grid.js -->
     <link href="https://cdn.jsdelivr.net/npm/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
 
@@ -32,6 +40,15 @@
     <link rel="stylesheet" href="{{ asset('virtual-select/virtual-select.min.css') }}">
 
     <style>
+        body {
+            font-family: 'Montserrat', sans-serif !important;
+        }
+
+        /* Apply Montserrat font to the navbar explicitly */
+        nav {
+            font-family: 'Montserrat', sans-serif !important;
+        }
+
         /* Random Profile Picture */
         .profile-picture {
             width: 50px;
@@ -119,7 +136,7 @@
     </style>
 </head>
 
-<body>
+<body class="sidebar-icon-only">
     <div class="container-scroller">
         <!-- NAVBAR -->
         <livewire:template.navbar />
