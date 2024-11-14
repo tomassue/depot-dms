@@ -157,7 +157,7 @@ class Roles extends Component
             ],
             [
                 'label' => 'Category Page',
-                'options' => Permission::whereIn('id', [13, 14, 15])
+                'options' => Permission::whereIn('id', [13, 14, 15, 21, 22])
                     ->get()
                     ->map(function ($item) {
                         return [

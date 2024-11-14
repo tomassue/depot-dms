@@ -1,9 +1,11 @@
 <div>
     <div class="row">
         <div class="card">
+            @can('can create mechanics')
             <div class="col-md-12 my-2 d-inline-flex align-content-center justify-content-end">
                 <button class="btn btn-primary btn-md btn-icon-text" wire:click="showAddMechanicsModal"> Add <i class="typcn typcn-plus-outline btn-icon-append"></i></button>
             </div>
+            @endcan
             <div class="col-md-12 my-2">
                 <div id="table_mechanics" wire:ignore></div>
             </div>
@@ -52,7 +54,7 @@
 
     /* -------------------------------------------------------------------------- */
 
-    const data = @json($mechanics);
+    const data = @json($mechanics); // Ensure that $mechanics includes 'deleted_at' field
     const table_mechanics = new gridjs.Grid({
         columns: [{
                 name: "ID",
@@ -60,11 +62,30 @@
             },
             "Mechanics",
             {
+                name: "Status",
+                formatter: (cell, row) => {
+                    return gridjs.html(`
+                    <span class="${row.cells[2].data === 'Inactive' ? 'text-danger' : 'text-success'}">
+                    ${row.cells[2].data}
+                    </span>
+                `);
+                }
+            },
+            {
                 name: "Actions",
                 formatter: (cell, row) => {
                     const id = row.cells[0].data;
+                    const isInactive = row.cells[2].data === 'Inactive';
                     return gridjs.html(`
-                    <button class="btn btn-success btn-sm btn-icon-text me-3" wire:click="readRole('${id}')"> Edit <i class="typcn typcn-edit btn-icon-append"></i></button>
+                        @can('can update mechanics')
+                        <button class="btn btn-success btn-sm btn-icon-text me-3" wire:click="readMechanic('${id}')"> Edit <i class="typcn typcn-edit btn-icon-append"></i></button>
+                        @endcan
+                        @can('can delete mechanics')
+                        <button class="btn ${isInactive ? 'btn-info' : 'btn-danger'} btn-sm btn-icon-text me-3" wire:click="${isInactive ? `restoreMechanic('${id}')` : `softDeleteMechanic('${id}')`}">
+                            ${isInactive ? 'Activate' : 'Deactivate'} 
+                            <i class='bx ${isInactive ? 'bx-check-circle' : 'bx-trash'} bx-xs'></i>
+                        </button>
+                        @endcan
                     `);
                 }
             }
@@ -78,10 +99,31 @@
             return new Promise(resolve => {
                 setTimeout(() =>
                     resolve(
-                        data.map(data => [data.id, data.name])
+                        data.map(item => [
+                            item.id,
+                            item.name,
+                            item.deleted_at ? 'Inactive' : 'Active' // Use plain text for status here
+                        ])
                     ), 3000);
             });
         }
     }).render(document.getElementById("table_mechanics"));
+
+    $wire.on('refresh-table-mechanics', (data) => {
+        table_mechanics.updateConfig({
+            data: () => {
+                return new Promise(resolve => {
+                    setTimeout(() =>
+                        resolve(
+                            data[0].map(item => [
+                                item.id,
+                                item.name,
+                                item.deleted_at ? 'Inactive' : 'Active' // Use plain text for status here
+                            ])
+                        ), 3000);
+                });
+            }
+        }).forceRender();
+    });
 </script>
 @endscript

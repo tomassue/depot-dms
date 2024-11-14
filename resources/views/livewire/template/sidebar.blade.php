@@ -74,7 +74,7 @@
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                href="#">
+                                href="{{ route('category') }}">
                                 Category
                             </a>
                         </li>

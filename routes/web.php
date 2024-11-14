@@ -1,6 +1,7 @@
 <?php
 
 use App\Livewire\Dashboard;
+use App\Livewire\Settings\Category;
 use App\Livewire\Settings\Mechanics;
 use App\Livewire\Settings\Permissions;
 use App\Livewire\Settings\Roles;
@@ -23,6 +24,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
     Route::get('/settings/mechanics', Mechanics::class)->name('mechanics');
+    Route::get('/settings/category', Category::class)->name('category');
 
     /* --------------------------- Super Admin Access --------------------------- */
     Route::get('/settings/user-management', UserManagement::class)->name('user-management');

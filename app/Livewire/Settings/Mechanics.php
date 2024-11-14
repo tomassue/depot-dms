@@ -3,9 +3,8 @@
 namespace App\Livewire\Settings;
 
 use App\Models\RefMechanicsModel;
-use App\Models\User;
-use Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Livewire\Component;
 
@@ -48,9 +47,14 @@ class Mechanics extends Component
         $this->resetValidation();
     }
 
+    public function refreshTableMechanics()
+    {
+        $this->dispatch('refresh-table-mechanics', $this->readMechanics());
+    }
+
     public function readMechanics()
     { // table_mechanics
-        $mechanics = RefMechanicsModel::all();
+        $mechanics = RefMechanicsModel::withTrashed()->get();
 
         return $mechanics;
     }
@@ -63,10 +67,95 @@ class Mechanics extends Component
 
     public function createMechanic()
     {
-        $this->authorize('can create mechanics');
-
+        $this->authorize('create', RefMechanicsModel::class);
         $this->validate();
 
-        //TODO - Continue working on the References->Dropdown CRUD FUNCTIONS
+        DB::beginTransaction();
+        try {
+            $mechanic = new RefMechanicsModel();
+            $mechanic->name = $this->mechanic;
+            $mechanic->save();
+            DB::commit();
+            $this->clear();
+            $this->dispatch('hideAddMechanicsModal');
+            $this->dispatch('show-success-save-message-toast');
+            $this->refreshTableMechanics();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->dispatch('show-something-went-wrong-toast');
+        }
+    }
+
+    public function readMechanic($key)
+    {
+        try {
+            $mechanic           = RefMechanicsModel::withTrashed()->findOrFail($key);
+            $this->mechanic     = $mechanic->name;
+            $this->id_mechanic  = $key;
+            $this->editMode     = true;
+            $this->showAddMechanicsModal();
+        } catch (\Exception $e) {
+            $this->dispatch('show-something-went-wrong-toast');
+        }
+    }
+
+    public function updateMechanic()
+    {
+        $mechanic = RefMechanicsModel::withTrashed()->findOrFail($this->id_mechanic); // Include soft-deleted records in the search
+        $this->authorize('update', $mechanic);
+        $this->validate();
+        DB::beginTransaction();
+        try {
+            $mechanic->name = $this->mechanic;
+            $mechanic->save();
+            DB::commit();
+            $this->clear();
+            $this->dispatch('hideAddMechanicsModal');
+            $this->dispatch('show-success-update-message-toast');
+            $this->refreshTableMechanics();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            dd($e->getMessage());
+            $this->dispatch('show-something-went-wrong-toast');
+        }
+    }
+
+    public function softDeleteMechanic($key)
+    {
+        $mechanic = RefMechanicsModel::findOrFail($key);
+        $this->authorize('delete', $mechanic); // Pass the specific instance of RefMechanicsModel to the authorize method
+
+        DB::beginTransaction();
+        try {
+            $mechanic->delete();
+
+            DB::commit();
+
+            $this->clear();
+            $this->dispatch('show-deactivated-message-toast');
+            $this->refreshTableMechanics();
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            $this->dispatch('show-something-went-wrong-toast');
+        }
+    }
+
+    public function restoreMechanic($key)
+    {
+        $mechanic = RefMechanicsModel::withTrashed()->findOrFail($key); // Include soft-deleted records in the search
+        $this->authorize('restore', $mechanic); // Authorize the restore action
+
+        DB::beginTransaction();
+        try {
+            $mechanic->restore(); // Restore the soft-deleted mechanic record
+            DB::commit();
+            $this->clear();
+            $this->dispatch('show-activated-message-toast');
+            $this->refreshTableMechanics();
+        } catch (\Exception $e) {
+            DB::rollBack();
+            $this->dispatch('show-something-went-wrong-toast');
+        }
     }
 }

@@ -226,6 +226,42 @@
                 });
             });
 
+            Livewire.on('show-deactivated-message-toast', (event) => {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: "Record deactivated successfully."
+                });
+            });
+
+            Livewire.on('show-activated-message-toast', (event) => {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: "Record activated successfully."
+                });
+            });
+
             Livewire.on('show-error-duplicate-entry-message-toast', (event) => {
                 Swal.fire({
                     icon: "error",
