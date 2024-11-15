@@ -9,7 +9,7 @@
                     <div class="badge badge-danger">new</div>
                 </a>
             </li>
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a
                     class="nav-link"
                     data-bs-toggle="collapse"
@@ -30,7 +30,15 @@
                         </li>
                     </ul>
                 </div>
+            </li> -->
+            @can('read incoming')
+            <li class="nav-item">
+                <a class="nav-link" href="{{ route('incoming') }}">
+                    <i class='bx bx-down-arrow-alt bx-sm'></i>
+                    <span class="menu-title">Incoming</span>
+                </a>
             </li>
+            @endcan
 
             <li class="nav-item">
                 <a class="nav-link" href="#">
@@ -85,7 +93,7 @@
                         <li class="nav-item">
                             <a
                                 class="nav-link"
-                                href="#">
+                                href="{{ route('location') }}">
                                 Location
                             </a>
                         </li>

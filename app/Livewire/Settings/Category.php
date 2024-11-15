@@ -18,6 +18,11 @@ class Category extends Component
     /* ---------------------------------- Model --------------------------------- */
     public $category;
 
+    public function mount()
+    {
+        $this->authorize('can read category');
+    }
+
     public function rules()
     {
         $rules = [

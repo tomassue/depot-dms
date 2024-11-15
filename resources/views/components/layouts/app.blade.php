@@ -45,7 +45,8 @@
         }
 
         /* Apply Montserrat font to the navbar explicitly */
-        nav {
+        nav,
+        footer {
             font-family: 'Montserrat', sans-serif !important;
         }
 
