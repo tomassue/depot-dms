@@ -5,8 +5,10 @@ use App\Livewire\Incoming;
 use App\Livewire\Settings\Category;
 use App\Livewire\Settings\Location;
 use App\Livewire\Settings\Mechanics;
+use App\Livewire\Settings\Office;
 use App\Livewire\Settings\Permissions;
 use App\Livewire\Settings\Roles;
+use App\Livewire\Settings\SubCategory;
 use App\Livewire\Settings\UserManagement;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -28,7 +30,9 @@ Route::group(['middleware' => 'auth'], function () {
 
     Route::get('/settings/mechanics', Mechanics::class)->name('mechanics');
     Route::get('/settings/category', Category::class)->name('category');
+    Route::get('/settings/sub-category', SubCategory::class)->name('sub-category');
     Route::get('/settings/location', Location::class)->name('location');
+    Route::get('/settings/offices', Office::class)->name('office');
 
     /* --------------------------- Super Admin Access --------------------------- */
     Route::get('/settings/user-management', UserManagement::class)->name('user-management');

@@ -49,7 +49,7 @@
                     </div>
                     <div class="col-md-3">
                         <p>If you have issues encountered and inquiries:</p>
-                        <p><a href="#" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">CMISID Helpdesk</a></p>
+                        <p><a href="https://services.cagayandeoro.gov.ph/helpdesk/" target="_blank" class="link-info link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover">CMISID Helpdesk</a></p>
                     </div>
                     <div class="col-md-3">
                         <div class="row mb-3">

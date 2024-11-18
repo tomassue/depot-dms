@@ -2,6 +2,7 @@
 
 namespace App\Livewire\Settings;
 
+use App\Models\RefOfficesModel;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -178,8 +179,30 @@ class Roles extends Component
                     })->toArray()
             ],
             [
+                'label' => 'Sub-category Page',
+                'options' => Permission::whereIn('id', [33, 34, 35, 36, 37])
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'label' => $item->name,
+                            'value' => $item->id
+                        ];
+                    })->toArray()
+            ],
+            [
                 'label' => 'Location Page',
                 'options' => Permission::whereIn('id', [16, 17, 18, 23, 24])
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'label' => $item->name,
+                            'value' => $item->id
+                        ];
+                    })->toArray()
+            ],
+            [
+                'label' => 'Office Page',
+                'options' => Permission::whereIn('id', [28, 29, 30, 31, 32])
                     ->get()
                     ->map(function ($item) {
                         return [

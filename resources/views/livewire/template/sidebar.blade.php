@@ -88,6 +88,17 @@
                         </li>
                     </ul>
                     @endcan
+                    @can('read sub-category')
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ route('sub-category') }}">
+                                Sub-category
+                            </a>
+                        </li>
+                    </ul>
+                    @endcan
                     @can('can read location')
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
@@ -95,6 +106,17 @@
                                 class="nav-link"
                                 href="{{ route('location') }}">
                                 Location
+                            </a>
+                        </li>
+                    </ul>
+                    @endcan
+                    @can('read offices')
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ route('office') }}">
+                                Office
                             </a>
                         </li>
                     </ul>
