@@ -66,6 +66,30 @@
                     <i class="menu-arrow"></i>
                 </a>
                 <div class="collapse" id="auth">
+                    @can('read types')
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link text-truncate"
+                                href="{{ route('equipment-or-vehicle-type') }}"
+                                title="Type (Equipment / Vehicle)">
+                                Type (Equipment / Vehicle)
+                            </a>
+                        </li>
+                    </ul>
+                    @endcan
+                    @can('read models')
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link text-truncate"
+                                href="{{ route('equipment-or-vehicle-model') }}"
+                                title="Model (Equipment / Vehicle)">
+                                Model (Equipment / Vehicle)
+                            </a>
+                        </li>
+                    </ul>
+                    @endcan
                     @can('can read mechanics')
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
@@ -117,6 +141,28 @@
                                 class="nav-link"
                                 href="{{ route('office') }}">
                                 Office
+                            </a>
+                        </li>
+                    </ul>
+                    @endcan
+                    @can('read status')
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ route('status') }}">
+                                Status
+                            </a>
+                        </li>
+                    </ul>
+                    @endcan
+                    @can('read type of repair')
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ route('type-of-repair') }}">
+                                Type of Repair
                             </a>
                         </li>
                     </ul>

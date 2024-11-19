@@ -15,6 +15,11 @@ class RefOfficesModelPolicy
         //
     }
 
+    public function create(User $user)
+    {
+        return $user->can('create offices');
+    }
+
     /**
      * Determine if the user can read offices.
      */

@@ -201,8 +201,52 @@ class Roles extends Component
                     })->toArray()
             ],
             [
-                'label' => 'Office Page',
+                'label' => 'Office',
                 'options' => Permission::whereIn('id', [28, 29, 30, 31, 32])
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'label' => $item->name,
+                            'value' => $item->id
+                        ];
+                    })->toArray()
+            ],
+            [
+                'label' => 'Status',
+                'options' => Permission::whereIn('id', [38, 39, 40, 41, 42])
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'label' => $item->name,
+                            'value' => $item->id
+                        ];
+                    })->toArray()
+            ],
+            [
+                'label' => 'Type (Equipments / Vehicle)',
+                'options' => Permission::whereIn('id', [48, 49, 50, 51, 52])
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'label' => $item->name,
+                            'value' => $item->id
+                        ];
+                    })->toArray()
+            ],
+            [
+                'label' => 'Model (Equipments / Vehicle)',
+                'options' => Permission::whereIn('id', [53, 54, 55, 56, 57])
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'label' => $item->name,
+                            'value' => $item->id
+                        ];
+                    })->toArray()
+            ],
+            [
+                'label' => 'Type of Repair',
+                'options' => Permission::whereIn('id', [43, 44, 45, 46, 47])
                     ->get()
                     ->map(function ($item) {
                         return [
