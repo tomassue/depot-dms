@@ -31,13 +31,16 @@
     <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
 
     <!-- Grid.js -->
-    <link href="https://cdn.jsdelivr.net/npm/gridjs/dist/theme/mermaid.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('grid.js/mermaid.min.css') }}" />
 
     <!-- Sweetalert2 -->
     <link rel="stylesheet" href="{{ asset('sweetalert2/sweetalert2.all.min.css') }}">
 
     <!-- Virtual Select -->
     <link rel="stylesheet" href="{{ asset('virtual-select/virtual-select.min.css') }}">
+
+    <!-- Flatpickr -->
+    <link rel="stylesheet" href="{{ asset('flatpickr-v3/flatpickr.min.css') }}">
 
     <style>
         body {
@@ -134,6 +137,27 @@
             margin-top: 0.25rem;
             font-size: 0.875em;
         }
+
+        .disabled_input {
+            background-color: #e9ecef;
+            opacity: 0.5;
+            pointer-events: none;
+            cursor: not-allowed;
+        }
+
+        /* Modified virtual-select CSS */
+        .vscomp-toggle-button {
+            align-items: center;
+            background-color: #fff;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            display: flex;
+            position: relative;
+            width: 100%;
+            height: 50px;
+            padding: 0.875rem 1.375rem;
+            font-size: 0.875rem;
+        }
     </style>
 </head>
 
@@ -181,13 +205,16 @@
     <!-- End custom js for this page-->
 
     <!-- Grid.js -->
-    <script src="https://cdn.jsdelivr.net/npm/gridjs/dist/gridjs.umd.js"></script>
+    <script src="{{ asset('grid.js/gridjs.umd.js') }}"></script>
 
     <!-- Sweetalert2 -->
     <script src="{{ asset('sweetalert2/sweetalert2.all.min.js') }}"></script>
 
     <!-- Virtual Select -->
     <script src="{{ asset('virtual-select/virtual-select.min.js') }}"></script>
+
+    <!-- flatpickr.js -->
+    <script src="{{ asset('flatpickr-v3/flatpickr.js') }}"></script>
 
     <script>
         document.addEventListener('livewire:init', () => {
