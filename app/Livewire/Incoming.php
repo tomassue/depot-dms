@@ -15,12 +15,14 @@ class Incoming extends Component
     use AuthorizesRequests;
 
     public $editMode, $disable_input;
+    public $incoming_request_id;
     public $reference_no;
+
     /* ---------------------------------- Model --------------------------------- */
     public $ref_office_id;
     public $date_and_time;
     public $ref_types_id;
-    public $ref_models_id;
+    public $ref_models_id, $ref_models_id_2;
     public $number;
     public $mileage;
     public $driver_in_charge;
@@ -61,23 +63,25 @@ class Incoming extends Component
     public function mount()
     {
         $this->authorize('read', TblIncomingRequestModel::class);
+    }
 
+    public function generateReferenceNo()
+    {
         $this->reference_no = TblIncomingRequestModel::generateUniqueReference('REF-', 8); // Pre-generate reference number to show in the input field (disabled).
-
     }
 
     public function updated($property)
     {
-        if ($property === 'ref_types_id') {
-            $virtual_select = $this->loadPageData();
+        $virtual_select = $this->loadPageData();
 
-            $this->dispatch('refresh-model-select-options', $virtual_select['models']); // trigger an event then update the options.
+        if ($property === 'ref_types_id') {
+            $this->dispatch('refresh-model-select-options', options: $virtual_select['models'], selected: $this->ref_models_id_2);
         }
     }
 
     public function clear()
     {
-        $this->resetExcept('reference_no');
+        $this->reset();
         $this->resetValidation();
 
         $this->dispatch('reset-date-and-time');
@@ -90,7 +94,8 @@ class Incoming extends Component
     public function loadPageData()
     {
         // table_incoming_requests
-        $incoming_requests = TblIncomingRequestModel::with(['office', 'type', 'model'])->get();
+        $incoming_requests = TblIncomingRequestModel::with(['office', 'type', 'model'])
+            ->get();
 
         // office-select
         $offices = RefOfficesModel::all()
@@ -155,11 +160,51 @@ class Incoming extends Component
             $this->dispatch('hideIncomingModal');
             $this->dispatch('show-success-save-message-toast');
 
-            $loadPageData = $this->loadPageData(); // reloads the method so that we can fetch updated data from incoming_requests.
-            $this->dispatch('refresh-table-incoming-requests', $loadPageData['incoming_requests']);
+            $table_incoming_request = $this->loadPageData(); // reloads the method so that we can fetch updated data from incoming_requests.
+            $this->dispatch('refresh-table-incoming-requests', $table_incoming_request['incoming_requests']);
         } catch (\Throwable $th) {
-            dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
+    }
+
+    public function readIncomingRequest($key)
+    {
+        $this->authorize('read', TblIncomingRequestModel::class);
+
+        try {
+            $this->editMode             = true;
+            $this->reference_no         = $key;
+
+            $incoming_request           = TblIncomingRequestModel::findOrFail($key);
+            $this->incoming_request_id  = $incoming_request->id;
+            $this->reference_no         = $incoming_request->reference_no;
+            $this->dispatch('set-office-select', $incoming_request->ref_office_id);
+            $this->dispatch('set-date-and-time', $incoming_request->date_and_time);
+            $this->dispatch('set-type-select', $incoming_request->ref_types_id);
+
+            /**
+             * This is for displaying ref_models_id without causing it to disappear due to setOptions by assigning another property that will hold on this value.
+             * Refer to updated($property) -> ($property === 'ref_types_id') if block.
+             * */
+            $this->ref_models_id_2      = $incoming_request->ref_models_id;
+
+            $this->number               = $incoming_request->number;
+            $this->mileage              = $incoming_request->mileage;
+            $this->driver_in_charge     = $incoming_request->driver_in_charge;
+            $this->contact_number       = $incoming_request->contact_number;
+
+            $this->dispatch('showIncomingModal');
+        } catch (\Throwable $th) {
+            $this->dispatch('show-something-went-wrong-toast');
+        }
+    }
+
+    public function updateIncomingRequest()
+    {
+        $incoming_request = TblIncomingRequestModel::findOrFail($this->incoming_request_id);
+
+        dd($incoming_request);
+
+        $this->authorize('update', $incoming_request);
     }
 }

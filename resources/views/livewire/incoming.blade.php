@@ -97,6 +97,7 @@
                                 <div class="form-group">
                                     <label for="inputModel">Model (Equipment / Vehicle)</label>
                                     <div id="model-select" wire:ignore></div>
+                                    <div id="model-select-2" wire:ignore></div>
                                     @error('ref_models_id')
                                     <div class="custom-invalid-feedback">
                                         {{ $message }}
@@ -140,6 +141,12 @@
 <script>
     $wire.on('showIncomingModal', () => {
         $('#incomingModal').modal('show');
+
+        if (@this.editMode) {
+            return;
+        }
+
+        $wire.generateReferenceNo(); // Call Livewire method
     });
 
     $wire.on('hideIncomingModal', () => {
@@ -169,7 +176,8 @@
                     const id = row.cells[0].data;
                     return gridjs.html(`
                         @can('read incoming')
-                        <button class="btn btn-success btn-sm btn-icon-text me-3" wire:click="readOffice('${id}')"><i class="bx bx-detail bx-sm"></i></button>
+                        <button class="btn btn-info btn-sm btn-icon-text me-3" title="View" wire:click="readOffice('${id}')"><i class="bx bx-detail bx-sm"></i></button>
+                        <button class="btn btn-success btn-sm btn-icon-text me-3" title="Edit" wire:click="readIncomingRequest('${id}')"><i class="bx bx-edit bx-sm"></i></button>
                         @endcan
                     `);
                 }
@@ -225,9 +233,9 @@
                                     minute: '2-digit',
                                     hour12: true
                                 }),
-                                item.ref_office_id,
-                                item.ref_types_id,
-                                item.ref_models_id,
+                                item.office.name,
+                                item.type.name,
+                                item.model.name,
                                 item.number,
                                 item.mileage,
                                 item.driver_in_charge,
@@ -274,6 +282,10 @@
         }
     });
 
+    $wire.on('set-date-and-time', (key) => {
+        date_and_time.setDate(key);
+    });
+
     $wire.on('reset-date-and-time', () => {
         date_and_time.clear();
     });
@@ -310,18 +322,26 @@
         maxWidth: '100%'
     });
 
-    let ref_models_id = document.querySelector('#type-select');
+    let ref_models_id = document.querySelector('#model-select');
     ref_models_id.addEventListener('change', () => {
         let data = ref_models_id.value;
         @this.set('ref_models_id', data);
     });
 
-    $wire.on('refresh-model-select-options', (key) => {
-        document.querySelector('#model-select').setOptions(key[0]);
-    });
+    // $wire.on('set-model-select', (key) => {
+    //     document.querySelector('#model-select').setValue(key[0]);
+    // });
 
-    $wire.on('set-model-select', (key) => {
-        document.querySelector('#model-select').setValue(key[0]);
+    $wire.on('refresh-model-select-options', (key) => {
+        // First, set the options for the VirtualSelect element
+        document.querySelector('#model-select').setOptions(key.options);
+        document.querySelector('#model-select').setValue(key.selected);
+
+        // // After options are set, then set the value
+        // setTimeout(function() {
+        //     // Now set the value for VirtualSelect after the options have been applied
+        //     document.querySelector('#model-select').setValue(key.selected);
+        // }, 0); // Use 0ms delay to allow the DOM to update
     });
 
     $wire.on('reset-model-select', (key) => {
