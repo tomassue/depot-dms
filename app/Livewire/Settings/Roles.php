@@ -157,6 +157,17 @@ class Roles extends Component
                     })->toArray()
             ],
             [
+                'label' => 'Job Order',
+                'options' => Permission::whereIn('id', [58, 59, 60])
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'label' => $item->name,
+                            'value' => $item->id
+                        ];
+                    })->toArray()
+            ],
+            [
                 'label' => 'Mechanics Page',
                 'options' => Permission::whereIn('id', [10, 11, 12, 19, 20])
                     ->get()

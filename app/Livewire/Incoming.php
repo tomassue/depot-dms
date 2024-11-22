@@ -6,6 +6,7 @@ use App\Models\RefModelModel;
 use App\Models\RefOfficesModel;
 use App\Models\RefTypeModel;
 use App\Models\TblIncomingRequestModel;
+use App\Models\TblJobOrderModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -14,9 +15,14 @@ class Incoming extends Component
 {
     use AuthorizesRequests;
 
+    public $page = 2; // Change this to 1 after finishing the modal's layout in jobOrderModal
+
+    /* -------------------------------------------------------------------------- */
+
     public $editMode, $disable_input;
     public $incoming_request_id;
     public $reference_no;
+    public $job_orders = [];
 
     /* ---------------------------------- Model --------------------------------- */
     public $ref_office_id;
@@ -27,6 +33,19 @@ class Incoming extends Component
     public $mileage;
     public $driver_in_charge;
     public $contact_number;
+
+    /* ----------------------------- Job Order Model ---------------------------- */
+    public $ref_category_id;
+    public $ref_sub_category_id;
+    public $ref_location_id;
+    public $ref_status_id;
+    public $ref_type_of_repair_id;
+    public $ref_mechanics;
+    public $issue_or_concern;
+    public $jo_date_and_time;
+    public $total_repair_time;
+    public $claimed_by;
+    public $remarks;
 
     public function rules()
     {
@@ -81,7 +100,7 @@ class Incoming extends Component
 
     public function clear()
     {
-        $this->reset();
+        $this->resetExcept('page');
         $this->resetValidation();
 
         $this->dispatch('reset-date-and-time');
@@ -203,8 +222,53 @@ class Incoming extends Component
     {
         $incoming_request = TblIncomingRequestModel::findOrFail($this->incoming_request_id);
 
-        dd($incoming_request);
-
         $this->authorize('update', $incoming_request);
+
+        try {
+            DB::transaction(function () use ($incoming_request) {
+                $incoming_request->ref_office_id    = $this->ref_office_id;
+                $incoming_request->date_and_time    = $this->date_and_time;
+                $incoming_request->ref_types_id     = $this->ref_types_id;
+                $incoming_request->ref_models_id    = $this->ref_models_id;
+                $incoming_request->number           = strtoupper($this->number);
+                $incoming_request->mileage          = $this->mileage;
+                $incoming_request->driver_in_charge = $this->driver_in_charge;
+                $incoming_request->contact_number   = $this->contact_number;
+                $incoming_request->save();
+            });
+
+            $this->clear();
+            $this->dispatch('hideIncomingModal');
+            $this->dispatch('show-success-update-message-toast');
+
+            $table_incoming_request = $this->loadPageData(); // reloads the method so that we can fetch updated data from incoming_requests.
+            $this->dispatch('refresh-table-incoming-requests', $table_incoming_request['incoming_requests']);
+        } catch (\Throwable $th) {
+            $this->dispatch('show-something-went-wrong-toast');
+        }
+    }
+
+    /* -------------------------------------------------------------------------- */
+
+    public function readJobOrders($key)
+    {
+        $this->authorize('read', TblIncomingRequestModel::class);
+
+        try {
+            $this->page = 2;
+
+            $incoming_request       = TblIncomingRequestModel::with(['office', 'type', 'model'])->findOrFail($key);
+            $this->reference_no     = $incoming_request->reference_no;
+            $this->ref_office_id    = $incoming_request->office->name;
+            $this->ref_types_id     = $incoming_request->type->name;
+            $this->ref_models_id_2  = $incoming_request->model->name;
+            $this->number           = $incoming_request->number;
+
+            $job_orders             = TblJobOrderModel::where('reference_no', $incoming_request->reference_no)->get();
+            $this->job_orders       = $job_orders;
+        } catch (\Throwable $th) {
+            $this->page = 1;
+            $this->dispatch('show-something-went-wrong-toast');
+        }
     }
 }

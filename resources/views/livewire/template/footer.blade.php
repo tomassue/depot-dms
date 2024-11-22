@@ -15,14 +15,16 @@
         }
 
         #toggle-button {
-            background: none;
+            background-color: #ddd;
             border: none;
-            color: blue;
+            color: black;
+            padding: 5px 15px;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            margin: 4px 2px;
             cursor: pointer;
-            text-decoration: underline;
-            font-size: 0.9rem;
-            padding: 0;
-            margin: 0;
+            border-radius: 16px;
         }
     </style>
     <!-- partial:partials/_footer.html -->

@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('driver_in_charge');
             $table->string('contact_number');
             $table->timestamps();
+            $table->timestamp('deleted_at');
         });
 
         Schema::create('tbl_job_order', function (Blueprint $table) {
@@ -36,11 +37,12 @@ return new class extends Migration
             $table->string('ref_type_of_repair_id');
             $table->string('ref_mechanics');
             $table->longText('issue_or_concern');
-            $table->timestamp('date_and_time')->nullable();
+            $table->dateTime('date_and_time')->nullable();
             $table->string('total_repair_time')->nullable();
             $table->string('claimed_by')->nullable();
             $table->longText('remarks')->nullable();
             $table->timestamps();
+            $table->timestamp('deleted_at');
         });
     }
 

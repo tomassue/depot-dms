@@ -1,13 +1,16 @@
 <div>
     <div class="row">
         <div class="card">
-            <div class="col-md-12 my-2 d-inline-flex align-content-center justify-content-end">
+            <div class="card-body">
                 @can('can create user management')
-                <button class="btn btn-primary btn-md btn-icon-text" wire:click="showAddUserModal"> Add <i class="typcn typcn-plus-outline btn-icon-append"></i></button>
+                <div class="col-md-12 my-2 d-inline-flex align-content-center justify-content-end">
+                    <button class="btn btn-primary btn-md btn-icon-text" wire:click="showAddUserModal"> Add <i class="typcn typcn-plus-outline btn-icon-append"></i></button>
+                </div>
                 @endcan
-            </div>
-            <div class="col-md-12 my-2">
-                <div id="table_users" wire:ignore></div>
+
+                <div class="col-md-12 my-2">
+                    <div id="table_users" wire:ignore></div>
+                </div>
             </div>
         </div>
     </div>
