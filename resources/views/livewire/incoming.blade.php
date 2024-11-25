@@ -15,7 +15,7 @@
     </div>
 
     <!-- incomingModal -->
-    <div class="modal fade" id="incomingModal" tabindex="-1" aria-labelledby="incomingModalLabel" aria-hidden="true" wire:ignore.self>
+    <div class="modal fade" id="incomingModal" tabindex="-1" aria-labelledby="incomingModalLabel" aria-hidden="true" data-bs-backdrop="static" wire:ignore.self>
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
@@ -146,7 +146,7 @@
         <div class="card mb-2">
             <div class="card-body">
                 <div class="col-md-12 my-2 d-inline-flex align-content-center justify-content-start">
-                    <button type="button" class="btn btn-secondary btn-icon-text" wire:click="$set('page', '1')">
+                    <button type="button" class="btn btn-secondary btn-icon-text" wire:click="setPage">
                         <i class='bx bx-arrow-back bx-xs'></i>
                     </button>
                 </div>
@@ -198,7 +198,7 @@
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group row">
-                                    <label class="col-sm-3 col-form-label">Model {{ $ref_models_id_2 }}</label>
+                                    <label class="col-sm-3 col-form-label">Model</label>
                                     <div class="col-sm-9">
                                         <input type="text" class="form-control" wire:model="ref_models_id_2" disabled>
                                     </div>
@@ -226,15 +226,15 @@
     </div>
 
     <!-- jobOrderModal -->
-    <div class="modal fade" id="jobOrderModal" tabindex="-1" aria-labelledby="jobOrderModalLabel" aria-hidden="true" wire:ignore.self>
+    <div class="modal fade" id="jobOrderModal" tabindex="-1" aria-labelledby="jobOrderModalLabel" aria-hidden="true" data-bs-backdrop="static" wire:ignore.self>
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="jobOrderModalLabel">{{ $editMode ? 'Update' : 'Add' }} Request Details</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="clear"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="clear2"></button>
                 </div>
                 <div class="modal-body">
-                    <form class="forms-sample">
+                    <form class="forms-sample" wire:submit="{{ $editMode ? 'updateJobOrder' : 'createJobOrder' }}">
                         <p class="card-description">
                             Equipment Details
                         </p>
@@ -242,31 +242,31 @@
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <label for="inputType">Type</label>
-                                <input type="text" class="form-control" id="inputType">
+                                <input type="text" class="form-control disabled_input" id="inputType" wire:model="ref_types_id">
                             </div>
                             <div class="col-md-6">
                                 <label for="inputModel">Model</label>
-                                <input type="text" class="form-control" id="inputModel">
+                                <input type="text" class="form-control disabled_input" id="inputModel" wire:model="ref_models_id_2">
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <label for="inputNumber">Number</label>
-                                <input type="text" class="form-control" id="inputNumber">
+                                <input type="text" class="form-control disabled_input" id="inputNumber" wire:model="number">
                             </div>
                             <div class="col-md-6">
                                 <label for="inputMileage">Mileage / Odometer Reading</label>
-                                <input type="text" class="form-control" id="inputMileage">
+                                <input type="text" class="form-control disabled_input" id="inputMileage" wire:model="mileage">
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <label for="inputDriverInCharge">Driver in charge</label>
-                                <input type="text" class="form-control" id="inputDriverInCharge">
+                                <input type="text" class="form-control disabled_input" id="inputDriverInCharge" wire:model="driver_in_charge">
                             </div>
                             <div class="col-md-6">
                                 <label for="inputContactNumber">Contact Number</label>
-                                <input type="text" class="form-control" id="inputContactNumber">
+                                <input type="text" class="form-control disabled_input" id="inputContactNumber" wire:model="contact_number">
                             </div>
                         </div>
                         <p class="card-description">
@@ -276,50 +276,87 @@
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <label for="inputJobOrder">Job Order</label>
-                                <input type="text" class="form-control" id="inputJobOrder">
+                                <input type="text" class="form-control disabled_input" id="inputJobOrder" wire:model="job_order_no">
                             </div>
                             <div class="col-md-6">
                                 <label for="selectModel">Status</label>
-                                <div id="status-select"></div>
+                                <div id="status-select" wire:ignore></div>
+                                @error('ref_status_id')
+                                <div class="custom-invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <label for="selectCategory">Category</label>
                                 <div id="category-select" wire:ignore></div>
+                                @error('ref_category_id')
+                                <div class="custom-invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
                             </div>
                             <div class="col-md-6">
                                 <label for="selectTypeOfRepair">Type of Repair</label>
                                 <div id="type-of-repair-select" wire:ignore></div>
+                                @error('ref_type_of_repair_id')
+                                <div class="custom-invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <label for="selectSubCategory">Sub-category</label>
                                 <div id="sub-category-select" wire:ignore></div>
+                                @error('ref_sub_category_id')
+                                <div class="custom-invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
                             </div>
                             <div class="col-md-6">
                                 <label for="selectMechanics">Mechanics Assigned</label>
                                 <div id="mechanics-select" wire:ignore></div>
+                                @error('ref_mechanics')
+                                <div class="custom-invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-md-6">
                                 <label for="selectLocation">Location</label>
                                 <div id="location-select" wire:ignore></div>
+                                @error('ref_location_id')
+                                <div class="custom-invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
                             </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-md-12">
                                 <label for="inputIssueOrConcern">Issues or Concerns</label>
-                                <textarea class="form-control" id="inputIssueOrConcern" rows="4" spellcheck="false"></textarea>
+                                <div wire:ignore>
+                                    <div id="issue-or-concern-summernote"></div>
+                                </div>
+                                @error('issue_or_concern')
+                                <div class="custom-invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
                             </div>
                         </div>
-                    </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear2">Close</button>
                     <button type="submit" class="btn btn-primary">{{ $editMode ? 'Update' : 'Save' }}</button>
+                    </form>
                 </div>
             </div>
         </div>
@@ -344,6 +381,10 @@
 
     $wire.on('showJobOrderModal', () => {
         $('#jobOrderModal').modal('show');
+    });
+
+    $wire.on('hideJobOrderModal', () => {
+        $('#jobOrderModal').modal('hide');
     });
 
     /* -------------------------------------------------------------------------- */
@@ -538,91 +579,111 @@
 
     /* -------------------------------------------------------------------------- */
 
-    const data_2 = @json($job_orders);
-    const table_job_orders = new gridjs.Grid({
-        columns: [{
-                name: "ID",
-                hidden: true
-            },
-            "Job Order No.",
-            "Category",
-            "Sub-category",
-            "Status",
-            "Date & Time",
-            "Total Repair Time",
-            {
-                name: "Actions",
-                formatter: (cell, row) => {
-                    const id = row.cells[0].data_2;
-                    return gridjs.html(`
-                        @can('read incoming')
-                        <button class="btn btn-info btn-sm btn-icon-text me-3" title="View" wire:click="readJobOrders('${id}')"><i class="bx bx-edit bx-sm"></i></button>
-                        @endcan
-                    `);
-                }
-            }
-        ],
-        search: true,
-        pagination: {
-            limit: 10
-        },
-        sort: true,
-        data: () => {
-            return new Promise(resolve => {
-                setTimeout(() =>
-                    resolve(
-                        data_2.map(item => [
-                            item.id,
-                            item.job_order_no,
-                            item.ref_category_id,
-                            item.ref_sub_category_id,
-                            item.ref_status_id,
-                            item.date_and_time,
-                            item.total_repair_time
-                        ])
-                    ), 3000);
-            });
-        }
-    }).render(document.getElementById("table_job_orders"));
+    let table_job_orders;
 
-    $wire.on('refresh-table-incoming-requests', (data_2) => {
-        table_job_orders.updateConfig({
-            data: () => {
-                return new Promise(resolve => {
-                    setTimeout(() =>
-                        resolve(
-                            data_2[0].map(item => [
-                                item.id,
-                                item.job_order_no,
-                                item.ref_category_id,
-                                item.ref_sub_category_id,
-                                item.ref_status_id,
-                                item.date_and_time,
-                                item.total_repair_time
-                            ])
-                        ), 3000);
-                });
-            }
-        }).forceRender();
+    $wire.on('load-table-job-orders', (key) => {
+        const data_2 = JSON.parse(key);
+        const container_table_job_orders = document.getElementById("table_job_orders");
+
+        // Check if the table exists
+        if (table_job_orders) {
+            // Update the data dynamically using updateConfig
+            table_job_orders.updateConfig({
+                data: () => {
+                    return new Promise(resolve => {
+                        setTimeout(() => {
+                            // Check if data_2 is empty and pass empty array
+                            const dataToShow = data_2.length > 0 ?
+                                data_2.map(item => [
+                                    item.id,
+                                    item.job_order_no,
+                                    item.category.name,
+                                    item.sub_category.name,
+                                    item.status.name,
+                                    item.date_and_time,
+                                    item.total_repair_time
+                                ]) : []; // Pass empty array when no data
+
+                            resolve(dataToShow);
+                        }, 3000);
+                    });
+                }
+            });
+
+            // Force render after updating config to make sure the message appears
+            table_job_orders.forceRender();
+        } else {
+            // Clear the container if table doesn't exist
+            container_table_job_orders.innerHTML = "";
+
+            // Initialize the Grid.js table
+            table_job_orders = new gridjs.Grid({
+                columns: [{
+                        name: "ID",
+                        hidden: true
+                    },
+                    "Job Order No.",
+                    "Category",
+                    "Sub-category",
+                    {
+                        name: "Status",
+                        formatter: (cell, row) => {
+                            return gridjs.html(`
+                                <span class="badge rounded-pill ${row.cells[4].data === 'Pending' ? 'text-bg-secondary' : 'text-bg-success'}">
+                                ${row.cells[4].data}
+                                </span>
+                            `);
+                        }
+                    },
+                    "Date & Time",
+                    "Total Repair Time",
+                    {
+                        name: "Actions",
+                        formatter: (cell, row) => {
+                            const id = row.cells[0].data;
+                            return gridjs.html(`
+                            @can('read incoming')
+                            <button class="btn btn-success btn-sm btn-icon-text me-3" title="Edit" wire:click="readJobOrder('${id}')">
+                                <i class="bx bx-edit bx-sm"></i>
+                            </button>
+                            @endcan
+                        `);
+                        }
+                    }
+                ],
+                search: true,
+                pagination: {
+                    limit: 10
+                },
+                sort: true,
+                data: () => {
+                    return new Promise(resolve => {
+                        setTimeout(() => {
+                            // Check if data_2 is empty and pass empty array
+                            const dataToShow = data_2.length > 0 ?
+                                data_2.map(item => [
+                                    item.id,
+                                    item.job_order_no,
+                                    item.category.name,
+                                    item.sub_category.name,
+                                    item.status.name,
+                                    item.date_and_time,
+                                    item.total_repair_time
+                                ]) : []; // Pass empty array when no data
+
+                            resolve(dataToShow);
+                        }, 3000);
+                    });
+                }
+            }).render(container_table_job_orders);
+        }
     });
 
     /* -------------------------------------------------------------------------- */
 
     VirtualSelect.init({
         ele: '#status-select',
-        options: [{
-                label: 'Options 1',
-                value: '1'
-            },
-            {
-                label: 'Options 2',
-                value: '2'
-            },
-            {
-                label: 'Options 3',
-                value: '3'
-            },
-        ],
+        options: @json($statuses),
         search: true,
         maxWidth: '100%'
     });
@@ -645,19 +706,7 @@
 
     VirtualSelect.init({
         ele: '#category-select',
-        options: [{
-                label: 'Options 1',
-                value: '1'
-            },
-            {
-                label: 'Options 2',
-                value: '2'
-            },
-            {
-                label: 'Options 3',
-                value: '3'
-            },
-        ],
+        options: @json($categories),
         search: true,
         maxWidth: '100%'
     });
@@ -668,12 +717,138 @@
         @this.set('ref_category_id', data);
     });
 
-    $wire.on('set-office-select', (key) => {
+    $wire.on('set-category-select', (key) => {
         document.querySelector('#category-select').setValue(key[0]);
     });
 
-    $wire.on('reset-office-select', (key) => {
+    $wire.on('reset-category-select', (key) => {
         document.querySelector('#category-select').reset(key[0]);
+    });
+
+    /* -------------------------------------------------------------------------- */
+
+    VirtualSelect.init({
+        ele: '#type-of-repair-select',
+        options: @json($type_of_repairs),
+        search: true,
+        maxWidth: '100%'
+    });
+
+    let ref_type_of_repair_id = document.querySelector('#type-of-repair-select');
+    ref_type_of_repair_id.addEventListener('change', () => {
+        let data = ref_type_of_repair_id.value;
+        @this.set('ref_type_of_repair_id', data);
+    });
+
+    $wire.on('set-type-of-repair-select', (key) => {
+        document.querySelector('#type-of-repair-select').setValue(key[0]);
+    });
+
+    $wire.on('reset-type-of-repair-select', (key) => {
+        document.querySelector('#type-of-repair-select').reset(key[0]);
+    });
+
+    /* -------------------------------------------------------------------------- */
+
+    VirtualSelect.init({
+        ele: '#sub-category-select',
+        options: @json($sub_categories),
+        search: true,
+        maxWidth: '100%'
+    });
+
+    let ref_sub_category_id = document.querySelector('#sub-category-select');
+    ref_sub_category_id.addEventListener('change', () => {
+        let data = ref_sub_category_id.value;
+        @this.set('ref_sub_category_id', data);
+    });
+
+    $wire.on('set-sub-category-select', (key) => {
+        document.querySelector('#sub-category-select').setValue(key[0]);
+    });
+
+    $wire.on('reset-sub-category-select', (key) => {
+        document.querySelector('#sub-category-select').reset(key[0]);
+    });
+
+    $wire.on('refresh-sub-category-select-options', (key) => {
+        document.querySelector('#sub-category-select').setOptions(key.options);
+        document.querySelector('#sub-category-select').setValue(key.selected);
+    });
+
+    /* -------------------------------------------------------------------------- */
+
+    VirtualSelect.init({
+        ele: '#mechanics-select',
+        options: @json($mechanics),
+        search: true,
+        maxWidth: '100%'
+    });
+
+    let ref_mechanics = document.querySelector('#mechanics-select');
+    ref_mechanics.addEventListener('change', () => {
+        let data = ref_mechanics.value;
+        @this.set('ref_mechanics', data);
+    });
+
+    $wire.on('set-mechanics-select', (key) => {
+        document.querySelector('#mechanics-select').setValue(key[0]);
+    });
+
+    $wire.on('reset-mechanics-select', (key) => {
+        document.querySelector('#mechanics-select').reset(key[0]);
+    });
+
+    /* -------------------------------------------------------------------------- */
+
+    VirtualSelect.init({
+        ele: '#location-select',
+        options: @json($locations),
+        search: true,
+        maxWidth: '100%'
+    });
+
+    let ref_location_id = document.querySelector('#location-select');
+    ref_location_id.addEventListener('change', () => {
+        let data = ref_location_id.value;
+        @this.set('ref_location_id', data);
+    });
+
+    $wire.on('set-location-select', (key) => {
+        document.querySelector('#location-select').setValue(key[0]);
+    });
+
+    $wire.on('reset-location-select', (key) => {
+        document.querySelector('#location-select').reset(key[0]);
+    });
+
+    /* -------------------------------------------------------------------------- */
+
+    $('#issue-or-concern-summernote').summernote({
+        toolbar: false,
+        disableDragAndDrop: true,
+        tabsize: 2,
+        height: 120,
+        callbacks: {
+            onChange: function(contents, $editable) {
+                // Create a temporary div element to strip out HTML tags
+                var plainText = $('<div>').html(contents).text();
+                @this.set('issue_or_concern', plainText);
+            }
+        }
+    });
+
+    $wire.on('set-issue-or-concern-summernote', (key) => {
+        $('#issue-or-concern-summernote').summernote('code', key[0]);
+    });
+
+    $wire.on('reset-issue-or-concern-summernote', () => {
+        $('#issue-or-concern-summernote').summernote('reset');
+    });
+
+    $wire.on('set-issue-or-concern-summernote-disabled', (key) => {
+        $('#issue-or-concern-summernote').summernote('code', key[0]);
+        $('#issue-or-concern-summernote').summernote('disable');
     });
 </script>
 @endscript

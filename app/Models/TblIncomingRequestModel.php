@@ -33,7 +33,6 @@ class TblIncomingRequestModel extends Model
             // Check if the reference number is already set
             if (empty($model->reference_no)) {
                 $model->reference_no = self::generateUniqueReference('REF-', 8);
-                dd($model->reference_no); // Debug the generated reference number
             }
         });
     }

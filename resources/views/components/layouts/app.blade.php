@@ -42,6 +42,9 @@
     <!-- Flatpickr -->
     <link rel="stylesheet" href="{{ asset('flatpickr-v3/flatpickr.min.css') }}">
 
+    <!-- Summernote -->
+    <link href="{{ asset('summernote/summernote-bs5.css') }}" rel="stylesheet">
+
     <style>
         body {
             font-family: 'Montserrat', sans-serif !important;
@@ -215,6 +218,9 @@
 
     <!-- flatpickr.js -->
     <script src="{{ asset('flatpickr-v3/flatpickr.js') }}"></script>
+
+    <!-- summernote -->
+    <script src="{{ asset('summernote/summernote-bs5.js') }}"></script>
 
     <script>
         document.addEventListener('livewire:init', () => {
