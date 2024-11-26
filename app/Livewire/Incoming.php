@@ -27,8 +27,8 @@ class Incoming extends Component
 
     public $editMode, $disable_input;
     public $incoming_request_id;
-    public $reference_no;
     public $job_orders = [];
+    public $reference_no;
     public $job_order_no;
 
     /* ---------------------------------- Model --------------------------------- */
@@ -129,6 +129,12 @@ class Incoming extends Component
 
         if ($property === 'ref_category_id') {
             $this->dispatch('refresh-sub-category-select-options', options: $virtual_select['sub_categories'], selected: $this->ref_sub_category_id_2);
+        }
+
+        if ($property === 'ref_status_id') {
+            if ($this->ref_status_id == 2) {
+                $this->dispatch('showStatusUpdateModal');
+            }
         }
     }
 
@@ -341,6 +347,7 @@ class Incoming extends Component
             $table_incoming_request = $this->loadPageData(); // reloads the method so that we can fetch updated data from incoming_requests.
             $this->dispatch('refresh-table-incoming-requests', $table_incoming_request['incoming_requests']);
         } catch (\Throwable $th) {
+            dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }
@@ -357,7 +364,7 @@ class Incoming extends Component
     }
 
     public function clear2()
-    { // customed clearing for page 2
+    {  // customed clearing for page 2 - Job Order Page
         $this->resetExcept('page', 'job_order_no', 'reference_no', 'ref_office_id', 'ref_types_id', 'number', 'ref_models_id_2', 'mileage', 'driver_in_charge', 'contact_number');
         $this->resetValidation();
 
@@ -370,10 +377,25 @@ class Incoming extends Component
         $this->dispatch('reset-issue-or-concern-summernote');
     }
 
-    public function generateJobOrder($referenceNo)
+    public function clear3()
+    { // custom clearing for statusUpdateModal
+        $this->reset(['jo_date_and_time', 'total_repair_time', 'claimed_by', 'remarks']);
+        $this->dispatch('set-status-select-pending');
+        $this->dispatch('hideStatusUpdateModal');
+    }
+
+    // public function generateJobOrder($referenceNo)
+    // {
+    // Ensure referenceNo is passed or available in the component
+    // return TblJobOrderModel::getNextJobOrderNumber($referenceNo);
+    // $this->job_order_no = TblJobOrderModel::getNextJobOrderNumber($referenceNo);
+    // }
+
+
+    public function generateJobOrderNo()
     {
-        // Ensure referenceNo is passed or available in the component
-        return TblJobOrderModel::getNextJobOrderNumber($referenceNo);
+        // Set the supposed-to-be ID
+        $this->job_order_no = TblJobOrderModel::max('id') + 1;
     }
 
     public function readJobOrders($key)
@@ -386,9 +408,14 @@ class Incoming extends Component
             $incoming_request       = TblIncomingRequestModel::with(['office', 'type', 'model'])->findOrFail($key);
             $this->reference_no     = $incoming_request->reference_no;
 
-            // Generate the next job order number
-            $this->job_order_no     = $this->generateJobOrder($this->reference_no);
+            // Dispatch an event with reference_no as a parameter to be used for generating updated job_order_no
+            // $this->dispatch('send-reference-no', $incoming_request->reference_no);
 
+            // Generate the next job order number
+            // $this->job_order_no     = $this->generateJobOrder($this->reference_no);
+
+
+            $this->job_order_no     = $incoming_request->id + 1;
             $this->ref_office_id    = $incoming_request->office->name;
             $this->ref_types_id     = $incoming_request->type->name;
             $this->ref_models_id_2  = $incoming_request->model->name;
@@ -421,12 +448,18 @@ class Incoming extends Component
                 $job_order->ref_category_id         = $this->ref_category_id;
                 $job_order->ref_sub_category_id     = $this->ref_sub_category_id;
                 $job_order->ref_location_id         = $this->ref_location_id;
-                $job_order->ref_status_id           = $this->ref_status_id;
+                $job_order->ref_status_id           = 1;
                 $job_order->ref_type_of_repair_id   = $this->ref_type_of_repair_id;
                 $job_order->ref_mechanics           = $this->ref_mechanics;
                 $job_order->issue_or_concern        = $this->issue_or_concern;
                 $job_order->save();
             });
+
+            $job_orders = TblJobOrderModel::with(['category', 'sub_category', 'status'])
+                ->where('reference_no', $this->reference_no)
+                ->get();
+
+            $this->dispatch('load-table-job-orders', $job_orders->toJson());
 
             $this->clear2();
             $this->dispatch('hideJobOrderModal');
@@ -441,15 +474,52 @@ class Incoming extends Component
         $this->authorize('read', TblIncomingRequestModel::class);
 
         try {
-            $this->editMode = true;
+            $this->editMode              = true;
 
-            $job_order = TblJobOrderModel::findOrFail($key);
-            $this->job_order_no = $job_order->job_order_no;
-
-            // TODO - Continue...
-            // FIXME - Since we assign the job_order_no from the database in editMode, find a way that when user clicks the add button, it will generate the job order no.
+            $job_order                   = TblJobOrderModel::findOrFail($key);
+            $this->job_order_no          = $job_order->id;
+            $this->dispatch('set-status-select', $job_order->ref_status_id);
+            $this->dispatch('set-category-select', $job_order->ref_category_id);
+            $this->dispatch('set-type-of-repair-select', $job_order->ref_type_of_repair_id);
+            $this->ref_sub_category_id_2 = $job_order->ref_sub_category_id;
+            $this->dispatch('set-mechanics-select', $job_order->ref_mechanics);
+            $this->dispatch('set-location-select', $job_order->ref_location_id);
+            $this->dispatch('set-issue-or-concern-summernote', $job_order->issue_or_concern);
 
             $this->dispatch('showJobOrderModal');
+        } catch (\Throwable $th) {
+            $this->dispatch('show-something-went-wrong-toast');
+        }
+    }
+
+    public function updateJobOrder()
+    {
+        try {
+            DB::transaction(function () {
+                $job_order = TblJobOrderModel::findOrFail($this->job_order_no);
+
+                $job_order->ref_status_id           = $this->ref_status_id;
+                $job_order->ref_category_id         = $this->ref_category_id;
+                $job_order->ref_type_of_repair_id   = $this->ref_type_of_repair_id;
+                $job_order->ref_sub_category_id     = $this->ref_sub_category_id;
+                $job_order->ref_mechanics           = $this->ref_mechanics;
+                $job_order->ref_location_id         = $this->ref_location_id;
+                $job_order->issue_or_concern        = $this->issue_or_concern;
+
+                // TODO - Save status update
+
+                $job_order->save();
+            });
+
+            $job_orders = TblJobOrderModel::with(['category', 'sub_category', 'status'])
+                ->where('reference_no', $this->reference_no)
+                ->get();
+
+            $this->dispatch('load-table-job-orders', $job_orders->toJson());
+
+            $this->clear2();
+            $this->dispatch('hideJobOrderModal');
+            $this->dispatch('show-success-update-message-toast');
         } catch (\Throwable $th) {
             $this->dispatch('show-something-went-wrong-toast');
         }

@@ -146,7 +146,7 @@
                     </ul>
                     @endcan
                     @can('read status')
-                    <ul class="nav flex-column sub-menu">
+                    <!-- <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
                             <a
                                 class="nav-link"
@@ -154,7 +154,7 @@
                                 Status
                             </a>
                         </li>
-                    </ul>
+                    </ul> -->
                     @endcan
                     @can('read type of repair')
                     <ul class="nav flex-column sub-menu">

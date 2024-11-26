@@ -278,7 +278,7 @@
                                 <label for="inputJobOrder">Job Order</label>
                                 <input type="text" class="form-control disabled_input" id="inputJobOrder" wire:model="job_order_no">
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-md-6" style="display: {{ $editMode ? '' : 'none'}}">
                                 <label for="selectModel">Status</label>
                                 <div id="status-select" wire:ignore></div>
                                 @error('ref_status_id')
@@ -361,6 +361,62 @@
             </div>
         </div>
     </div>
+
+    <!-- statusUpdate -->
+    <div class="modal fade" id="statusUpdate" tabindex="-1" aria-labelledby="statusUpdateLabel" aria-hidden="true" data-bs-backdrop="static" wire:ignore.self>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="statusUpdateLabel">Status Update</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="clear2"></button>
+                </div>
+                <div class="modal-body">
+                    <form class="forms-sample" wire:submit="updateJobOrder">
+                        <p class="card-description">
+                            Equipment Details
+                        </p>
+                        <hr>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label for="inputDateTime">Date & Time</label>
+                                <div wire:ignore>
+                                    <input class="form-control jo_date_and_time">
+                                </div>
+                                @error('jo_date_and_time')
+                                <div class="custom-invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label for="inputTotalRepairTime">Total repair time</label>
+                                <input type="text" class="form-control" id="inputTotalRepairTime" wire:model="total_repair_time">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label for="inputClaimedBy">Claimed by</label>
+                                <input type="text" class="form-control" id="inputClaimedBy" wire:model="claimed_by">
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-12">
+                                <label for="inputRemarks">Remarks</label>
+                                <input type="text" class="form-control" id="inputRemarks" wire:model="remarks">
+                            </div>
+                        </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear3">Close</button>
+                    <button type="submit" class="btn btn-primary">Update</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
 </div>
 
 @script
@@ -368,7 +424,7 @@
     $wire.on('showIncomingModal', () => {
         $('#incomingModal').modal('show');
 
-        if (!@this.editMode) {
+        if (@this.editMode) {
             return;
         }
 
@@ -381,10 +437,30 @@
 
     $wire.on('showJobOrderModal', () => {
         $('#jobOrderModal').modal('show');
+
+        if (@this.editMode) {
+            return;
+        }
+
+        $wire.generateJobOrderNo();
     });
 
     $wire.on('hideJobOrderModal', () => {
         $('#jobOrderModal').modal('hide');
+    });
+
+    // $wire.on('send-reference-no', (key) => {
+    //     $wire.generateJobOrder(key);
+    // });
+
+    $wire.on('showStatusUpdateModal', () => {
+        $('#jobOrderModal').modal('hide');
+        $('#statusUpdate').modal('show');
+    });
+
+    $wire.on('hideStatusUpdateModal', () => {
+        $('#statusUpdate').modal('hide');
+        $('#jobOrderModal').modal('show');
     });
 
     /* -------------------------------------------------------------------------- */
@@ -513,7 +589,8 @@
     });
 
     $wire.on('set-date-and-time', (key) => {
-        date_and_time.setDate(key);
+        date_and_time.setDate(key[0]);
+        @this.set('date_and_time', key[0]);
     });
 
     $wire.on('reset-date-and-time', () => {
@@ -596,7 +673,7 @@
                             const dataToShow = data_2.length > 0 ?
                                 data_2.map(item => [
                                     item.id,
-                                    item.job_order_no,
+                                    item.id,
                                     item.category.name,
                                     item.sub_category.name,
                                     item.status.name,
@@ -663,7 +740,7 @@
                             const dataToShow = data_2.length > 0 ?
                                 data_2.map(item => [
                                     item.id,
-                                    item.job_order_no,
+                                    item.id,
                                     item.category.name,
                                     item.sub_category.name,
                                     item.status.name,
@@ -696,6 +773,10 @@
 
     $wire.on('set-status-select', (key) => {
         document.querySelector('#status-select').setValue(key[0]);
+    });
+
+    $wire.on('set-status-select-pending', () => {
+        document.querySelector('#status-select').setValue(1);
     });
 
     $wire.on('reset-status-select', (key) => {
@@ -849,6 +930,27 @@
     $wire.on('set-issue-or-concern-summernote-disabled', (key) => {
         $('#issue-or-concern-summernote').summernote('code', key[0]);
         $('#issue-or-concern-summernote').summernote('disable');
+    });
+
+    /* -------------------------------------------------------------------------- */
+
+    var jo_date_and_time = $(".jo_date_and_time").flatpickr({
+        enableTime: true,
+        altInput: true, // altInput hides your original input and creates a new one. Upon date selection, the original input will contain a Y-m-d... string, while the altInput will display the date in a more legible, customizable format.
+        altFormat: 'F j, Y h:i K',
+        dateFormat: "Y-m-d H:i", // display in 12-hour format
+        onChange: function(selectedDates, dateStr) {
+            @this.set('jo_date_and_time', dateStr);
+        }
+    });
+
+    $wire.on('set-date-and-time', (key) => {
+        jo_date_and_time.setDate(key[0]);
+        @this.set('jo_date_and_time', key[0]);
+    });
+
+    $wire.on('reset-date-and-time', () => {
+        jo_date_and_time.clear();
     });
 </script>
 @endscript
