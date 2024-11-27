@@ -368,14 +368,10 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h1 class="modal-title fs-5" id="statusUpdateLabel">Status Update</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="clear2"></button>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="clear3"></button>
                 </div>
                 <div class="modal-body">
-                    <form class="forms-sample" wire:submit="updateJobOrder">
-                        <p class="card-description">
-                            Equipment Details
-                        </p>
-                        <hr>
+                    <form class="forms-sample" wire:submit="updateJobOrder" novalidate>
                         <div class="form-group">
                             <div class="col-md-12">
                                 <label for="inputDateTime">Date & Time</label>
@@ -392,19 +388,34 @@
                         <div class="form-group">
                             <div class="col-md-12">
                                 <label for="inputTotalRepairTime">Total repair time</label>
-                                <input type="text" class="form-control" id="inputTotalRepairTime" wire:model="total_repair_time">
+                                <input type="text" class="form-control @error('total_repair_time') is-invalid @enderror" id="inputTotalRepairTime" wire:model="total_repair_time">
+                                @error('total_repair_time')
+                                <div class="custom-invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-12">
                                 <label for="inputClaimedBy">Claimed by</label>
-                                <input type="text" class="form-control" id="inputClaimedBy" wire:model="claimed_by">
+                                <input type="text" class="form-control @error('claimed_by') is-invalid @enderror" id="inputClaimedBy" wire:model="claimed_by">
+                                @error('claimed_by')
+                                <div class="custom-invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
                             </div>
                         </div>
                         <div class="form-group">
                             <div class="col-md-12">
                                 <label for="inputRemarks">Remarks</label>
-                                <input type="text" class="form-control" id="inputRemarks" wire:model="remarks">
+                                <input type="text" class="form-control @error('remarks') is-invalid @enderror" id="inputRemarks" wire:model="remarks">
+                                @error('remarks')
+                                <div class="custom-invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
                             </div>
                         </div>
                 </div>
@@ -412,6 +423,144 @@
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear3">Close</button>
                     <button type="submit" class="btn btn-primary">Update</button>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jobOrderDetails -->
+    <div class="modal fade" id="jobOrderDetails" tabindex="-1" aria-labelledby="jobOrderDetailsModalLabel" aria-hidden="true" data-bs-backdrop="static" wire:ignore.self>
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="jobOrderDetailsModalLabel">Details</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="clear2"></button>
+                </div>
+                <div class="modal-body">
+                    <p class="card-description">
+                        Equipment Details
+                    </p>
+                    <hr>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="inputType">Type</label>
+                            <input type="text" class="form-control disabled_input" id="inputType" wire:model="ref_office_id">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputModel">Model</label>
+                            <input type="text" class="form-control disabled_input" id="inputModel" wire:model="ref_models_id_2">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="inputNumber">Number</label>
+                            <input type="text" class="form-control disabled_input" id="inputNumber" wire:model="number">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputMileage">Mileage / Odometer Reading</label>
+                            <input type="text" class="form-control disabled_input" id="inputMileage" wire:model="mileage">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="inputDriverInCharge">Driver in charge</label>
+                            <input type="text" class="form-control disabled_input" id="inputDriverInCharge" wire:model="driver_in_charge">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputContactNumber">Contact Number</label>
+                            <input type="text" class="form-control disabled_input" id="inputContactNumber" wire:model="contact_number">
+                        </div>
+                    </div>
+                    <p class="card-description">
+                        Equipment Details
+                    </p>
+                    <hr>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="inputJobOrder">Job Order</label>
+                            <input type="text" class="form-control disabled_input" id="inputJobOrder" wire:model="job_order_no">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="selectModel">Status</label>
+                            <input type="text" class="form-control disabled_input" id="selectModel" wire:model="ref_status_id">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="selectCategory">Category</label>
+                            <input type="text" class="form-control disabled_input" id="selectCategory" wire:model="ref_category_id">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="selectTypeOfRepair">Type of Repair</label>
+                            <input type="text" class="form-control disabled_input" id="selectTypeOfRepair" wire:model="ref_type_of_repair_id">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="selectSubCategory">Sub-category</label>
+                            <input type="text" class="form-control disabled_input" id="selectSubCategory" wire:model="ref_sub_category_id_2">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="selectMechanics">Mechanics Assigned</label>
+                            <input type="text" class="form-control disabled_input" id="selectMechanics" wire:model="ref_mechanics">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="selectLocation">Location</label>
+                            <input type="text" class="form-control disabled_input" id="selectLocation" wire:model="ref_location_id">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-12">
+                            <label for="inputIssueOrConcern">Issues or Concerns</label>
+                            <input type="text" class="form-control disabled_input" id="inputIssueOrConcern" wire:model="issue_or_concern">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="inputDateTime">Date & Time</label>
+                            <input type="text" class="form-control disabled_input" id="inputDateTime" wire:model="jo_date_and_time">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputTotalRepairTime">Total repair time</label>
+                            <input type="text" class="form-control disabled_input" id="inputTotalRepairTime" wire:model="total_repair_time">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-6">
+                            <label for="inputClaimedBy">Claimed by</label>
+                            <input type="text" class="form-control disabled_input" id="inputJobOrder" wire:model="claimed_by">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="inputRemarks">Remarks</label>
+                            <input type="text" class="form-control disabled_input" id="inputJobOrder" wire:model="remarks">
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear2">Close</button>
+                    <button type="button" class="btn btn-info" data-bs-dismiss="modal" wire:click="printJobOrder('{{$job_order_no}}')">Print</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- jobOrderDetailsPDF -->
+    <div class="modal fade" id="jobOrderDetailsPDF" tabindex="-1" aria-labelledby="jobOrderDetailsPDFModalLabel" aria-hidden="true" data-bs-backdrop="static" wire:ignore.self>
+        <div class="modal-dialog modal-xl">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="jobOrderDetailsPDFModalLabel">Details</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="clear2"></button>
+                </div>
+                <div class="modal-body">
+                    <embed src="{{ $job_order_details_pdf }}" type="application/pdf" width="100%" height="700px">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
         </div>
@@ -461,6 +610,19 @@
     $wire.on('hideStatusUpdateModal', () => {
         $('#statusUpdate').modal('hide');
         $('#jobOrderModal').modal('show');
+    });
+
+    $wire.on('hideBothJobOrderModalAndStatusUpdateModal', () => {
+        $('#statusUpdate').modal('hide');
+        $('#incomingModal').modal('hide');
+    });
+
+    $wire.on('showJobOrderDetailsModal', () => {
+        $('#jobOrderDetails').modal('show');
+    });
+
+    $wire.on('showJobOrderDetailsPDF', () => {
+        $('#jobOrderDetailsPDF').modal('show');
     });
 
     /* -------------------------------------------------------------------------- */
@@ -677,8 +839,17 @@
                                     item.category.name,
                                     item.sub_category.name,
                                     item.status.name,
-                                    item.date_and_time,
-                                    item.total_repair_time
+                                    item.date_and_time ?
+                                    new Date(item.date_and_time).toLocaleString('en-US', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: true
+                                    }) :
+                                    '-',
+                                    item.total_repair_time ? item.total_repair_time : '-'
                                 ]) : []; // Pass empty array when no data
 
                             resolve(dataToShow);
@@ -720,8 +891,11 @@
                             const id = row.cells[0].data;
                             return gridjs.html(`
                             @can('read incoming')
-                            <button class="btn btn-success btn-sm btn-icon-text me-3" title="Edit" wire:click="readJobOrder('${id}')">
+                            <button class="btn btn-success btn-sm btn-icon-text me-3" title="Edit" style="display: ${row.cells[4].data === 'Pending' ? '' : 'none'}" wire:click="readJobOrder('${id}')">
                                 <i class="bx bx-edit bx-sm"></i>
+                            </button>
+                            <button class="btn btn-info btn-sm btn-icon-text me-3" title="View" style="display: ${row.cells[4].data === 'Pending' ? 'none' : ''}" wire:click="readJobOrdersDetails('${id}')">
+                                <i class="bx bx-detail bx-sm"></i>
                             </button>
                             @endcan
                         `);
@@ -744,8 +918,17 @@
                                     item.category.name,
                                     item.sub_category.name,
                                     item.status.name,
-                                    item.date_and_time,
-                                    item.total_repair_time
+                                    item.date_and_time ?
+                                    new Date(item.date_and_time).toLocaleString('en-US', {
+                                        year: 'numeric',
+                                        month: 'short',
+                                        day: 'numeric',
+                                        hour: '2-digit',
+                                        minute: '2-digit',
+                                        hour12: true
+                                    }) :
+                                    '-',
+                                    item.total_repair_time ? item.total_repair_time : '-'
                                 ]) : []; // Pass empty array when no data
 
                             resolve(dataToShow);

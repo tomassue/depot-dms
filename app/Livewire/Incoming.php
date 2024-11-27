@@ -13,6 +13,9 @@ use App\Models\RefTypeModel;
 use App\Models\RefTypeOfRepairModel;
 use App\Models\TblIncomingRequestModel;
 use App\Models\TblJobOrderModel;
+use Dompdf\Dompdf;
+use Dompdf\Options;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -30,6 +33,7 @@ class Incoming extends Component
     public $job_orders = [];
     public $reference_no;
     public $job_order_no;
+    public $job_order_details_pdf;
 
     /* ---------------------------------- Model --------------------------------- */
     public $ref_office_id;
@@ -69,7 +73,7 @@ class Incoming extends Component
 
         if ($this->page == 2) {
             $rules = [
-                'ref_status_id' => 'required',
+                // 'ref_status_id' => 'required',
                 'ref_category_id' => 'required',
                 'ref_sub_category_id' => 'required',
                 'ref_type_of_repair_id' => 'required',
@@ -77,6 +81,15 @@ class Incoming extends Component
                 'ref_location_id' => 'required',
                 'issue_or_concern' => 'required'
             ];
+
+            if ($this->ref_status_id == 2) {
+                $rules = [
+                    'jo_date_and_time' => 'required',
+                    'total_repair_time' => 'required',
+                    'claimed_by' => 'required',
+                    'remarks' => 'required'
+                ];
+            }
         }
 
         return $rules;
@@ -99,6 +112,12 @@ class Incoming extends Component
                 'ref_mechanics'         => 'mechanics',
                 'ref_location_id'       => 'location'
             ];
+
+            if ($this->ref_status_id == 2) {
+                $attributes = [
+                    'jo_date_and_time' => 'date and time'
+                ];
+            }
         }
 
         return $attributes;
@@ -359,6 +378,7 @@ class Incoming extends Component
         if ($this->page == 1) {
             $this->page = 2;
         } elseif ($this->page == 2) {
+            $this->clear();
             $this->page = 1;
         }
     }
@@ -380,8 +400,10 @@ class Incoming extends Component
     public function clear3()
     { // custom clearing for statusUpdateModal
         $this->reset(['jo_date_and_time', 'total_repair_time', 'claimed_by', 'remarks']);
+        $this->dispatch('reset-date-and-time');
         $this->dispatch('set-status-select-pending');
-        $this->dispatch('hideStatusUpdateModal');
+        // $this->dispatch('hideStatusUpdateModal');
+        $this->resetValidation();
     }
 
     // public function generateJobOrder($referenceNo)
@@ -494,6 +516,8 @@ class Incoming extends Component
 
     public function updateJobOrder()
     {
+        // $this->validate($this->rules(), [], $this->attributes());
+
         try {
             DB::transaction(function () {
                 $job_order = TblJobOrderModel::findOrFail($this->job_order_no);
@@ -506,9 +530,14 @@ class Incoming extends Component
                 $job_order->ref_location_id         = $this->ref_location_id;
                 $job_order->issue_or_concern        = $this->issue_or_concern;
 
-                // TODO - Save status update
+                if ($this->ref_status_id == 2) {
+                    $job_order->date_and_time       = $this->jo_date_and_time;
+                    $job_order->total_repair_time   = $this->total_repair_time;
+                    $job_order->claimed_by          = $this->claimed_by;
+                    $job_order->remarks             = $this->remarks;
+                }
 
-                $job_order->save();
+                // $job_order->save();
             });
 
             $job_orders = TblJobOrderModel::with(['category', 'sub_category', 'status'])
@@ -517,10 +546,71 @@ class Incoming extends Component
 
             $this->dispatch('load-table-job-orders', $job_orders->toJson());
 
-            $this->clear2();
-            $this->dispatch('hideJobOrderModal');
+            if ($this->ref_status_id == 2) {
+                $this->clear3();
+                $this->dispatch('hideBothJobOrderModalAndStatusUpdateModal');
+            } else {
+                $this->clear2();
+                $this->dispatch('hideJobOrderModal');
+            }
+
             $this->dispatch('show-success-update-message-toast');
         } catch (\Throwable $th) {
+            $this->dispatch('show-something-went-wrong-toast');
+        }
+    }
+
+    public function readJobOrdersDetails($key)
+    {   // jobOrderDetailsModal - this is for mainly displaying the overall details. I normally use the same modal and just manipulate it through editMode, but I have the ref_status_id where it's done, the statusModal will show and I can't see a better course of action in regards to this predicament.
+        // Instead of using plug-ins like summernote and virtual select, I will only use disabled_input fields. :)
+
+        $this->authorize('read', TblIncomingRequestModel::class);
+
+        try {
+            $job_order                      = TblJobOrderModel::findOrFail($key);
+            $this->job_order_no             = $job_order->id;
+            $this->ref_status_id            = $job_order->status->name;
+            $this->ref_category_id          = $job_order->category->name;
+            $this->ref_type_of_repair_id    = $job_order->type_of_repair->name;
+            $this->ref_sub_category_id_2    = $job_order->sub_category->name;
+            $this->ref_mechanics            = $job_order->mechanic->name;
+            $this->ref_location_id          = $job_order->location->name;
+            $this->issue_or_concern         = $job_order->issue_or_concern;
+            $this->jo_date_and_time         = $job_order->date_and_time;
+            $this->total_repair_time        = $job_order->total_repair_time;
+            $this->claimed_by               = $job_order->claimed_by;
+            $this->remarks                  = $job_order->remarks;
+
+            $this->dispatch('showJobOrderDetailsModal');
+        } catch (\Throwable $th) {
+            dd($th);
+            $this->dispatch('show-something-went-wrong-toast');
+        }
+    }
+
+    public function printJobOrder($key)
+    {
+        try {
+            $data = [
+                'cdo_full' => base64_encode(file_get_contents(public_path('assets/images/compressed_cdofull.png'))),
+                'rise_logo' => base64_encode(file_get_contents(public_path('assets/images/risev2.png')))
+            ];
+
+            $htmlContent = view('livewire.pdf.job_order_details_pdf', $data)->render();
+
+            $options = new Options();
+            $options->set('isRemoteEnabled', true);
+            $options->set('isHtml5ParserEnabled', true); // Helps with complex HTML
+
+            $dompdf = new Dompdf();
+            $dompdf->loadHtml($htmlContent);
+            $dompdf->render();
+
+            $this->job_order_details_pdf = 'data:application/pdf;base64,' . base64_encode($dompdf->output());
+
+            $this->dispatch('showJobOrderDetailsPDF');
+        } catch (\Throwable $th) {
+            dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }

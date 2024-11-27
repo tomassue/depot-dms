@@ -76,6 +76,21 @@ class TblJobOrderModel extends Model
         return $this->belongsTo(RefStatusModel::class, 'ref_status_id', 'id');
     }
 
+    public function type_of_repair(): BelongsTo
+    {
+        return $this->belongsTo(RefTypeOfRepairModel::class, 'ref_type_of_repair_id', 'id');
+    }
+
+    public function mechanic(): BelongsTo
+    {
+        return $this->belongsTo(RefMechanicsModel::class, 'ref_mechanics', 'id');
+    }
+
+    public function location(): BelongsTo
+    {
+        return $this->belongsTo(RefLocationModel::class, 'ref_location_id', 'id');
+    }
+
     /* -------------------------------------------------------------------------- */
 
     public function getActivitylogOptions(): LogOptions
