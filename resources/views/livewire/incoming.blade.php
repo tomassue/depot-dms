@@ -514,7 +514,7 @@
                     <div class="form-group row">
                         <div class="col-md-12">
                             <label for="inputIssueOrConcern">Issues or Concerns</label>
-                            <input type="text" class="form-control disabled_input" id="inputIssueOrConcern" wire:model="issue_or_concern">
+                            <textarea class="form-control disabled_input" id="exampleTextarea1" rows="4" spellcheck="false" wire:model="issue_or_concern"></textarea>
                         </div>
                     </div>
                     <div class="form-group row">
@@ -536,7 +536,7 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             <label for="inputRemarks">Remarks</label>
-                            <input type="text" class="form-control disabled_input" id="inputJobOrder" wire:model="remarks">
+                            <textarea class="form-control disabled_input" id="exampleTextarea1" rows="4" spellcheck="false" wire:model="remarks"></textarea>
                         </div>
                     </div>
                 </div>

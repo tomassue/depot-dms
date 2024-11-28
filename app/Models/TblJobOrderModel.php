@@ -61,6 +61,11 @@ class TblJobOrderModel extends Model
 
     /* -------------------------------------------------------------------------- */
 
+    public function incoming_request(): BelongsTo
+    {
+        return $this->belongsTo(TblIncomingRequestModel::class, 'reference_no', 'reference_no');
+    }
+
     public function category(): BelongsTo
     {
         return $this->belongsTo(RefCategoryModel::class, 'ref_category_id', 'id');

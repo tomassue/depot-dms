@@ -9,6 +9,7 @@ use App\Livewire\Settings\Model;
 use App\Livewire\Settings\Office;
 use App\Livewire\Settings\Permissions;
 use App\Livewire\Settings\Roles;
+use App\Livewire\Settings\Signatories;
 use App\Livewire\Settings\Status;
 use App\Livewire\Settings\SubCategory;
 use App\Livewire\Settings\Type;
@@ -32,6 +33,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/incoming', Incoming::class)->name('incoming');
 
+    Route::get('/settings/signatories', Signatories::class)->name('signatories');
     Route::get('/settings/equipment-or-vehicle-type', Type::class)->name('equipment-or-vehicle-type');
     Route::get('/settings/equipment-or-vehicle-model', Model::class)->name('equipment-or-vehicle-model');
     Route::get('/settings/type-of-repair', TypeOfRepair::class)->name('type-of-repair');

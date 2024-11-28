@@ -16,6 +16,7 @@ use App\Models\TblJobOrderModel;
 use Dompdf\Dompdf;
 use Dompdf\Options;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -576,7 +577,7 @@ class Incoming extends Component
             $this->ref_mechanics            = $job_order->mechanic->name;
             $this->ref_location_id          = $job_order->location->name;
             $this->issue_or_concern         = $job_order->issue_or_concern;
-            $this->jo_date_and_time         = $job_order->date_and_time;
+            $this->jo_date_and_time         = Carbon::parse($job_order->date_and_time)->format('M. d, Y g:i A');
             $this->total_repair_time        = $job_order->total_repair_time;
             $this->claimed_by               = $job_order->claimed_by;
             $this->remarks                  = $job_order->remarks;
@@ -588,12 +589,28 @@ class Incoming extends Component
         }
     }
 
+    //TODO - Before printing, the system should ask for the signatory first.
+
     public function printJobOrder($key)
     {
         try {
+            $job_order = TblJobOrderModel::findOrFail($key);
+
             $data = [
-                'cdo_full' => base64_encode(file_get_contents(public_path('assets/images/compressed_cdofull.png'))),
-                'rise_logo' => base64_encode(file_get_contents(public_path('assets/images/risev2.png')))
+                'cdo_full'          => base64_encode(file_get_contents(public_path('assets/images/compressed_cdofull.png'))),
+                'rise_logo'         => base64_encode(file_get_contents(public_path('assets/images/risev2.png'))),
+                'watermark'         => base64_encode(file_get_contents(public_path('assets/images/compressed_city_depot_logo.png'))),
+                'job_order_no'      => $job_order->id,
+                'equipment_type'    => $job_order->incoming_request->type->name,
+                'department'        => $job_order->incoming_request->office->name,
+                'model'             => $job_order->incoming_request->model->name,
+                'date_and_time_in'  => Carbon::parse($job_order->incoming_request->date_and_time)->format('M. d, Y g:i A'),
+                'date_and_time_out' => Carbon::parse($job_order->date_and_time)->format('M. d, Y g:i A'),
+                'plate_no'          => $job_order->incoming_request->number,
+                'issues_or_concern' => $job_order->issue_or_concern,
+                'mechanic'          => $job_order->mechanic->name,
+                'name'              => $job_order->incoming_request->driver_in_charge,
+                'contact_number'    => $job_order->incoming_request->contact_number
             ];
 
             $htmlContent = view('livewire.pdf.job_order_details_pdf', $data)->render();
@@ -604,6 +621,7 @@ class Incoming extends Component
 
             $dompdf = new Dompdf();
             $dompdf->loadHtml($htmlContent);
+            $dompdf->setPaper('A4', 'portrait');
             $dompdf->render();
 
             $this->job_order_details_pdf = 'data:application/pdf;base64,' . base64_encode($dompdf->output());

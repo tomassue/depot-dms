@@ -167,6 +167,17 @@
                         </li>
                     </ul>
                     @endcan
+                    @can('read signatory')
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link"
+                                href="{{ route('signatories') }}">
+                                Signatories
+                            </a>
+                        </li>
+                    </ul>
+                    @endcan
                     @can('can read user management')
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
