@@ -7,6 +7,7 @@ use App\Models\RefLocationModel;
 use App\Models\RefMechanicsModel;
 use App\Models\RefModelModel;
 use App\Models\RefOfficesModel;
+use App\Models\RefSignatoriesModel;
 use App\Models\RefStatusModel;
 use App\Models\RefSubCategoryModel;
 use App\Models\RefTypeModel;
@@ -15,8 +16,8 @@ use App\Models\TblIncomingRequestModel;
 use App\Models\TblJobOrderModel;
 use Dompdf\Dompdf;
 use Dompdf\Options;
-use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Livewire\Component;
@@ -58,6 +59,7 @@ class Incoming extends Component
     public $total_repair_time;
     public $claimed_by;
     public $remarks;
+    public $ref_signatories_id;
 
     public function rules()
     {
@@ -263,6 +265,16 @@ class Incoming extends Component
                 ];
             });
 
+        // signatories-select
+        $signatories = RefSignatoriesModel::all()
+            ->map(function ($item) {
+                return [
+                    'label' => $item->name,
+                    'value' => $item->id,
+                    'description' => $item->designation
+                ];
+            });
+
         return [
             'incoming_requests' => $incoming_requests,
             'offices'           => $offices,
@@ -273,7 +285,8 @@ class Incoming extends Component
             'type_of_repairs'   => $type_of_repairs,
             'sub_categories'    => $sub_categories,
             'mechanics'         => $mechanics,
-            'locations'         => $locations
+            'locations'         => $locations,
+            'signatories'       => $signatories
         ];
     }
 
@@ -381,6 +394,9 @@ class Incoming extends Component
         } elseif ($this->page == 2) {
             $this->clear();
             $this->page = 1;
+
+            $table_incoming_request = $this->loadPageData(); // reloads the method so that we can fetch updated data from incoming_requests.
+            $this->dispatch('refresh-table-incoming-requests', $table_incoming_request['incoming_requests']);
         }
     }
 
@@ -396,6 +412,8 @@ class Incoming extends Component
         $this->dispatch('reset-mechanics-select');
         $this->dispatch('reset-location-select');
         $this->dispatch('reset-issue-or-concern-summernote');
+
+        $this->dispatch('reset-signatories-select');
     }
 
     public function clear3()
@@ -581,36 +599,39 @@ class Incoming extends Component
             $this->total_repair_time        = $job_order->total_repair_time;
             $this->claimed_by               = $job_order->claimed_by;
             $this->remarks                  = $job_order->remarks;
+            $this->ref_signatories_id       = $job_order->ref_signatories_id;
 
             $this->dispatch('showJobOrderDetailsModal');
         } catch (\Throwable $th) {
-            dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }
 
-    //TODO - Before printing, the system should ask for the signatory first.
-
     public function printJobOrder($key)
     {
+        $this->validate(['ref_signatories_id' => 'required'], [], ['ref_signatories_id' => 'signatory']);
+
         try {
             $job_order = TblJobOrderModel::findOrFail($key);
+            $signatory = RefSignatoriesModel::findOrFail($this->ref_signatories_id);
 
             $data = [
-                'cdo_full'          => base64_encode(file_get_contents(public_path('assets/images/compressed_cdofull.png'))),
-                'rise_logo'         => base64_encode(file_get_contents(public_path('assets/images/risev2.png'))),
-                'watermark'         => base64_encode(file_get_contents(public_path('assets/images/compressed_city_depot_logo.png'))),
-                'job_order_no'      => $job_order->id,
-                'equipment_type'    => $job_order->incoming_request->type->name,
-                'department'        => $job_order->incoming_request->office->name,
-                'model'             => $job_order->incoming_request->model->name,
-                'date_and_time_in'  => Carbon::parse($job_order->incoming_request->date_and_time)->format('M. d, Y g:i A'),
-                'date_and_time_out' => Carbon::parse($job_order->date_and_time)->format('M. d, Y g:i A'),
-                'plate_no'          => $job_order->incoming_request->number,
-                'issues_or_concern' => $job_order->issue_or_concern,
-                'mechanic'          => $job_order->mechanic->name,
-                'name'              => $job_order->incoming_request->driver_in_charge,
-                'contact_number'    => $job_order->incoming_request->contact_number
+                'cdo_full'              => base64_encode(file_get_contents(public_path('assets/images/compressed_cdofull.png'))),
+                'rise_logo'             => base64_encode(file_get_contents(public_path('assets/images/risev2.png'))),
+                'watermark'             => base64_encode(file_get_contents(public_path('assets/images/compressed_city_depot_logo.png'))),
+                'job_order_no'          => $job_order->id,
+                'equipment_type'        => $job_order->incoming_request->type->name,
+                'department'            => $job_order->incoming_request->office->name,
+                'model'                 => $job_order->incoming_request->model->name,
+                'date_and_time_in'      => Carbon::parse($job_order->incoming_request->date_and_time)->format('M. d, Y g:i A'),
+                'date_and_time_out'     => Carbon::parse($job_order->date_and_time)->format('M. d, Y g:i A'),
+                'plate_no'              => $job_order->incoming_request->number,
+                'issues_or_concern'     => $job_order->issue_or_concern,
+                'mechanic'              => $job_order->mechanic->name,
+                'name'                  => $job_order->incoming_request->driver_in_charge,
+                'contact_number'        => $job_order->incoming_request->contact_number,
+                'signatory_name'        => $signatory->name,
+                'signatory_designation' => $signatory->designation
             ];
 
             $htmlContent = view('livewire.pdf.job_order_details_pdf', $data)->render();
@@ -627,6 +648,16 @@ class Incoming extends Component
             $this->job_order_details_pdf = 'data:application/pdf;base64,' . base64_encode($dompdf->output());
 
             $this->dispatch('showJobOrderDetailsPDF');
+
+            activity()
+                ->causedBy(Auth::user()) // The user who printed the job order
+                ->performedOn($job_order) // The job order being printed
+                ->withProperties([
+                    'job_order_id' => $job_order->id,
+                    'signatory_id' => $this->ref_signatories_id
+                ])
+                ->event('printed job order')
+                ->log("Job Order #{$job_order->id} printed with Signatory (ID: {$this->ref_signatories_id})");
         } catch (\Throwable $th) {
             dd($th);
             $this->dispatch('show-something-went-wrong-toast');

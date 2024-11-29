@@ -2,14 +2,13 @@
 
 namespace App\Livewire;
 
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Livewire\Component;
 
 class Dashboard extends Component
 {
     public function render()
     {
-        $data = [];
-
-        return view('livewire.dashboard', $data);
+        return view('livewire.dashboard');
     }
 }

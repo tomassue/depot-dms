@@ -152,7 +152,7 @@
         .vscomp-toggle-button {
             align-items: center;
             background-color: #fff;
-            border: 1px solid #ddd;
+            border: 1px solid #f3f3f3;
             cursor: pointer;
             display: flex;
             position: relative;
@@ -160,6 +160,10 @@
             height: 50px;
             padding: 0.875rem 1.375rem;
             font-size: 0.875rem;
+        }
+
+        .vscomp-wrapper:not(.has-value) .vscomp-value {
+            opacity: .3 !important;
         }
     </style>
 </head>

@@ -1,15 +1,13 @@
 <div>
-    <div class="row">
-        <div class="card">
-            <div class="card-body">
-                @can('create type of repair')
-                <div class="col-md-12 my-2 d-inline-flex align-content-center justify-content-end">
-                    <button class="btn btn-primary btn-md btn-icon-text" wire:click="$dispatch('showTypeOfRepairModal')"> Add <i class="typcn typcn-plus-outline btn-icon-append"></i></button>
-                </div>
-                @endcan
-                <div class="col-md-12 my-2">
-                    <div id="table_type_of_repairs" wire:ignore></div>
-                </div>
+    <div class="card">
+        <div class="card-body">
+            @can('create type of repair')
+            <div class="col-md-12 my-2 d-inline-flex align-content-center justify-content-end">
+                <button class="btn btn-primary btn-md btn-icon-text" wire:click="$dispatch('showTypeOfRepairModal')"> Add <i class="typcn typcn-plus-outline btn-icon-append"></i></button>
+            </div>
+            @endcan
+            <div class="col-md-12 my-2">
+                <div id="table_type_of_repairs" wire:ignore></div>
             </div>
         </div>
     </div>

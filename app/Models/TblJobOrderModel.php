@@ -96,6 +96,11 @@ class TblJobOrderModel extends Model
         return $this->belongsTo(RefLocationModel::class, 'ref_location_id', 'id');
     }
 
+    // public function signatories(): BelongsTo
+    // {
+    //     return $this->belongsTo(RefSignatoriesModel::class, 'ref_signatories_id', 'id');
+    // }
+
     /* -------------------------------------------------------------------------- */
 
     public function getActivitylogOptions(): LogOptions

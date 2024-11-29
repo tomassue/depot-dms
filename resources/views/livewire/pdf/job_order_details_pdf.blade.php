@@ -198,14 +198,14 @@
             <td class="no-top-border no-bottom-border no-left-border no-right-border"></td>
             <td class="no-top-border no-bottom-border no-left-border no-right-border" style="text-align:center; font-weight: normal;">{{ $contact_number }}</td>
             <td class="no-top-border no-bottom-border no-left-border no-right-border"></td>
-            <td class="no-top-border no-bottom-border no-left-border no-right-border" style="text-align:center; text-transform: uppercase; font-weight: normal;"></td>
+            <td class="no-top-border no-bottom-border no-left-border no-right-border" style="text-align:center; text-transform: uppercase; font-weight: normal;">{{ $signatory_name }}</td>
         </tr>
         <tr>
-            <td style="text-align:center;" class="no-bottom-border no-left-border no-right-border">NAME & SIGNATURE</td>
+            <td style="text-align:center; vertical-align: top" class="no-bottom-border no-left-border no-right-border">NAME & SIGNATURE</td>
             <td class="no-top-border no-bottom-border no-left-border no-right-border"></td>
-            <td style="text-align:center;" class="no-bottom-border no-left-border no-right-border">CONTACT NUMBER</td>
+            <td style="text-align:center; vertical-align: top" class="no-bottom-border no-left-border no-right-border">CONTACT NUMBER</td>
             <td class="no-top-border no-bottom-border no-left-border no-right-border"></td>
-            <td style="text-align:center;" class="no-bottom-border no-left-border no-right-border">SECTION CHIEF</td>
+            <td style="text-align:center; text-transform: uppercase; vertical-align: top" class="no-bottom-border no-left-border no-right-border">{{ $signatory_designation }}</td>
         </tr>
     </table>
 </body>

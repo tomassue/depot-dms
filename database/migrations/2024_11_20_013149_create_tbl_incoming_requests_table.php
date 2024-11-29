@@ -41,6 +41,7 @@ return new class extends Migration
             $table->string('total_repair_time')->nullable();
             $table->string('claimed_by')->nullable();
             $table->longText('remarks')->nullable();
+            $table->string('ref_signatories_id')->nullable();
             $table->timestamps();
             $table->timestamp('deleted_at');
         });

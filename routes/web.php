@@ -2,6 +2,7 @@
 
 use App\Livewire\Dashboard;
 use App\Livewire\Incoming;
+use App\Livewire\Report;
 use App\Livewire\Settings\Category;
 use App\Livewire\Settings\Location;
 use App\Livewire\Settings\Mechanics;
@@ -32,6 +33,7 @@ Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/incoming', Incoming::class)->name('incoming');
+    Route::get('/report', Report::class)->name('report');
 
     Route::get('/settings/signatories', Signatories::class)->name('signatories');
     Route::get('/settings/equipment-or-vehicle-type', Type::class)->name('equipment-or-vehicle-type');

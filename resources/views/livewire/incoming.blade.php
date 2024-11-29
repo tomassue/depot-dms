@@ -1,12 +1,17 @@
 <div>
-    <div class="row" style="display: {{ $page == 1 ? '' : 'none' }}">
-        <div class="card">
+    <div style="display: {{ $page == 1 ? '' : 'none' }}">
+        <div class="card mb-2">
             <div class="card-body">
                 @can('create incoming')
                 <div class="col-md-12 my-2 d-inline-flex align-content-center justify-content-end">
                     <button class="btn btn-primary btn-md btn-icon-text" wire:click="$dispatch('showIncomingModal')"> Add <i class="typcn typcn-plus-outline btn-icon-append"></i></button>
                 </div>
                 @endcan
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
                 <div class="col-md-12 my-2">
                     <div id="table_incoming_requests" wire:ignore></div>
                 </div>
@@ -142,7 +147,7 @@
         </div>
     </div>
 
-    <div class="row" style="display: {{ $page == 2 ? '' : 'none' }}">
+    <div style="display: {{ $page == 2 ? '' : 'none' }}">
         <div class="card mb-2">
             <div class="card-body">
                 <div class="col-md-12 my-2 d-inline-flex align-content-center justify-content-start">
@@ -539,10 +544,21 @@
                             <textarea class="form-control disabled_input" id="exampleTextarea1" rows="4" spellcheck="false" wire:model="remarks"></textarea>
                         </div>
                     </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
+                            <label for="selectSignatory">Signatory <small class="text-info fst-italic">(Please select a signatory first before clicking "print".)</small></label>
+                            <div id="signatories-select" wire:ignore></div>
+                            @error('ref_signatories_id')
+                            <div class="custom-invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear2">Close</button>
-                    <button type="button" class="btn btn-info" data-bs-dismiss="modal" wire:click="printJobOrder('{{$job_order_no}}')">Print</button>
+                    <button type="button" class="btn btn-info" wire:click="printJobOrder('{{$job_order_no}}')">Print</button>
                 </div>
             </div>
         </div>
@@ -622,6 +638,7 @@
     });
 
     $wire.on('showJobOrderDetailsPDF', () => {
+        $('#jobOrderDetails').modal('hide');
         $('#jobOrderDetailsPDF').modal('show');
     });
 
@@ -681,7 +698,7 @@
                             '-',
                             item.driver_in_charge
                         ])
-                    ), 3000);
+                    ), 1000);
             });
         }
     }).render(document.getElementById("table_incoming_requests"));
@@ -709,7 +726,7 @@
                                 '-',
                                 item.driver_in_charge
                             ])
-                        ), 3000);
+                        ), 1000);
                 });
             }
         }).forceRender();
@@ -853,7 +870,7 @@
                                 ]) : []; // Pass empty array when no data
 
                             resolve(dataToShow);
-                        }, 3000);
+                        }, 1000);
                     });
                 }
             });
@@ -932,7 +949,7 @@
                                 ]) : []; // Pass empty array when no data
 
                             resolve(dataToShow);
-                        }, 3000);
+                        }, 1000);
                     });
                 }
             }).render(container_table_job_orders);
@@ -1134,6 +1151,30 @@
 
     $wire.on('reset-date-and-time', () => {
         jo_date_and_time.clear();
+    });
+
+    /* -------------------------------------------------------------------------- */
+
+    VirtualSelect.init({
+        ele: '#signatories-select',
+        options: @json($signatories),
+        search: true,
+        maxWidth: '100%',
+        hasOptionDescription: true
+    });
+
+    let ref_signatories_id = document.querySelector('#signatories-select');
+    ref_signatories_id.addEventListener('change', () => {
+        let data = ref_signatories_id.value;
+        @this.set('ref_signatories_id', data);
+    });
+
+    $wire.on('set-signatories-select', (key) => {
+        document.querySelector('#signatories-select').setValue(key[0]);
+    });
+
+    $wire.on('reset-signatories-select', (key) => {
+        document.querySelector('#signatories-select').reset(key[0]);
     });
 </script>
 @endscript

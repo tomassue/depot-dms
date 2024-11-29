@@ -48,9 +48,9 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="#">
+                <a class="nav-link" href="{{ route('report') }}">
                     <i class='bx bxs-file bx-sm'></i>
-                    <span class="menu-title">WEW</span>
+                    <span class="menu-title">Report</span>
                 </a>
             </li>
 
