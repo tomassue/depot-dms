@@ -6,8 +6,10 @@ use App\Models\RefSignatoriesModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Signatories | DEPOT DMS')]
 class Signatories extends Component
 {
     use AuthorizesRequests;

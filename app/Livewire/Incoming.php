@@ -20,8 +20,10 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Incoming | DEPOT DMS')]
 class Incoming extends Component
 {
     use AuthorizesRequests;
@@ -659,7 +661,6 @@ class Incoming extends Component
                 ->event('printed job order')
                 ->log("Job Order #{$job_order->id} printed with Signatory (ID: {$this->ref_signatories_id})");
         } catch (\Throwable $th) {
-            dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }

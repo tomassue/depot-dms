@@ -6,8 +6,10 @@ use App\Models\RefTypeModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Type | DEPOT DMS')]
 class Type extends Component
 {
     use AuthorizesRequests;

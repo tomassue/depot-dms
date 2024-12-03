@@ -6,10 +6,12 @@ use App\Models\RefOfficesModel;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 
+#[Title('Roles | DEPOT DMS')]
 class Roles extends Component
 {
     public $editMode, $disableInput;

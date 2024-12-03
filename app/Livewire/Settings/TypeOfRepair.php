@@ -6,8 +6,10 @@ use App\Models\RefTypeOfRepairModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Type of Repair | DEPOT DMS')]
 class TypeOfRepair extends Component
 {
     use AuthorizesRequests;

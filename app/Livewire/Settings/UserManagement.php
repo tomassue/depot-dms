@@ -8,9 +8,11 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Spatie\Permission\Models\Role;
 
+#[Title('User Management | DEPOT DMS')]
 class UserManagement extends Component
 {
     use AuthorizesRequests;
@@ -153,6 +155,63 @@ class UserManagement extends Component
             $this->refreshTableUsers();
         } catch (\Exception $e) {
             DB::rollBack();
+            $this->dispatch('show-something-went-wrong-toast');
+        }
+    }
+
+    public function resetPassword($key)
+    {
+        $this->authorize('update', User::class); // UserPolicy. Proceed with updating a new user if authorized
+
+        try {
+            DB::transaction(function () use ($key) {
+                $query = User::findOrFail($key);
+                $query->password = Hash::make('password');
+                $query->save();
+            });
+
+            $this->clear();
+            $this->dispatch('show-success-reset-password-message-toast');
+            $this->refreshTableUsers();
+        } catch (\Throwable $th) {
+            $this->dispatch('show-something-went-wrong-toast');
+        }
+    }
+
+    public function activateUser($key)
+    {
+        $this->authorize('update', User::class); // UserPolicy. Proceed with updating a new user if authorized
+
+        try {
+            DB::transaction(function () use ($key) {
+                $query = User::findOrFail($key);
+                $query->is_active = 'yes';
+                $query->save();
+            });
+
+            $this->clear();
+            $this->dispatch('show-activated-message-toast');
+            $this->refreshTableUsers();
+        } catch (\Throwable $th) {
+            $this->dispatch('show-something-went-wrong-toast');
+        }
+    }
+
+    public function deactivateUser($key)
+    {
+        $this->authorize('update', User::class); // UserPolicy. Proceed with updating a new user if authorized
+
+        try {
+            DB::transaction(function () use ($key) {
+                $query = User::findOrFail($key);
+                $query->is_active = 'no';
+                $query->save();
+            });
+
+            $this->clear();
+            $this->dispatch('show-deactivated-message-toast');
+            $this->refreshTableUsers();
+        } catch (\Throwable $th) {
             $this->dispatch('show-something-went-wrong-toast');
         }
     }

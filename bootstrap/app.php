@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Middleware\CheckDefaultPassword;
+use App\Http\Middleware\IsActive;
 use Illuminate\Foundation\Application;
 use Illuminate\Foundation\Configuration\Exceptions;
 use Illuminate\Foundation\Configuration\Middleware;
@@ -14,7 +16,9 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => \Spatie\Permission\Middleware\RoleMiddleware::class,
             'permission' => \Spatie\Permission\Middleware\PermissionMiddleware::class,
-            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class
+            'role_or_permission' => \Spatie\Permission\Middleware\RoleOrPermissionMiddleware::class,
+            'check_default_password' => CheckDefaultPassword::class,
+            'is_active' => IsActive::class
         ]);
     })
     ->withExceptions(function (Exceptions $exceptions) {

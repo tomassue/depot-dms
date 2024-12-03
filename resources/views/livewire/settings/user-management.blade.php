@@ -1,4 +1,6 @@
 <div>
+    @include('livewire.template.loading-spinner')
+
     <div class="card">
         <div class="card-body">
             @can('can create user management')
@@ -122,16 +124,36 @@
                 hidden: true
             },
             "Name",
+            'Username',
             "Email",
             "Role",
+            {
+                name: "Status",
+                formatter: (cell, row) => {
+                    const status = row.cells[5].data === 'yes' ? 'Active' : 'Inactive';
+                    const statusClass = row.cells[5].data === 'yes' ? 'text-success' : 'text-danger';
+                    return gridjs.html(`
+                    <span class="${statusClass}">
+                        ${status}
+                    </span>
+                `);
+                }
+            },
             {
                 name: "Actions",
                 formatter: (cell, row) => {
                     // Directly access the ID from the first column (index 0)
                     const id = row.cells[0].data; // Since ID is in the first column
+                    const isInactive = row.cells[5].data;
+
                     return gridjs.html(`
                     @can('can update user management')
                     <button class="btn btn-success btn-sm btn-icon-text me-3" wire:click="readUser('${id}')"> Edit <i class="typcn typcn-edit btn-icon-append"></i></button>
+                    <button class="btn btn-warning btn-sm btn-icon-text me-3" wire:click="resetPassword('${id}')"> Reset <i class="bx bx-key btn-icon-append"></i></button>
+                    <button class="btn ${isInactive === 'no' ? 'btn-info' : 'btn-danger'} btn-sm btn-icon-text me-3" wire:click="${isInactive === 'no' ? `activateUser('${id}')` : `deactivateUser('${id}')`}">
+                        ${isInactive === 'no' ? 'Activate' : 'Deactivate'}
+                        <i class="bx bx-key btn-icon-append"></i>
+                    </button>
                     @endcan
                     `);
                 }
@@ -147,8 +169,10 @@
                         users.map(user => [
                             user.id,
                             user.name,
+                            user.username,
                             user.email,
-                            user.roles.map(role => role.name).join(', ') || 'No role assigned' // Retrieve roles here.
+                            user.roles.map(role => role.name).join(', ') || 'No role assigned', // Retrieve roles here.
+                            user.is_active
                         ])
                     ), 3000);
             });
@@ -162,7 +186,14 @@
                 return new Promise(resolve => { // This is for the loading state
                     setTimeout(() =>
                         resolve(
-                            data[0].map(user => [user.id, user.name, user.email])
+                            data[0].map(user => [
+                                user.id,
+                                user.name,
+                                user.username,
+                                user.email,
+                                user.roles.map(role => role.name).join(', ') || 'No role assigned', // Retrieve roles here.
+                                user.is_active
+                            ])
                         ), 3000);
                 });
             }

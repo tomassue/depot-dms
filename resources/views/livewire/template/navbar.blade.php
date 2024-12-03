@@ -33,9 +33,9 @@
                     <span class="nav-profile-name pointer" data-bs-toggle="dropdown">{{ Auth::user()->name }}</span>
 
                     <div class="dropdown-menu dropdown-menu-right navbar-dropdown" aria-labelledby="profileDropdown">
-                        <a class="dropdown-item">
+                        <a class="dropdown-item" href="{{ route('change-password') }}">
                             <i class="typcn typcn-cog-outline text-primary"></i>
-                            Settings
+                            Account Settings
                         </a>
 
                         <a class="dropdown-item" href="{{ route('logout') }}"

@@ -4,9 +4,11 @@ namespace App\Livewire\Settings;
 
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 use Spatie\Permission\Models\Permission;
 
+#[Title('Permissions | DEPOT DMS')]
 class Permissions extends Component
 {
     public $editMode, $disableInput;

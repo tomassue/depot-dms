@@ -8,6 +8,14 @@
     <!-- CSRF Token -->
     <meta name="csrf-token" content="{{ csrf_token() }}">
 
+    <meta name="description" content="The DEPOT Document Management System is developed to assist the City Equipment Depot Office in managing requests such as vehicle repair and aircon cleaning/repair. Additionally, this system helps the office to track outgoing documents.">
+    <meta name="keywords" content="DEPOT, Cagayan de Oro, RISE">
+    <meta name="author" content="City Management Information Systems and Database Management">
+    <META NAME="robots" CONTENT="noindex,nofollow">
+
+    <link rel="icon" href="{{ asset('assets/images/cdo-seal.png') }}" type="image/x-icon">
+    <link rel="apple-touch-icon" href="{{ asset('assets/images/cdo-seal.png') }}">
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
 
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -26,7 +34,7 @@
             background: #eee;
         }
     </style>
-    <title>Document</title>
+    <title>DEPOT DMS</title>
 </head>
 
 <body>
@@ -45,6 +53,11 @@
                     </div>
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
+                        @if (session('error'))
+                        <div class="alert alert-danger">
+                            {{ session('error') }}
+                        </div>
+                        @endif
                         <div class="mb-3">
                             <label for="inputUsername" class="form-label">Username</label>
                             <input id="username" type="text" class="form-control @error('username') is-invalid @enderror" name="username" value="{{ old('username') }}" required autocomplete="username" autofocus>

@@ -1,4 +1,6 @@
 <div>
+    @include('livewire.template.loading-spinner')
+
     <div class="card">
         <div class="card-body">
             @can('create models')

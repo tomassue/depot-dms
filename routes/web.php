@@ -1,5 +1,6 @@
 <?php
 
+use App\Livewire\AccountSettings\ChangePassword;
 use App\Livewire\Dashboard;
 use App\Livewire\Incoming;
 use App\Livewire\Report;
@@ -29,8 +30,7 @@ Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-// Apply the 'auth' middleware to ensure only authenticated users can access these routes
-Route::group(['middleware' => 'auth'], function () {
+Route::middleware(['auth', 'check_default_password', 'is_active'])->group(function () {
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/incoming', Incoming::class)->name('incoming');
     Route::get('/report', Report::class)->name('report');
@@ -51,3 +51,15 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/settings/roles', Roles::class)->name('roles');
     Route::get('/settings/permissions', Permissions::class)->name('permissions');
 });
+
+/* ---------------------------- Account Settings ---------------------------- */
+Route::middleware(['auth', 'is_active'])->group(function () {
+    Route::get('account-settings/change-password', ChangePassword::class)->name('change-password');
+});
+
+// Livewire::setScriptRoute(function ($handle) {
+//     return Route::get('/cdo-dts/livewire/livewire.js', $handle);
+// });
+// Livewire::setUpdateRoute(function ($handle) {
+//     return Route::post('/cdo-dts/livewire/update', $handle);
+// });

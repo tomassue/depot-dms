@@ -6,8 +6,10 @@ use App\Models\RefMechanicsModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Mechanics | DEPOT DMS')]
 class Mechanics extends Component
 {
     use AuthorizesRequests;

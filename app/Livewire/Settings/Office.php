@@ -6,8 +6,10 @@ use App\Models\RefOfficesModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Office | DEPOT DMS')]
 class Office extends Component
 {
     use AuthorizesRequests;

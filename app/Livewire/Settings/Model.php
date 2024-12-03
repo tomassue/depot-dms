@@ -7,8 +7,10 @@ use App\Models\RefTypeModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Model | DEPOT DMS')]
 class Model extends Component
 {
     use AuthorizesRequests;

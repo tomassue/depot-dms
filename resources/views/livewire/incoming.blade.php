@@ -1,4 +1,6 @@
 <div>
+    @include('livewire.template.loading-spinner')
+
     <div style="display: {{ $page == 1 ? '' : 'none' }}">
         <div class="card mb-2">
             <div class="card-body">
@@ -442,10 +444,10 @@
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="clear2"></button>
                 </div>
                 <div class="modal-body">
-                    <p class="card-description">
+                    <!-- <p class="card-description">
                         Equipment Details
                     </p>
-                    <hr>
+                    <hr> -->
                     <div class="form-group row">
                         <div class="col-md-6">
                             <label for="inputType">Type</label>
@@ -581,7 +583,6 @@
             </div>
         </div>
     </div>
-
 </div>
 
 @script

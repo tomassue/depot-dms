@@ -7,8 +7,10 @@ use App\Models\RefSubCategoryModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Sub-category | DEPOT DMS')]
 class SubCategory extends Component
 {
     use AuthorizesRequests;

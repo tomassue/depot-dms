@@ -6,8 +6,10 @@ use App\Models\RefLocationModel;
 use DB;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Location | DEPOT DMS')]
 class Location extends Component
 {
     use AuthorizesRequests;

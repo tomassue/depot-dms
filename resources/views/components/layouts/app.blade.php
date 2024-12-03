@@ -6,6 +6,12 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
 
+    <meta name="description" content="The DEPOT Document Management System is developed to assist the City Equipment Depot Office in managing requests such as vehicle repair and aircon cleaning/repair. Additionally, this system helps the office to track outgoing documents.">
+    <meta name="keywords" content="DEPOT, Cagayan de Oro, RISE">
+    <meta name="author" content="City Management Information Systems and Database Management">
+
+    <META NAME="robots" CONTENT="noindex,nofollow">
+
     <title>{{ $title ?? 'Page Title' }}</title>
 
     <!-- jquery -->
@@ -20,7 +26,9 @@
     <!-- inject:css -->
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}" />
     <!-- endinject -->
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
+
+    <link rel="shortcut icon" href="{{ asset('assets/images/cdo-seal.png') }}" />
+    <link rel="apple-touch-icon" href="{{ asset('assets/images/cdo-seal.png') }}">
 
     <!-- Google Font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -174,8 +182,11 @@
         <livewire:template.navbar />
 
         <div class="container-fluid page-body-wrapper">
+
+            @if (!Hash::check('password', Auth::user()->password))
             <!-- SIDEBAR -->
             <livewire:template.sidebar />
+            @endif
 
             <!-- partial -->
             <div class="main-panel">
@@ -321,6 +332,42 @@
                     icon: "error",
                     title: "Oops...",
                     text: "There's already a request made for this venue during the specified time."
+                });
+            });
+
+            Livewire.on('show-success-update-password-message-toast', (event) => {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: "Password updated successfully."
+                });
+            });
+
+            Livewire.on('show-success-reset-password-message-toast', (event) => {
+                const Toast = Swal.mixin({
+                    toast: true,
+                    position: "top-end",
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: (toast) => {
+                        toast.onmouseenter = Swal.stopTimer;
+                        toast.onmouseleave = Swal.resumeTimer;
+                    }
+                });
+                Toast.fire({
+                    icon: "success",
+                    title: "Password reset to default."
                 });
             });
 

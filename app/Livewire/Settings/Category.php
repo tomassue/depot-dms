@@ -6,8 +6,10 @@ use App\Models\RefCategoryModel;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Category | DEPOT DMS')]
 class Category extends Component
 {
     use AuthorizesRequests;
