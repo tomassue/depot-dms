@@ -6,7 +6,7 @@
                 <a class="nav-link" href="{{ route('dashboard') }}">
                     <i class='bx bxs-dashboard bx-sm'></i>
                     <span class="menu-title">Dashboard</span>
-                    <div class="badge badge-danger">new</div>
+                    <!-- <div class="badge badge-danger">new</div> -->
                 </a>
             </li>
             <!-- <li class="nav-item">
@@ -40,12 +40,12 @@
             </li>
             @endcan
 
-            <li class="nav-item">
+            <!-- <li class="nav-item">
                 <a class="nav-link" href="#">
                     <i class='bx bx-up-arrow-alt bx-sm'></i>
                     <span class="menu-title">Outgoing</span>
                 </a>
-            </li>
+            </li> -->
 
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('report') }}">

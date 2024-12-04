@@ -17,17 +17,21 @@ class TblJobOrderModel extends Model
     protected $fillable = [
         'job_order_no',
         'reference_no',
+        'date_and_time_in',
         'ref_category_id',
         'ref_sub_category_id',
         'ref_location_id',
+        'driver_in_charge',
+        'contact_number',
         'ref_status_id',
         'ref_type_of_repair_id',
         'ref_mechanics',
         'issue_or_concern',
-        'date_and_time',
+        'date_and_time_out',
         'total_repair_time',
         'claimed_by',
-        'remarks'
+        'remarks',
+        'ref_signatories_id'
     ];
 
     /* -------------------------------------------------------------------------- */

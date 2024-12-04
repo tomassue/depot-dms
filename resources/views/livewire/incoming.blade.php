@@ -37,25 +37,13 @@
                                     <label for="inputReferenceNo">Reference No.</label>
                                     <input type="text" class="form-control disabled_input" id="inputReferenceNo" wire:model="reference_no">
                                 </div>
-
-                                <div class="form-group">
-                                    <label for="inputOffice">Office</label>
-                                    <div id="office-select" wire:ignore></div>
-                                    @error('ref_office_id')
-                                    <div class="custom-invalid-feedback">
-                                        {{ $message }}
-                                    </div>
-                                    @enderror
-                                </div>
                             </div>
 
                             <div class="col-md-6">
                                 <div class="form-group">
-                                    <label for="inputDateAndTime">Date & Time</label>
-                                    <div wire:ignore>
-                                        <input class="form-control date_and_time">
-                                    </div>
-                                    @error('date_and_time')
+                                    <label for="inputOffice">Office</label>
+                                    <div id="office-select" wire:ignore></div>
+                                    @error('ref_office_id')
                                     <div class="custom-invalid-feedback">
                                         {{ $message }}
                                     </div>
@@ -107,30 +95,8 @@
                                     </div>
                                     <div class="col-md-6">
                                         <label for="inputMileage">Mileage / Odometer Reading</label>
-                                        <input type="text" class="form-control @error('mileage') is-invalid @enderror" id="inputMileage" wire:model="mileage">
+                                        <input type="text" class="form-control @error('mileage') is-invalid @enderror" id="inputMileage" oninput="this.value = this.value.replace(/[^0-9]/g, '')" wire:model="mileage">
                                         @error('mileage')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                </div>
-
-                                <!-- Row for Driver and Contact -->
-                                <div class="form-group row">
-                                    <div class="col-md-6">
-                                        <label for="inputDriverInCharge">Driver in charge</label>
-                                        <input type="text" class="form-control @error('driver_in_charge') is-invalid @enderror" id="inputDriverInCharge" wire:model="driver_in_charge">
-                                        @error('driver_in_charge')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="inputContactNumber">Contact Number</label>
-                                        <input type="text" class="form-control @error('contact_number') is-invalid @enderror" data-ddg-inputtype="identities.contactNumber" id="inputContactNumber" maxlength="11" oninput="this.value = '09' + this.value.slice(2).replace(/\D/g, '');" placeholder="09XXXXXXXXX" wire:model="contact_number">
-                                        @error('contact_number')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -162,15 +128,13 @@
                     <form class="form-sample">
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group row">
+                                <div class="form-group row" style="margin-bottom: unset;">
                                     <label class="col-sm-3 col-form-label">Reference No.</label>
                                     <div class="col-sm-9">
                                         <input type="text" class="form-control" wire:model="reference_no" disabled>
                                     </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group row">
                                     <label class="col-sm-3 col-form-label">Office</label>
@@ -186,7 +150,7 @@
                         <hr>
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group row">
+                                <div class="form-group row" style="margin-bottom: unset;">
                                     <label class="col-sm-3 col-form-label">Type</label>
                                     <div class="col-sm-9">
                                         <input type="text" class="form-control" wire:model="ref_types_id" disabled>
@@ -194,7 +158,7 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
-                                <div class="form-group row">
+                                <div class="form-group row" style="margin-bottom: unset;">
                                     <label class="col-sm-3 col-form-label">Number</label>
                                     <div class="col-sm-9">
                                         <input type="text" class="form-control" wire:model="number" disabled>
@@ -204,7 +168,7 @@
                         </div>
                         <div class="row">
                             <div class="col-md-6">
-                                <div class="form-group row">
+                                <div class="form-group row" style="margin-bottom: unset;">
                                     <label class="col-sm-3 col-form-label">Model</label>
                                     <div class="col-sm-9">
                                         <input type="text" class="form-control" wire:model="ref_models_id_2" disabled>
@@ -266,16 +230,6 @@
                                 <input type="text" class="form-control disabled_input" id="inputMileage" wire:model="mileage">
                             </div>
                         </div>
-                        <div class="form-group row">
-                            <div class="col-md-6">
-                                <label for="inputDriverInCharge">Driver in charge</label>
-                                <input type="text" class="form-control disabled_input" id="inputDriverInCharge" wire:model="driver_in_charge">
-                            </div>
-                            <div class="col-md-6">
-                                <label for="inputContactNumber">Contact Number</label>
-                                <input type="text" class="form-control disabled_input" id="inputContactNumber" wire:model="contact_number">
-                            </div>
-                        </div>
                         <p class="card-description">
                             Equipment Details
                         </p>
@@ -290,6 +244,26 @@
                                 <div id="status-select" wire:ignore></div>
                                 @error('ref_status_id')
                                 <div class="custom-invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label for="inputDriverInCharge">Driver in charge</label>
+                                <input type="text" class="form-control @error('driver_in_charge') is-invalid @enderror" id="inputDriverInCharge" wire:model="driver_in_charge">
+                                @error('driver_in_charge')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
+                                <label for="inputContactNumber">Contact Number</label>
+                                <input type="text" class="form-control @error('contact_number') is-invalid @enderror" data-ddg-inputtype="identities.contactNumber" id="inputContactNumber" maxlength="11" oninput="this.value = '09' + this.value.slice(2).replace(/\D/g, '');" placeholder="09XXXXXXXXX" wire:model="contact_number">
+                                @error('contact_number')
+                                <div class="invalid-feedback">
                                     {{ $message }}
                                 </div>
                                 @enderror
@@ -345,6 +319,17 @@
                                 </div>
                                 @enderror
                             </div>
+                            <div class="col-md-6">
+                                <label for="inputDateAndTimeIn">Date & Time (In)</label>
+                                <div wire:ignore>
+                                    <input class="form-control date_and_time_in">
+                                </div>
+                                @error('date_and_time_in')
+                                <div class="custom-invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                                @enderror
+                            </div>
                         </div>
                         <div class="form-group row">
                             <div class="col-md-12">
@@ -381,11 +366,11 @@
                     <form class="forms-sample" wire:submit="updateJobOrder" novalidate>
                         <div class="form-group">
                             <div class="col-md-12">
-                                <label for="inputDateTime">Date & Time</label>
+                                <label for="inputDateTime">Date & Time (Out)</label>
                                 <div wire:ignore>
-                                    <input class="form-control jo_date_and_time">
+                                    <input class="form-control date_and_time_out">
                                 </div>
-                                @error('jo_date_and_time')
+                                @error('date_and_time_out')
                                 <div class="custom-invalid-feedback">
                                     {{ $message }}
                                 </div>
@@ -468,16 +453,6 @@
                             <input type="text" class="form-control disabled_input" id="inputMileage" wire:model="mileage">
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <div class="col-md-6">
-                            <label for="inputDriverInCharge">Driver in charge</label>
-                            <input type="text" class="form-control disabled_input" id="inputDriverInCharge" wire:model="driver_in_charge">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="inputContactNumber">Contact Number</label>
-                            <input type="text" class="form-control disabled_input" id="inputContactNumber" wire:model="contact_number">
-                        </div>
-                    </div>
                     <p class="card-description">
                         Equipment Details
                     </p>
@@ -490,6 +465,16 @@
                         <div class="col-md-6">
                             <label for="selectModel">Status</label>
                             <input type="text" class="form-control disabled_input" id="selectModel" wire:model="ref_status_id">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="inputDriverInCharge">Driver in charge</label>
+                            <input type="text" class="form-control disabled_input" id="inputDriverInCharge" wire:model="driver_in_charge">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputContactNumber">Contact Number</label>
+                            <input type="text" class="form-control disabled_input" id="inputContactNumber" wire:model="contact_number">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -526,8 +511,8 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label for="inputDateTime">Date & Time</label>
-                            <input type="text" class="form-control disabled_input" id="inputDateTime" wire:model="jo_date_and_time">
+                            <label for="inputDateTime">Date & Time (Out)</label>
+                            <input type="text" class="form-control disabled_input" id="inputDateTime" wire:model="date_and_time_out">
                         </div>
                         <div class="col-md-6">
                             <label for="inputTotalRepairTime">Total repair time</label>
@@ -546,6 +531,23 @@
                             <textarea class="form-control disabled_input" id="exampleTextarea1" rows="4" spellcheck="false" wire:model="remarks"></textarea>
                         </div>
                     </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear2">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- assignSignatory -->
+    <div class="modal fade" id="assignSignatory" tabindex="-1" aria-labelledby="assignSignatoryModalLabel" aria-hidden="true" data-bs-backdrop="static" wire:ignore.self>
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h1 class="modal-title fs-5" id="assignSignatoryModalLabel">Assign Signatory</h1>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="clear2"></button>
+                </div>
+                <div class="modal-body">
                     <div class="form-group">
                         <div class="col-md-12">
                             <label for="selectSignatory">Signatory <small class="text-info fst-italic">(Please select a signatory first before clicking "print".)</small></label>
@@ -559,7 +561,6 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear2">Close</button>
                     <button type="button" class="btn btn-info" wire:click="printJobOrder('{{$job_order_no}}')">Print</button>
                 </div>
             </div>
@@ -571,14 +572,14 @@
         <div class="modal-dialog modal-xl">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="jobOrderDetailsPDFModalLabel">Details</h1>
+                    <h1 class="modal-title fs-5" id="jobOrderDetailsPDFModalLabel">PDF</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="clear2"></button>
                 </div>
                 <div class="modal-body">
                     <embed src="{{ $job_order_details_pdf }}" type="application/pdf" width="100%" height="700px">
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear2">Close</button>
                 </div>
             </div>
         </div>
@@ -638,8 +639,12 @@
         $('#jobOrderDetails').modal('show');
     });
 
+    $wire.on('showAssignSignatoryModal', () => {
+        $('#assignSignatory').modal('show');
+    });
+
     $wire.on('showJobOrderDetailsPDF', () => {
-        $('#jobOrderDetails').modal('hide');
+        $('#assignSignatory').modal('hide');
         $('#jobOrderDetailsPDF').modal('show');
     });
 
@@ -654,12 +659,9 @@
                 hidden: true
             },
             "Reference No.",
-            "Date",
             "Office/Department",
             "Type",
             "Model",
-            "Status",
-            "Assigned to",
             {
                 name: "Actions",
                 formatter: (cell, row) => {
@@ -685,19 +687,9 @@
                         data.map(item => [
                             item.id,
                             item.reference_no,
-                            new Date(item.date_and_time).toLocaleString('en-US', { // Format date
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: true
-                            }),
                             item.office.name,
                             item.type.name,
-                            item.model.name,
-                            '-',
-                            item.driver_in_charge
+                            item.model.name
                         ])
                     ), 1000);
             });
@@ -713,19 +705,9 @@
                             data[0].map(item => [
                                 item.id,
                                 item.reference_no,
-                                new Date(item.date_and_time).toLocaleString('en-US', { // Format date
-                                    year: 'numeric',
-                                    month: 'short',
-                                    day: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                    hour12: true
-                                }),
                                 item.office.name,
                                 item.type.name,
-                                item.model.name,
-                                '-',
-                                item.driver_in_charge
+                                item.model.name
                             ])
                         ), 1000);
                 });
@@ -758,23 +740,23 @@
 
     /* -------------------------------------------------------------------------- */
 
-    var date_and_time = $(".date_and_time").flatpickr({
+    var date_and_time_in = $(".date_and_time_in").flatpickr({
         enableTime: true,
         altInput: true, // altInput hides your original input and creates a new one. Upon date selection, the original input will contain a Y-m-d... string, while the altInput will display the date in a more legible, customizable format.
         altFormat: 'F j, Y h:i K',
         dateFormat: "Y-m-d H:i", // display in 12-hour format
         onChange: function(selectedDates, dateStr) {
-            @this.set('date_and_time', dateStr);
+            @this.set('date_and_time_in', dateStr);
         }
     });
 
-    $wire.on('set-date-and-time', (key) => {
-        date_and_time.setDate(key[0]);
-        @this.set('date_and_time', key[0]);
+    $wire.on('set-date-and-time-in', (key) => {
+        date_and_time_in.setDate(key[0]);
+        @this.set('date_and_time_in', key[0]);
     });
 
-    $wire.on('reset-date-and-time', () => {
-        date_and_time.clear();
+    $wire.on('reset-date-and-time-in', () => {
+        date_and_time_in.clear();
     });
 
     /* -------------------------------------------------------------------------- */
@@ -857,8 +839,8 @@
                                     item.category.name,
                                     item.sub_category.name,
                                     item.status.name,
-                                    item.date_and_time ?
-                                    new Date(item.date_and_time).toLocaleString('en-US', {
+                                    item.date_and_time_out ?
+                                    new Date(item.date_and_time_out).toLocaleString('en-US', {
                                         year: 'numeric',
                                         month: 'short',
                                         day: 'numeric',
@@ -901,7 +883,7 @@
                             `);
                         }
                     },
-                    "Date & Time",
+                    "Date & Time (Out)",
                     "Total Repair Time",
                     {
                         name: "Actions",
@@ -916,6 +898,9 @@
                                 <i class="bx bx-detail bx-sm"></i>
                             </button>
                             @endcan
+                            <button class="btn btn-white btn-sm btn-icon-text me-3" title="Print" wire:click="assignSignatory('${id}')">
+                                <i class="bx bx-printer bx-sm"></i>
+                            </button>
                         `);
                         }
                     }
@@ -936,8 +921,8 @@
                                     item.category.name,
                                     item.sub_category.name,
                                     item.status.name,
-                                    item.date_and_time ?
-                                    new Date(item.date_and_time).toLocaleString('en-US', {
+                                    item.date_and_time_out ?
+                                    new Date(item.date_and_time_out).toLocaleString('en-US', {
                                         year: 'numeric',
                                         month: 'short',
                                         day: 'numeric',
@@ -1135,23 +1120,23 @@
 
     /* -------------------------------------------------------------------------- */
 
-    var jo_date_and_time = $(".jo_date_and_time").flatpickr({
+    var date_and_time_out = $(".date_and_time_out").flatpickr({
         enableTime: true,
         altInput: true, // altInput hides your original input and creates a new one. Upon date selection, the original input will contain a Y-m-d... string, while the altInput will display the date in a more legible, customizable format.
         altFormat: 'F j, Y h:i K',
         dateFormat: "Y-m-d H:i", // display in 12-hour format
         onChange: function(selectedDates, dateStr) {
-            @this.set('jo_date_and_time', dateStr);
+            @this.set('date_and_time_out', dateStr);
         }
     });
 
-    $wire.on('set-date-and-time', (key) => {
-        jo_date_and_time.setDate(key[0]);
-        @this.set('jo_date_and_time', key[0]);
+    $wire.on('set-date-and-time-out', (key) => {
+        date_and_time_out.setDate(key[0]);
+        @this.set('date_and_time_out', key[0]);
     });
 
-    $wire.on('reset-date-and-time', () => {
-        jo_date_and_time.clear();
+    $wire.on('reset-date-and-time-out', () => {
+        date_and_time_out.clear();
     });
 
     /* -------------------------------------------------------------------------- */

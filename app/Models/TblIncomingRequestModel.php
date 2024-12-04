@@ -16,13 +16,10 @@ class TblIncomingRequestModel extends Model
     protected $fillable = [
         'reference_no',
         'ref_office_id',
-        'date_and_time',
         'ref_types_id',
         'ref_models_id',
         'number',
         'mileage',
-        'driver_in_charge',
-        'contact_number'
     ];
 
     protected static function boot()

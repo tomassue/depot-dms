@@ -121,27 +121,15 @@
             background: #66ABAC;
         }
 
-        /* End Navbar */
-
-        /* Buttons */
-        .btn-primary {
-            --bs-btn-color: #fff;
-            --bs-btn-bg: #66ABAC;
-            --bs-btn-border-color: #66ABAC;
-            --bs-btn-hover-color: #fff;
-            --bs-btn-hover-bg: #7043a4;
-            --bs-btn-hover-border-color: #6a3f9a;
-            --bs-btn-focus-shadow-rgb: 150, 105, 202;
-            --bs-btn-active-color: #fff;
-            --bs-btn-active-bg: #6a3f9a;
-            --bs-btn-active-border-color: #633b91;
-            --bs-btn-active-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
-            --bs-btn-disabled-color: #fff;
-            --bs-btn-disabled-bg: #66ABAC;
-            --bs-btn-disabled-border-color: #66ABAC;
+        .navbar .navbar-brand-wrapper {
+            background: #314e4f;
         }
 
-        /* End Buttons */
+        .navbar {
+            border-bottom: 4px solid #314e4f;
+        }
+
+        /* End Navbar */
 
         .custom-invalid-feedback {
             color: #dc3545;

@@ -40,7 +40,7 @@
                     </div>
                 </div>
                 <button type="submit" class="btn btn-primary mr-2">Submit</button>
-                <button class="btn btn-light" wire:click="clear">Clear</button>
+                <button type="button" class="btn btn-light" wire:click="clear">Clear</button>
             </form>
         </div>
     </div>

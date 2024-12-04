@@ -50,12 +50,13 @@
                         </form>
                     </div>
                 </li>
-                <li class="nav-item nav-user-status dropdown">
+                <!-- <li class="nav-item nav-user-status dropdown">
                     <p class="mb-0">Last login was 23 hours ago.</p>
-                </li>
+                </li> -->
             </ul>
+
             <ul class="navbar-nav navbar-nav-right">
-                <li class="nav-item nav-date dropdown">
+                <!-- <li class="nav-item nav-date dropdown">
                     <a
                         class="nav-link d-flex justify-content-center align-items-center"
                         href="javascript:;">
@@ -203,8 +204,9 @@
                             </div>
                         </a>
                     </div>
-                </li>
+                </li> -->
             </ul>
+
             <button
                 class="navbar-toggler navbar-toggler-right d-lg-none align-self-center"
                 type="button"

@@ -30,7 +30,7 @@
         }
 
         .job-order-title {
-            font-size: 40px;
+            font-size: 30px;
             font-weight: bolder;
             margin-left: -90px;
         }
@@ -45,6 +45,7 @@
 
         table.content-table td {
             padding: 5px;
+
             /* border: 1px solid #ccc; */
             font-weight: bold;
             /* Optional for better visibility */
@@ -103,8 +104,9 @@
                 Set a position in the page for your image
                 This should center it vertically
             **/
-            bottom: 12cm;
-            left: 3.7cm;
+            /* bottom: 12cm; */
+            bottom: 17cm;
+            left: 5.6cm;
 
             /** Change image dimensions**/
             width: 8cm;
@@ -112,54 +114,50 @@
 
             /** Your watermark should be behind every content**/
             z-index: -1000;
-            opacity: 0.1;
+            opacity: 0.2;
         }
     </style>
 </head>
 
 <body>
     <div id="watermark">
-        <img src="data:image/png;base64,{{ $watermark }}" alt="depot-logo" width="450" />
+        <img src="data:image/png;base64,{{ $watermark }}" alt="depot-logo" width="290" />
     </div>
 
     <!-- Header table with logo and title -->
     <table id="header">
         <tr>
             <td style="text-align: left;">
-                <img src="data:image/png;base64,{{ $cdo_full }}" alt="CDO Seal" width="200" />
+                <img src="data:image/png;base64,{{ $cdo_full }}" alt="CDO Seal" width="140" />
             </td>
             <td class="job-order-cell">
                 <span class="job-order-title">JOB ORDER</span>
             </td>
             <td style="text-align: right;">
-                <img src="data:image/png;base64,{{ $rise_logo }}" alt="Rise Logo" width="120" />
+                <img src="data:image/png;base64,{{ $rise_logo }}" alt="Rise Logo" width="84" />
             </td>
         </tr>
     </table>
 
-    <br>
-
     <!-- Content table with details -->
     <table class="content-table">
         <tr>
-            <td width="300px">JOB ORDER NO.: <span style="font-weight: normal;">{{ $job_order_no }}</span></td>
+            <td width="390px">JOB ORDER NO.: <span style="font-weight: normal;">{{ $job_order_no }}</span></td>
             <td>EQPT/VEHICLE TYPE: <span style="font-weight: normal">{{ $equipment_type }}</span></td>
         </tr>
         <tr>
-            <td width="300px">DEPARTMENT: <span style="font-weight: normal">{{ $department }}</span></td>
+            <td width="390px">DEPARTMENT: <span style="font-weight: normal">{{ $department }}</span></td>
             <td>MODEL: <span style="font-weight: normal">{{ $model }}</span></td>
         </tr>
         <tr>
-            <td width="300px">DATE/TIME IN : <span style="font-weight: normal">{{ $date_and_time_in }}</span></td>
+            <td width="390px">DATE/TIME IN : <span style="font-weight: normal">{{ $date_and_time_in }}</span></td>
             <td>PLATE NO. : <span style="font-weight: normal">{{ $plate_no }}</span></td>
         </tr>
         <tr>
-            <td width="300px">DATE/TIME OUT : <span style="font-weight: normal">{{ $date_and_time_out }}</span></td>
+            <td width="390px">DATE/TIME OUT : <span style="font-weight: normal">{{ $date_and_time_out }}</span></td>
             <td></td>
         </tr>
     </table>
-
-    <br>
 
     <!-- Content table with details 2 -->
     <table class="content-table-2">
@@ -172,10 +170,6 @@
             <td class="no-left-border"><span style="font-weight: normal">{{ $mechanic }}</span></td>
         </tr>
     </table>
-
-    <br>
-    <br>
-    <br>
 
     <!-- Content table with details 3 -->
     <table class="content-table-3">
