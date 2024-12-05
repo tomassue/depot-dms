@@ -236,7 +236,7 @@
             class="navbar-menu-wrapper d-flex align-items-center justify-content-end">
             <ul class="navbar-nav me-lg-2">
                 <li class="nav-item ms-0">
-                    <h4 class="mb-0">DOCUMENT MANAGEMENT SYSTEM</h4>
+                    <h4 class="mb-0">DEPOT MANAGEMENT SYSTEM</h4>
                 </li>
             </ul>
             <ul class="navbar-nav navbar-nav-right">
