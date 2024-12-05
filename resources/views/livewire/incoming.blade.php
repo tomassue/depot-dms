@@ -380,7 +380,7 @@
                         <div class="form-group">
                             <div class="col-md-12">
                                 <label for="inputTotalRepairTime">Total repair time</label>
-                                <input type="text" class="form-control @error('total_repair_time') is-invalid @enderror" id="inputTotalRepairTime" wire:model="total_repair_time">
+                                <input type="text" class="form-control @error('total_repair_time') is-invalid @enderror disabled_input" id="inputTotalRepairTime" wire:model="total_repair_time">
                                 @error('total_repair_time')
                                 <div class="custom-invalid-feedback">
                                     {{ $message }}

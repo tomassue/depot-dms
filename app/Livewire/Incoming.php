@@ -165,6 +165,13 @@ class Incoming extends Component
                 $this->dispatch('showStatusUpdateModal');
             }
         }
+
+        if ($property === 'date_and_time_out') {
+            $dateTimeIn  = Carbon::parse($this->date_and_time_in);
+            $dateTimeOut = Carbon::parse($this->date_and_time_out);
+
+            $this->total_repair_time = $dateTimeIn->diffInHours($dateTimeOut);
+        }
     }
 
     public function clear()

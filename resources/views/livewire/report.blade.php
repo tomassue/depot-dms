@@ -66,16 +66,6 @@
                             <input type="text" class="form-control disabled_input" id="inputMileage" wire:model="mileage">
                         </div>
                     </div>
-                    <div class="form-group row">
-                        <div class="col-md-6">
-                            <label for="inputDriverInCharge">Driver in charge</label>
-                            <input type="text" class="form-control disabled_input" id="inputDriverInCharge" wire:model="driver_in_charge">
-                        </div>
-                        <div class="col-md-6">
-                            <label for="inputContactNumber">Contact Number</label>
-                            <input type="text" class="form-control disabled_input" id="inputContactNumber" wire:model="contact_number">
-                        </div>
-                    </div>
                     <p class="card-description">
                         Equipment Details
                     </p>
@@ -88,6 +78,16 @@
                         <div class="col-md-6">
                             <label for="selectModel">Status</label>
                             <input type="text" class="form-control disabled_input" id="selectModel" wire:model="ref_status_id">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="inputDriverInCharge">Driver in charge</label>
+                            <input type="text" class="form-control disabled_input" id="inputDriverInCharge" wire:model="driver_in_charge">
+                        </div>
+                        <div class="col-md-6">
+                            <label for="inputContactNumber">Contact Number</label>
+                            <input type="text" class="form-control disabled_input" id="inputContactNumber" wire:model="contact_number">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -125,7 +125,7 @@
                     <div class="form-group row">
                         <div class="col-md-6">
                             <label for="inputDateTime">Date & Time</label>
-                            <input type="text" class="form-control disabled_input" id="inputDateTime" wire:model="jo_date_and_time">
+                            <input type="text" class="form-control disabled_input" id="inputDateTime" wire:model="date_and_time_out">
                         </div>
                         <div class="col-md-6">
                             <label for="inputTotalRepairTime">Total repair time</label>

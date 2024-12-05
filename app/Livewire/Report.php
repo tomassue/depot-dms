@@ -39,7 +39,7 @@ class Report extends Component
     public $ref_mechanics;
     public $ref_location_id;
     public $issue_or_concern;
-    public $jo_date_and_time;
+    public $date_and_time_out;
     public $total_repair_time;
     public $claimed_by;
     public $remarks;
@@ -133,8 +133,8 @@ class Report extends Component
             $this->ref_models_id            = $job_order->incoming_request->model->name;
             $this->number                   = $job_order->incoming_request->number;
             $this->mileage                  = $job_order->incoming_request->mileage;
-            $this->driver_in_charge         = $job_order->incoming_request->driver_in_charge;
-            $this->contact_number           = $job_order->incoming_request->contact_number;
+            $this->driver_in_charge         = $job_order->driver_in_charge;
+            $this->contact_number           = $job_order->contact_number;
             $this->job_order_no             = $job_order->id;
             $this->ref_status_id            = $job_order->status->name;
             $this->ref_category_id          = $job_order->category->name;
@@ -143,7 +143,7 @@ class Report extends Component
             $this->ref_mechanics            = $job_order->mechanic->name;
             $this->ref_location_id          = $job_order->location->name;
             $this->issue_or_concern         = $job_order->issue_or_concern;
-            $this->jo_date_and_time         = Carbon::parse($job_order->date_and_time)->format('M. d, Y g:i A');
+            $this->date_and_time_out        = Carbon::parse($job_order->date_and_time_out)->format('M. d, Y g:i A');
             $this->total_repair_time        = $job_order->total_repair_time;
             $this->claimed_by               = $job_order->claimed_by;
             $this->remarks                  = $job_order->remarks;
