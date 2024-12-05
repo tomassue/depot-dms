@@ -662,6 +662,7 @@
             "Office/Department",
             "Type",
             "Model",
+            "Plate No.",
             {
                 name: "Actions",
                 formatter: (cell, row) => {
@@ -689,7 +690,8 @@
                             item.reference_no,
                             item.office.name,
                             item.type.name,
-                            item.model.name
+                            item.model.name,
+                            item.number
                         ])
                     ), 1000);
             });
@@ -707,7 +709,8 @@
                                 item.reference_no,
                                 item.office.name,
                                 item.type.name,
-                                item.model.name
+                                item.model.name,
+                                item.number
                             ])
                         ), 1000);
                 });
