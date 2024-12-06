@@ -51,6 +51,19 @@
                                 </div>
                             </div>
                         </div>
+                        <div>
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="inputIncomingRequestType">Equipment Type</label>
+                                    <div id="incoming-request-types-select" wire:ignore></div>
+                                    @error('ref_incoming_request_types_id')
+                                    <div class="custom-invalid-feedback">
+                                        {{ $message }}
+                                    </div>
+                                    @enderror
+                                </div>
+                            </div>
+                        </div>
 
                         <p class="text-muted">
                             Other Details
@@ -88,15 +101,6 @@
                                         <label for="inputNumber">Number (Equipment / Vehicle)</label>
                                         <input type="text" class="form-control @error('number') is-invalid @enderror" id="inputNumber" oninput="this.value = this.value.replace(/[^a-zA-Z0-9\-]/g, '')" wire:model="number">
                                         @error('number')
-                                        <div class="invalid-feedback">
-                                            {{ $message }}
-                                        </div>
-                                        @enderror
-                                    </div>
-                                    <div class="col-md-6">
-                                        <label for="inputMileage">Mileage / Odometer Reading</label>
-                                        <input type="text" class="form-control @error('mileage') is-invalid @enderror" id="inputMileage" oninput="this.value = this.value.replace(/[^0-9]/g, '')" wire:model="mileage">
-                                        @error('mileage')
                                         <div class="invalid-feedback">
                                             {{ $message }}
                                         </div>
@@ -185,7 +189,7 @@
             <div class="card-body">
                 @can('create incoming')
                 <div class="col-md-12 my-2 d-inline-flex align-content-center justify-content-end">
-                    <button class="btn btn-primary btn-md btn-icon-text" wire:click="$dispatch('showJobOrderModal')"> Add <i class="typcn typcn-plus-outline btn-icon-append"></i></button>
+                    <button class="btn btn-primary btn-md btn-icon-text" wire:click="jobOrderModal"> Add <i class="typcn typcn-plus-outline btn-icon-append"></i></button>
                 </div>
                 @endcan
 
@@ -196,7 +200,7 @@
         </div>
     </div>
 
-    @include('livewire.modals.incoming.jobOrderModal');
+    @include('livewire.modals.incoming.jobOrderModal')
 
     <!-- statusUpdate -->
     <div class="modal fade" id="statusUpdate" tabindex="-1" aria-labelledby="statusUpdateLabel" aria-hidden="true" data-bs-backdrop="static" wire:ignore.self>
@@ -292,10 +296,6 @@
                             <label for="inputNumber">Number</label>
                             <input type="text" class="form-control disabled_input" id="inputNumber" wire:model="number">
                         </div>
-                        <div class="col-md-6">
-                            <label for="inputMileage">Mileage / Odometer Reading</label>
-                            <input type="text" class="form-control disabled_input" id="inputMileage" wire:model="mileage">
-                        </div>
                     </div>
                     <p class="card-description">
                         Equipment Details
@@ -313,8 +313,14 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label for="inputDriverInCharge">Driver in charge</label>
-                            <input type="text" class="form-control disabled_input" id="inputDriverInCharge" wire:model="driver_in_charge">
+                            <label for="inputMileage">Mileage / Odometer Reading</label>
+                            <input type="text" class="form-control disabled_input" id="inputMileage" wire:model="mileage">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <div class="col-md-6">
+                            <label for="inputPersonInCharge">Driver in charge</label>
+                            <input type="text" class="form-control disabled_input" id="inputPersonInCharge" wire:model="person_in_charge">
                         </div>
                         <div class="col-md-6">
                             <label for="inputContactNumber">Contact Number</label>
@@ -428,6 +434,8 @@
             </div>
         </div>
     </div>
+
+    @include('livewire.modals.incoming.jobOrderLogsModal')
 </div>
 
 @script
@@ -492,6 +500,10 @@
         $('#jobOrderDetailsPDF').modal('show');
     });
 
+    $wire.on('showJobOrderLogsModal', () => {
+        $('#jobOrderLogsModal').modal('show');
+    });
+
     /* -------------------------------------------------------------------------- */
 
     /* -------------------------------------------------------------------------- */
@@ -504,9 +516,10 @@
             },
             "Reference No.",
             "Office/Department",
+            "Equipment",
             "Type",
             "Model",
-            "Plate No.",
+            "No.",
             {
                 name: "Actions",
                 formatter: (cell, row) => {
@@ -533,6 +546,7 @@
                             item.id,
                             item.reference_no,
                             item.office.name,
+                            item.incoming_request_type.name,
                             item.type.name,
                             item.model.name,
                             item.number
@@ -552,6 +566,7 @@
                                 item.id,
                                 item.reference_no,
                                 item.office.name,
+                                item.incoming_request_type.name,
                                 item.type.name,
                                 item.model.name,
                                 item.number
@@ -583,6 +598,28 @@
 
     $wire.on('reset-office-select', (key) => {
         document.querySelector('#office-select').reset(key[0]);
+    });
+
+    /* -------------------------------------------------------------------------- */
+
+    VirtualSelect.init({
+        ele: '#incoming-request-types-select',
+        options: @json($incoming_request_types),
+        maxWidth: '100%'
+    });
+
+    let ref_incoming_request_types_id = document.querySelector('#incoming-request-types-select');
+    ref_incoming_request_types_id.addEventListener('change', () => {
+        let data = ref_incoming_request_types_id.value;
+        @this.set('ref_incoming_request_types_id', data);
+    });
+
+    $wire.on('set-incoming-request-types-select', (key) => {
+        document.querySelector('#incoming-request-types-select').setValue(key[0]);
+    });
+
+    $wire.on('reset-incoming-request-types-select', (key) => {
+        document.querySelector('#incoming-request-types-select').reset(key[0]);
     });
 
     /* -------------------------------------------------------------------------- */
@@ -723,8 +760,16 @@
                     {
                         name: "Status",
                         formatter: (cell, row) => {
+                            const status = row.cells[4].data;
+
+                            const getBadgeClass = (status) => {
+                                if (status === 'Pending') return 'text-bg-danger';
+                                if (status === 'Done') return 'text-bg-success';
+                                if (status === 'Referred to') return 'text-bg-info';
+                            };
+
                             return gridjs.html(`
-                                <span class="badge rounded-pill ${row.cells[4].data === 'Pending' ? 'text-bg-secondary' : 'text-bg-success'}">
+                                <span class="badge rounded-pill ${getBadgeClass(status)}">
                                 ${row.cells[4].data}
                                 </span>
                             `);
@@ -747,6 +792,9 @@
                             @endcan
                             <button class="btn btn-white btn-sm btn-icon-text me-3" title="Print" wire:click="assignSignatory('${id}')">
                                 <i class="bx bx-printer bx-sm"></i>
+                            </button>
+                            <button class="btn btn-white btn-sm btn-icon-text me-3" title="Print" wire:click="readLogs('${id}')">
+                                <i class="bx bx-history bx-sm"></i>
                             </button>
                         `);
                         }
@@ -896,6 +944,7 @@
         ele: '#mechanics-select',
         options: @json($mechanics),
         search: true,
+        multiple: true,
         maxWidth: '100%'
     });
 
@@ -963,6 +1012,35 @@
     $wire.on('set-issue-or-concern-summernote-disabled', (key) => {
         $('#issue-or-concern-summernote').summernote('code', key[0]);
         $('#issue-or-concern-summernote').summernote('disable');
+    });
+
+    /* -------------------------------------------------------------------------- */
+
+    $('#findings-summernote').summernote({
+        toolbar: false,
+        disableDragAndDrop: true,
+        tabsize: 2,
+        height: 120,
+        callbacks: {
+            onChange: function(contents, $editable) {
+                // Create a temporary div element to strip out HTML tags
+                var plainText = $('<div>').html(contents).text();
+                @this.set('findings', plainText);
+            }
+        }
+    });
+
+    $wire.on('set-findings-summernote', (key) => {
+        $('#findings-summernote').summernote('code', key[0]);
+    });
+
+    $wire.on('reset-findings-summernote', () => {
+        $('#findings-summernote').summernote('reset');
+    });
+
+    $wire.on('set-findings-summernote-disabled', (key) => {
+        $('#findings-summernote').summernote('code', key[0]);
+        $('#findings-summernote').summernote('disable');
     });
 
     /* -------------------------------------------------------------------------- */

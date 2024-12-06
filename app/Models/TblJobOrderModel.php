@@ -20,6 +20,7 @@ class TblJobOrderModel extends Model
         'date_and_time_in',
         'ref_category_id',
         'ref_sub_category_id',
+        'mileage',
         'ref_location_id',
         'driver_in_charge',
         'contact_number',
@@ -27,6 +28,7 @@ class TblJobOrderModel extends Model
         'ref_type_of_repair_id',
         'ref_mechanics',
         'issue_or_concern',
+        'findings',
         'date_and_time_out',
         'total_repair_time',
         'claimed_by',
@@ -93,6 +95,17 @@ class TblJobOrderModel extends Model
     public function mechanic(): BelongsTo
     {
         return $this->belongsTo(RefMechanicsModel::class, 'ref_mechanics', 'id');
+    }
+
+    public function mechanics()
+    {
+        $mechanicIds = is_array($this->ref_mechanics)
+            ? $this->ref_mechanics
+            : json_decode($this->ref_mechanics, true);
+
+        $mechanicIds = is_array($mechanicIds) ? $mechanicIds : [$mechanicIds];
+
+        return RefMechanicsModel::whereIn('id', $mechanicIds)->get();
     }
 
     public function location(): BelongsTo

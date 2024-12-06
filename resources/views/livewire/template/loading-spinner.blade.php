@@ -36,7 +36,7 @@
 </style>
 
 <!-- This spinner will display whenever there's a request to the server except what was indicated in wire:target -->
-<div id="overlay" wire:loading wire:target.except="issue_or_concern">
+<div id="overlay" wire:loading wire:target.except="issue_or_concern, findings">
     <div class="cv-spinner">
         <span class="spinner"></span>
     </div>

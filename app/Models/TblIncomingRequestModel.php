@@ -15,11 +15,11 @@ class TblIncomingRequestModel extends Model
 
     protected $fillable = [
         'reference_no',
+        'ref_incoming_request_types_id',
         'ref_office_id',
         'ref_types_id',
         'ref_models_id',
-        'number',
-        'mileage',
+        'number'
     ];
 
     protected static function boot()
@@ -52,6 +52,11 @@ class TblIncomingRequestModel extends Model
     }
 
     /* -------------------------------------------------------------------------- */
+
+    public function incoming_request_type(): BelongsTo
+    {
+        return $this->belongsTo(RefIncomingRequestTypeModel::class, 'ref_incoming_request_types_id', 'id');
+    }
 
     public function office(): BelongsTo
     {

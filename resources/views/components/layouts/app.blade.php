@@ -161,6 +161,11 @@
         .vscomp-wrapper:not(.has-value) .vscomp-value {
             opacity: .3 !important;
         }
+
+        .text-bg-success {
+            color: #ffffff !important;
+            background-color: #507f50 !important;
+        }
     </style>
 </head>
 
@@ -356,6 +361,14 @@
                 Toast.fire({
                     icon: "success",
                     title: "Password reset to default."
+                });
+            });
+
+            Livewire.on('show-can-not-add-job-order-alert', (event) => {
+                Swal.fire({
+                    icon: "error",
+                    title: "Unable to add Job Order",
+                    text: "Please resolve the pending job order to proceed."
                 });
             });
 

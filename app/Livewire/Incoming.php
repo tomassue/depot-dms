@@ -3,6 +3,7 @@
 namespace App\Livewire;
 
 use App\Models\RefCategoryModel;
+use App\Models\RefIncomingRequestTypeModel;
 use App\Models\RefLocationModel;
 use App\Models\RefMechanicsModel;
 use App\Models\RefModelModel;
@@ -22,6 +23,7 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Spatie\Activitylog\Models\Activity;
 
 #[Title('Incoming | DEPOT DMS')]
 class Incoming extends Component
@@ -38,9 +40,11 @@ class Incoming extends Component
     public $reference_no;
     public $job_order_no;
     public $job_order_details_pdf;
+    public $job_order_logs = [];
 
     /* ---------------------------------- Model --------------------------------- */
 
+    public $ref_incoming_request_types_id;
     public $ref_office_id;
     public $ref_types_id;
     public $ref_models_id, $ref_models_id_2;
@@ -53,12 +57,13 @@ class Incoming extends Component
     public $ref_category_id;
     public $ref_sub_category_id, $ref_sub_category_id_2;
     public $ref_location_id;
-    public $driver_in_charge;
+    public $person_in_charge;
     public $contact_number;
     public $ref_status_id;
     public $ref_type_of_repair_id;
-    public $ref_mechanics;
+    public $ref_mechanics = [];
     public $issue_or_concern;
+    public $findings;
     public $date_and_time_out;
     public $total_repair_time;
     public $claimed_by;
@@ -68,16 +73,16 @@ class Incoming extends Component
     public function rules()
     {
         $rules = [
-            'ref_office_id'    => 'required',
-            'ref_types_id'     => 'required',
-            'ref_models_id'    => 'required',
-            'number'           => 'required',
-            'mileage'          => 'required'
+            'ref_incoming_request_types_id' => 'required',
+            'ref_office_id'                 => 'required',
+            'ref_types_id'                  => 'required',
+            'ref_models_id'                 => 'required',
+            'number'                        => 'required'
         ];
 
         if ($this->page == 2) {
             $rules = [
-                'driver_in_charge'      => 'required',
+                'person_in_charge'      => 'required',
                 'contact_number'        => 'required|size:11',
                 'date_and_time_in'      => 'required',
                 'ref_category_id'       => 'required',
@@ -87,6 +92,9 @@ class Incoming extends Component
                 'ref_location_id'       => 'required',
                 'issue_or_concern'      => 'required'
             ];
+            if ($this->ref_incoming_request_types_id == '1') {
+                $rules['mileage']       =  'required';
+            }
 
             if ($this->editMode) {
                 $rules['ref_status_id'] = 'required';
@@ -108,6 +116,7 @@ class Incoming extends Component
     public function attributes()
     {
         $attributes = [
+            'ref_incoming_request_types_id' => 'equipment type',
             'ref_office_id' => 'office',
             'ref_types_id' => 'type of equipment or vehicle',
             'ref_models_id' => 'model of equipment or vehicle'
@@ -183,14 +192,24 @@ class Incoming extends Component
         $this->dispatch('reset-office-select');
         $this->dispatch('reset-type-select');
         $this->dispatch('reset-model-select');
+        $this->dispatch('reset-incoming-request-types-select');
     }
 
     // This function reads all necessary data from the database.
     public function loadPageData()
     {
         // table_incoming_requests
-        $incoming_requests = TblIncomingRequestModel::with(['office', 'type', 'model'])
+        $incoming_requests = TblIncomingRequestModel::with(['incoming_request_type', 'office', 'type', 'model'])
             ->get();
+
+        // incoming-request-types-select
+        $incoming_request_types = RefIncomingRequestTypeModel::all()
+            ->map(function ($item) {
+                return [
+                    'label' => $item->name,
+                    'value' => $item->id
+                ];
+            });
 
         // office-select
         $offices = RefOfficesModel::all()
@@ -290,17 +309,18 @@ class Incoming extends Component
             });
 
         return [
-            'incoming_requests' => $incoming_requests,
-            'offices'           => $offices,
-            'types'             => $types,
-            'models'            => $models,
-            'statuses'          => $statuses,
-            'categories'        => $categories,
-            'type_of_repairs'   => $type_of_repairs,
-            'sub_categories'    => $sub_categories,
-            'mechanics'         => $mechanics,
-            'locations'         => $locations,
-            'signatories'       => $signatories
+            'incoming_requests'      => $incoming_requests,
+            'incoming_request_types' => $incoming_request_types,
+            'offices'                => $offices,
+            'types'                  => $types,
+            'models'                 => $models,
+            'statuses'               => $statuses,
+            'categories'             => $categories,
+            'type_of_repairs'        => $type_of_repairs,
+            'sub_categories'         => $sub_categories,
+            'mechanics'              => $mechanics,
+            'locations'              => $locations,
+            'signatories'            => $signatories
         ];
     }
 
@@ -312,13 +332,13 @@ class Incoming extends Component
 
         try {
             DB::transaction(function () {
-                $incoming_request                   = new TblIncomingRequestModel();
-                $incoming_request->reference_no     = $this->reference_no;
-                $incoming_request->ref_office_id    = $this->ref_office_id;
-                $incoming_request->ref_types_id     = $this->ref_types_id;
-                $incoming_request->ref_models_id    = $this->ref_models_id;
-                $incoming_request->number           = strtoupper($this->number);
-                $incoming_request->mileage          = $this->mileage;
+                $incoming_request                                = new TblIncomingRequestModel();
+                $incoming_request->reference_no                  = $this->reference_no;
+                $incoming_request->ref_office_id                 = $this->ref_office_id;
+                $incoming_request->ref_types_id                  = $this->ref_types_id;
+                $incoming_request->ref_models_id                 = $this->ref_models_id;
+                $incoming_request->number                        = strtoupper($this->number);
+                $incoming_request->ref_incoming_request_types_id = $this->ref_incoming_request_types_id;
 
                 $incoming_request->save();
             });
@@ -330,7 +350,6 @@ class Incoming extends Component
             $table_incoming_request = $this->loadPageData(); // reloads the method so that we can fetch updated data from incoming_requests.
             $this->dispatch('refresh-table-incoming-requests', $table_incoming_request['incoming_requests']);
         } catch (\Throwable $th) {
-            dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }
@@ -348,6 +367,7 @@ class Incoming extends Component
             $this->reference_no         = $incoming_request->reference_no;
             $this->dispatch('set-office-select', $incoming_request->ref_office_id);
             $this->dispatch('set-type-select', $incoming_request->ref_types_id);
+            $this->dispatch('set-incoming-request-types-select', $incoming_request->ref_incoming_request_types_id);
 
             /**
              * This is for displaying ref_models_id without causing it to disappear due to setOptions by assigning another property that will hold on this value.
@@ -378,7 +398,6 @@ class Incoming extends Component
                 $incoming_request->ref_types_id     = $this->ref_types_id;
                 $incoming_request->ref_models_id    = $this->ref_models_id;
                 $incoming_request->number           = strtoupper($this->number);
-                $incoming_request->mileage          = $this->mileage;
 
                 $incoming_request->save();
             });
@@ -390,7 +409,6 @@ class Incoming extends Component
             $table_incoming_request = $this->loadPageData(); // reloads the method so that we can fetch updated data from incoming_requests.
             $this->dispatch('refresh-table-incoming-requests', $table_incoming_request['incoming_requests']);
         } catch (\Throwable $th) {
-            dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }
@@ -412,7 +430,7 @@ class Incoming extends Component
 
     public function clear2()
     {  // customed clearing for page 2 - Job Order Page
-        $this->resetExcept('page', 'job_order_no', 'reference_no', 'ref_office_id', 'ref_types_id', 'number', 'ref_models_id_2', 'mileage');
+        $this->resetExcept('page', 'job_order_no', 'reference_no', 'ref_office_id', 'ref_types_id', 'number', 'ref_models_id_2');
         $this->resetValidation();
 
         $this->dispatch('reset-status-select');
@@ -423,6 +441,7 @@ class Incoming extends Component
         $this->dispatch('reset-location-select');
         $this->dispatch('reset-date-and-time-in');
         $this->dispatch('reset-issue-or-concern-summernote');
+        $this->dispatch('reset-findings-summernote');
 
         $this->dispatch('reset-signatories-select');
     }
@@ -467,12 +486,12 @@ class Incoming extends Component
             // $this->job_order_no     = $this->generateJobOrder($this->reference_no);
 
 
-            $this->job_order_no     = $incoming_request->id + 1;
-            $this->ref_office_id    = $incoming_request->office->name;
-            $this->ref_types_id     = $incoming_request->type->name;
-            $this->ref_models_id_2  = $incoming_request->model->name;
-            $this->number           = $incoming_request->number;
-            $this->mileage          = $incoming_request->mileage;
+            $this->ref_incoming_request_types_id = $incoming_request->ref_incoming_request_types_id;
+            $this->job_order_no                  = $incoming_request->id + 1;
+            $this->ref_office_id                 = $incoming_request->office->name;
+            $this->ref_types_id                  = $incoming_request->type->name;
+            $this->ref_models_id_2               = $incoming_request->model->name;
+            $this->number                        = $incoming_request->number;
 
             $job_orders = TblJobOrderModel::with(['category', 'sub_category', 'status'])
                 ->where('reference_no', $incoming_request->reference_no)
@@ -482,6 +501,19 @@ class Incoming extends Component
         } catch (\Throwable $th) {
             $this->page = 1;
             $this->dispatch('show-something-went-wrong-toast');
+        }
+    }
+
+    public function jobOrderModal()
+    {
+        $check_pending_job_order = TblJobOrderModel::where('reference_no', $this->reference_no)
+            ->where('ref_status_id', '1')
+            ->exists();
+
+        if ($check_pending_job_order) {
+            $this->dispatch('show-can-not-add-job-order-alert');
+        } else {
+            $this->dispatch('showJobOrderModal');
         }
     }
 
@@ -498,13 +530,16 @@ class Incoming extends Component
                 $job_order->date_and_time_in        = $this->date_and_time_in;
                 $job_order->ref_category_id         = $this->ref_category_id;
                 $job_order->ref_sub_category_id     = $this->ref_sub_category_id;
+                $job_order->mileage                 = $this->mileage;
                 $job_order->ref_location_id         = $this->ref_location_id;
-                $job_order->driver_in_charge        = $this->driver_in_charge;
+                $job_order->person_in_charge        = $this->person_in_charge;
                 $job_order->contact_number          = $this->contact_number;
                 $job_order->ref_status_id           = 1;
                 $job_order->ref_type_of_repair_id   = $this->ref_type_of_repair_id;
-                $job_order->ref_mechanics           = $this->ref_mechanics;
+                $job_order->ref_mechanics           = json_encode($this->ref_mechanics);
                 $job_order->issue_or_concern        = $this->issue_or_concern;
+                $job_order->findings                = $this->findings;
+
                 $job_order->save();
             });
 
@@ -518,7 +553,6 @@ class Incoming extends Component
             $this->dispatch('hideJobOrderModal');
             $this->dispatch('show-success-save-message-toast');
         } catch (\Throwable $th) {
-            dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }
@@ -533,17 +567,19 @@ class Incoming extends Component
             $job_order                   = TblJobOrderModel::findOrFail($key);
 
             $this->job_order_no          = $job_order->id;
-            $this->driver_in_charge      = $job_order->driver_in_charge;
+            $this->person_in_charge      = $job_order->person_in_charge;
+            $this->mileage               = $job_order->mileage;
             $this->contact_number        = $job_order->contact_number;
             $this->ref_sub_category_id_2 = $job_order->ref_sub_category_id;
 
             $this->dispatch('set-category-select', $job_order->ref_category_id);
             $this->dispatch('set-type-of-repair-select', $job_order->ref_type_of_repair_id);
             $this->dispatch('set-status-select', $job_order->ref_status_id);
-            $this->dispatch('set-mechanics-select', $job_order->ref_mechanics);
+            $this->dispatch('set-mechanics-select', json_decode($job_order->ref_mechanics));
             $this->dispatch('set-location-select', $job_order->ref_location_id);
             $this->dispatch('set-date-and-time-in', $job_order->date_and_time_in);
             $this->dispatch('set-issue-or-concern-summernote', $job_order->issue_or_concern);
+            // $this->dispatch('set-findings-summernote', $job_order->findings);
 
             $this->dispatch('showJobOrderModal');
         } catch (\Throwable $th) {
@@ -560,15 +596,16 @@ class Incoming extends Component
                 $job_order = TblJobOrderModel::findOrFail($this->job_order_no);
 
                 $job_order->ref_status_id           = $this->ref_status_id;
-                $job_order->driver_in_charge        = $this->driver_in_charge;
+                $job_order->person_in_charge        = $this->person_in_charge;
                 $job_order->contact_number          = $this->contact_number;
                 $job_order->ref_category_id         = $this->ref_category_id;
                 $job_order->ref_type_of_repair_id   = $this->ref_type_of_repair_id;
                 $job_order->ref_sub_category_id     = $this->ref_sub_category_id;
-                $job_order->ref_mechanics           = $this->ref_mechanics;
+                $job_order->ref_mechanics           = json_encode($this->ref_mechanics);
                 $job_order->ref_location_id         = $this->ref_location_id;
                 $job_order->date_and_time_in        = $this->date_and_time_in;
                 $job_order->issue_or_concern        = $this->issue_or_concern;
+                $job_order->findings                = $this->findings;
 
                 if ($this->ref_status_id == 2) {
                     $job_order->date_and_time_out   = $this->date_and_time_out;
@@ -596,6 +633,7 @@ class Incoming extends Component
 
             $this->dispatch('show-success-update-message-toast');
         } catch (\Throwable $th) {
+            dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }
@@ -630,6 +668,20 @@ class Incoming extends Component
         }
     }
 
+    public function readLogs($key)
+    {
+        try {
+            $this->job_order_logs = Activity::where('subject_type', TblJobOrderModel::class)
+                ->where('subject_id', $key)
+                ->where('description', '!=', 'created') // Exclude 'created' logs
+                ->get();
+
+            $this->dispatch('showJobOrderLogsModal');
+        } catch (\Throwable $th) {
+            $this->dispatch('show-something-went-wrong-toast');
+        }
+    }
+
     public function assignSignatory($key)
     {
         $this->job_order_no = $key;
@@ -657,9 +709,9 @@ class Incoming extends Component
                 'date_and_time_out'     => $job_order->date_and_time_out ? Carbon::parse($job_order->date_and_time_out)->format('M. d, Y g:i A') : '-',
                 'plate_no'              => $job_order->incoming_request->number,
                 'issues_or_concern'     => $job_order->issue_or_concern,
-                'mechanic'              => $job_order->mechanic->name,
-                'name'                  => $job_order->incoming_request->driver_in_charge,
-                'contact_number'        => $job_order->incoming_request->contact_number,
+                'mechanic'              => $job_order->mechanics()->pluck('name')->implode(', '),
+                'name'                  => $job_order->person_in_charge,
+                'contact_number'        => $job_order->contact_number,
                 'signatory_name'        => $signatory->name,
                 'signatory_designation' => $signatory->designation
             ];
@@ -689,6 +741,7 @@ class Incoming extends Component
                 ->event('printed job order')
                 ->log("Job Order #{$job_order->id} printed with Signatory (ID: {$this->ref_signatories_id})");
         } catch (\Throwable $th) {
+            dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }

@@ -27,10 +27,6 @@
                             <label for="inputNumber">Number</label>
                             <input type="text" class="form-control disabled_input" id="inputNumber" wire:model="number">
                         </div>
-                        <div class="col-md-6">
-                            <label for="inputMileage">Mileage / Odometer Reading</label>
-                            <input type="text" class="form-control disabled_input" id="inputMileage" wire:model="mileage">
-                        </div>
                     </div>
                     <p class="card-description">
                         Equipment Details
@@ -51,11 +47,22 @@
                             @enderror
                         </div>
                     </div>
+                    <div class="form-group row" style="display: {{ $ref_incoming_request_types_id === '1' ? '' : 'none' }}">
+                        <div class="col-md-6">
+                            <label for="inputMileage">Mileage / Odometer Reading</label>
+                            <input type="text" class="form-control @error('mileage') is-invalid @enderror" id="inputMileage" oninput="this.value = this.value.replace(/[^0-9]/g, '')" wire:model="mileage">
+                            @error('mileage')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+                    </div>
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label for="inputDriverInCharge">Driver in charge</label>
-                            <input type="text" class="form-control @error('driver_in_charge') is-invalid @enderror" id="inputDriverInCharge" wire:model="driver_in_charge">
-                            @error('driver_in_charge')
+                            <label for="inputPersonInCharge">{{ $ref_incoming_request_types_id == '1' ? 'Driver' : 'Person' }} in charge</label>
+                            <input type="text" class="form-control @error('person_in_charge') is-invalid @enderror" id="inputPersonInCharge" wire:model="person_in_charge">
+                            @error('person_in_charge')
                             <div class="invalid-feedback">
                                 {{ $message }}
                             </div>
@@ -140,6 +147,19 @@
                                 <div id="issue-or-concern-summernote"></div>
                             </div>
                             @error('issue_or_concern')
+                            <div class="custom-invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-group row" style="display: {{ $editMode ? '' : 'none' }}">
+                        <div class="col-md-12">
+                            <label for="inputFindings">Findings</label>
+                            <div wire:ignore>
+                                <div id="findings-summernote"></div>
+                            </div>
+                            @error('findings')
                             <div class="custom-invalid-feedback">
                                 {{ $message }}
                             </div>
