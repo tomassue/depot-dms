@@ -4,11 +4,21 @@
     <div style="display: {{ $page == 1 ? '' : 'none' }}">
         <div class="card mb-2">
             <div class="card-body">
-                @can('create incoming')
-                <div class="col-md-12 my-2 d-inline-flex align-content-center justify-content-end">
-                    <button class="btn btn-primary btn-md btn-icon-text" wire:click="$dispatch('showIncomingModal')"> Add <i class="typcn typcn-plus-outline btn-icon-append"></i></button>
+                <div class="row my-2">
+                    <div class="col-md-6 d-flex align-items-center">
+                        <div class="col-lg-3">
+                            <div id="incoming-request-type-filter-select" wire:ignore></div>
+                        </div>
+                    </div>
+
+                    @can('create incoming')
+                    <div class="col-md-6 d-flex justify-content-end">
+                        <button class="btn btn-primary btn-md btn-icon-text" wire:click="$dispatch('showIncomingModal')">
+                            Add <i class="typcn typcn-plus-outline btn-icon-append"></i>
+                        </button>
+                    </div>
+                    @endcan
                 </div>
-                @endcan
             </div>
         </div>
 
@@ -225,10 +235,10 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="form-group">
+                        <div class="form-group" style="display: {{ $ref_status_id == 2 ? '' : 'none' }}">
                             <div class="col-md-12">
                                 <label for="inputTotalRepairTime">Total repair time</label>
-                                <input type="text" class="form-control @error('total_repair_time') is-invalid @enderror disabled_input" id="inputTotalRepairTime" wire:model="total_repair_time">
+                                <input type="text" class="form-control @error('total_repair_time') is-invalid @enderror" id="inputTotalRepairTime" wire:model="total_repair_time">
                                 @error('total_repair_time')
                                 <div class="custom-invalid-feedback">
                                     {{ $message }}
@@ -238,7 +248,7 @@
                         </div>
                         <div class="form-group">
                             <div class="col-md-12">
-                                <label for="inputClaimedBy">Claimed by</label>
+                                <label for="inputClaimedBy">{{ $ref_status_id == 2 ? 'Claimed by' : 'Referred to' }}</label>
                                 <input type="text" class="form-control @error('claimed_by') is-invalid @enderror" id="inputClaimedBy" wire:model="claimed_by">
                                 @error('claimed_by')
                                 <div class="custom-invalid-feedback">
@@ -515,13 +525,17 @@
                 hidden: true
             },
             "Reference No.",
-            "Office/Department",
+            {
+                name: "Office/Department",
+                width: "20%"
+            },
             "Equipment",
             "Type",
             "Model",
             "No.",
             {
                 name: "Actions",
+                width: "15%",
                 formatter: (cell, row) => {
                     const id = row.cells[0].data;
                     return gridjs.html(`
@@ -575,6 +589,29 @@
                 });
             }
         }).forceRender();
+    });
+
+    /* -------------------------------------------------------------------------- */
+
+    VirtualSelect.init({
+        ele: '#incoming-request-type-filter-select',
+        options: @json($incoming_request_types),
+        maxWidth: '100%',
+        placeholder: 'Filter type'
+    });
+
+    let incoming_request_type_filter = document.querySelector('#incoming-request-type-filter-select');
+    incoming_request_type_filter.addEventListener('change', () => {
+        let data = incoming_request_type_filter.value;
+        @this.set('incoming_request_type_filter', data);
+    });
+
+    $wire.on('set-incoming-request-type-filter-select', (key) => {
+        document.querySelector('#incoming-request-type-filter-select').setValue(key[0]);
+    });
+
+    $wire.on('reset-incoming-request-type-filter-select', (key) => {
+        document.querySelector('#incoming-request-type-filter-select').reset(key[0]);
     });
 
     /* -------------------------------------------------------------------------- */
@@ -779,6 +816,7 @@
                     "Total Repair Time",
                     {
                         name: "Actions",
+                        width: "15%",
                         formatter: (cell, row) => {
                             const id = row.cells[0].data;
                             return gridjs.html(`

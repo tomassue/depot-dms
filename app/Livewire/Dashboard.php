@@ -36,7 +36,7 @@ class Dashboard extends Component
         $this->resetExcept('page', 'job_order_no', 'reference_no', 'ref_office_id', 'ref_types_id', 'number', 'ref_models_id_2', 'mileage');
         $this->resetValidation();
 
-        //TODO - Complete the new updates first.
+        //TODO - TODO.
 
         $this->dispatch('reset-status-select');
         $this->dispatch('reset-category-select');

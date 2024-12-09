@@ -41,6 +41,7 @@ class Incoming extends Component
     public $job_order_no;
     public $job_order_details_pdf;
     public $job_order_logs = [];
+    public $incoming_request_type_filter;
 
     /* ---------------------------------- Model --------------------------------- */
 
@@ -108,6 +109,14 @@ class Incoming extends Component
                     'remarks'           => 'required'
                 ];
             }
+
+            if ($this->ref_status_id == 3) {
+                $rules = [
+                    'date_and_time_out' => 'required',
+                    'claimed_by'        => 'required',
+                    'remarks'           => 'required'
+                ];
+            }
         }
 
         return $rules;
@@ -170,17 +179,24 @@ class Incoming extends Component
         }
 
         if ($property === 'ref_status_id') {
-            if ($this->ref_status_id == 2) {
+            if ($this->ref_status_id == 2 || $this->ref_status_id == 3) {
                 $this->dispatch('showStatusUpdateModal');
             }
         }
 
-        if ($property === 'date_and_time_out') {
-            $dateTimeIn  = Carbon::parse($this->date_and_time_in);
-            $dateTimeOut = Carbon::parse($this->date_and_time_out);
-
-            $this->total_repair_time = $dateTimeIn->diffInHours($dateTimeOut);
+        # Filter
+        if ($property === 'incoming_request_type_filter') {
+            $table_incoming_request = $this->loadPageData(); // reloads the method so that we can fetch updated data from incoming_requests.
+            $this->dispatch('refresh-table-incoming-requests', $table_incoming_request['incoming_requests']);
         }
+
+        # Calculate automatically the total repair time
+        // if ($property === 'date_and_time_out') {
+        //     $dateTimeIn  = Carbon::parse($this->date_and_time_in);
+        //     $dateTimeOut = Carbon::parse($this->date_and_time_out);
+
+        //     $this->total_repair_time = $dateTimeIn->diffInHours($dateTimeOut);
+        // }
     }
 
     public function clear()
@@ -200,6 +216,9 @@ class Incoming extends Component
     {
         // table_incoming_requests
         $incoming_requests = TblIncomingRequestModel::with(['incoming_request_type', 'office', 'type', 'model'])
+            ->when($this->incoming_request_type_filter != NULL, function ($query) {
+                return $query->where('ref_incoming_request_types_id', $this->incoming_request_type_filter);
+            })
             ->get();
 
         // incoming-request-types-select
@@ -309,18 +328,18 @@ class Incoming extends Component
             });
 
         return [
-            'incoming_requests'      => $incoming_requests,
-            'incoming_request_types' => $incoming_request_types,
-            'offices'                => $offices,
-            'types'                  => $types,
-            'models'                 => $models,
-            'statuses'               => $statuses,
-            'categories'             => $categories,
-            'type_of_repairs'        => $type_of_repairs,
-            'sub_categories'         => $sub_categories,
-            'mechanics'              => $mechanics,
-            'locations'              => $locations,
-            'signatories'            => $signatories
+            'incoming_requests'             => $incoming_requests,
+            'incoming_request_types'        => $incoming_request_types,
+            'offices'                       => $offices,
+            'types'                         => $types,
+            'models'                        => $models,
+            'statuses'                      => $statuses,
+            'categories'                    => $categories,
+            'type_of_repairs'               => $type_of_repairs,
+            'sub_categories'                => $sub_categories,
+            'mechanics'                     => $mechanics,
+            'locations'                     => $locations,
+            'signatories'                   => $signatories
         ];
     }
 
@@ -430,7 +449,7 @@ class Incoming extends Component
 
     public function clear2()
     {  // customed clearing for page 2 - Job Order Page
-        $this->resetExcept('page', 'job_order_no', 'reference_no', 'ref_office_id', 'ref_types_id', 'number', 'ref_models_id_2');
+        $this->resetExcept('ref_incoming_request_types_id', 'page', 'job_order_no', 'reference_no', 'ref_office_id', 'ref_types_id', 'number', 'ref_models_id_2');
         $this->resetValidation();
 
         $this->dispatch('reset-status-select');
@@ -614,6 +633,12 @@ class Incoming extends Component
                     $job_order->remarks             = $this->remarks;
                 }
 
+                if ($this->ref_status_id == 3) {
+                    $job_order->date_and_time_out   = $this->date_and_time_out;
+                    $job_order->claimed_by          = $this->claimed_by;
+                    $job_order->remarks             = $this->remarks;
+                }
+
                 $job_order->save();
             });
 
@@ -648,13 +673,14 @@ class Incoming extends Component
             $job_order                      = TblJobOrderModel::findOrFail($key);
             $this->job_order_no             = $job_order->id;
             $this->ref_status_id            = $job_order->status->name;
-            $this->driver_in_charge         = $job_order->driver_in_charge;
+            $this->person_in_charge         = $job_order->person_in_charge;
             $this->contact_number           = $job_order->contact_number;
             $this->ref_category_id          = $job_order->category->name;
             $this->ref_type_of_repair_id    = $job_order->type_of_repair->name;
             $this->ref_sub_category_id_2    = $job_order->sub_category->name;
-            $this->ref_mechanics            = $job_order->mechanic->name;
+            $this->ref_mechanics            = $job_order->mechanics()->pluck('name')->implode(', ');
             $this->ref_location_id          = $job_order->location->name;
+            $this->mileage                  = $job_order->mileage;
             $this->issue_or_concern         = $job_order->issue_or_concern;
             $this->date_and_time_out        = Carbon::parse($job_order->date_and_time_out)->format('M. d, Y g:i A');
             $this->total_repair_time        = $job_order->total_repair_time;
@@ -664,6 +690,7 @@ class Incoming extends Component
 
             $this->dispatch('showJobOrderDetailsModal');
         } catch (\Throwable $th) {
+            dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }
@@ -671,7 +698,14 @@ class Incoming extends Component
     public function readLogs($key)
     {
         try {
-            $this->job_order_logs = Activity::where('subject_type', TblJobOrderModel::class)
+            $this->job_order_logs = Activity::select('activity_log.*', 'ref_status.name as status_name') // Include ref_status.name in the result
+                ->join(
+                    'ref_status',
+                    'ref_status.id',
+                    '=',
+                    DB::raw("JSON_UNQUOTE(JSON_EXTRACT(activity_log.properties, '$.attributes.ref_status_id'))")
+                )
+                ->where('subject_type', TblJobOrderModel::class)
                 ->where('subject_id', $key)
                 ->where('description', '!=', 'created') // Exclude 'created' logs
                 ->get();
