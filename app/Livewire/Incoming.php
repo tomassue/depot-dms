@@ -608,7 +608,7 @@ class Incoming extends Component
 
     public function updateJobOrder()
     {
-        $this->validate($this->rules(), [], $this->attributes());
+        // $this->validate($this->rules(), [], $this->attributes());
 
         try {
             DB::transaction(function () {
@@ -648,7 +648,7 @@ class Incoming extends Component
 
             $this->dispatch('load-table-job-orders', $job_orders->toJson());
 
-            if ($this->ref_status_id == 2) {
+            if ($this->ref_status_id == 2 || $this->ref_status_id == 3) {
                 $this->clear3();
                 $this->dispatch('hideBothJobOrderModalAndStatusUpdateModal');
             } else {
@@ -708,6 +708,8 @@ class Incoming extends Component
                 ->where('subject_type', TblJobOrderModel::class)
                 ->where('subject_id', $key)
                 ->where('description', '!=', 'created') // Exclude 'created' logs
+                // ->whereNotNull('properties->attributes->findings') // Check if 'findings' exists
+                // ->where('properties->attributes->findings', '!=', '') // Ensure 'findings' is not an empty string
                 ->get();
 
             $this->dispatch('showJobOrderLogsModal');

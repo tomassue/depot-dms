@@ -61,7 +61,7 @@
                             <label for="inputNumber">Number</label>
                             <input type="text" class="form-control disabled_input" id="inputNumber" wire:model="number">
                         </div>
-                        <div class="col-md-6">
+                        <div class="col-md-6" style="display: {{ $ref_incoming_request_types_id === '1' ? '' : 'none' }}">
                             <label for="inputMileage">Mileage / Odometer Reading</label>
                             <input type="text" class="form-control disabled_input" id="inputMileage" wire:model="mileage">
                         </div>
@@ -82,8 +82,8 @@
                     </div>
                     <div class="form-group row">
                         <div class="col-md-6">
-                            <label for="inputDriverInCharge">Driver in charge</label>
-                            <input type="text" class="form-control disabled_input" id="inputDriverInCharge" wire:model="driver_in_charge">
+                            <label for="inputDriverInCharge">{{ $ref_incoming_request_types_id == '1' ? 'Driver' : 'Person' }} in charge</label>
+                            <input type="text" class="form-control disabled_input" id="inputDriverInCharge" wire:model="person_in_charge">
                         </div>
                         <div class="col-md-6">
                             <label for="inputContactNumber">Contact Number</label>
@@ -245,7 +245,7 @@
             'Office/Department',
             'Category',
             'Sub-category',
-            'Vehicle Type',
+            'Type',
             'Diagnosis',
             {
                 name: "Actions",

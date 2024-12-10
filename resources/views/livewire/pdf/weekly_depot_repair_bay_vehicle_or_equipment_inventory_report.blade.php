@@ -122,7 +122,7 @@
         <tr>
             <td class="no-right-border">Department</td>
             <td class="no-right-border no-left-border">Vehicle Type</td>
-            <td class="no-right-border no-left-border">Plate No.</td>
+            <td class="no-right-border no-left-border">No.</td>
             <td class="no-right-border no-left-border">Diagnosis/Problem</td>
             <td class="no-right-border no-left-border">Status</td>
             <td class="no-right-border no-left-border">Date IN</td>

@@ -24,7 +24,13 @@
                             @endphp
                             <tr>
                                 <td class="text-capitalize">
-                                    {{ $item->status_name ?? 'Not available' }}
+                                    @if ($updatedAttributes['ref_status_id'] == 1)
+                                    Pending
+                                    @elseif ($updatedAttributes['ref_status_id'] == 2)
+                                    Done
+                                    @elseif ($updatedAttributes['ref_status_id'] == 3)
+                                    Referred to
+                                    @endif
                                 </td>
                                 <td class="text-capitalize">
                                     {{ $updatedAttributes['findings'] ?? '' }}

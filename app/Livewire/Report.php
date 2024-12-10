@@ -22,14 +22,14 @@ class Report extends Component
     public $filter_date_range;
     public $filter_status_range;
     public $pdfData;
-
+    public $ref_incoming_request_types_id;
     /* -------------------------------------------------------------------------- */
 
     public $ref_types_id;
     public $ref_models_id;
     public $number;
     public $mileage;
-    public $driver_in_charge;
+    public $person_in_charge;
     public $contact_number;
     public $job_order_no;
     public $ref_status_id;
@@ -128,28 +128,30 @@ class Report extends Component
         // Instead of using plug-ins like summernote and virtual select, I will only use disabled_input fields. :)
 
         try {
-            $job_order                      = TblJobOrderModel::findOrFail($key);
-            $this->ref_types_id             = $job_order->incoming_request->type->name;
-            $this->ref_models_id            = $job_order->incoming_request->model->name;
-            $this->number                   = $job_order->incoming_request->number;
-            $this->mileage                  = $job_order->incoming_request->mileage;
-            $this->driver_in_charge         = $job_order->driver_in_charge;
-            $this->contact_number           = $job_order->contact_number;
-            $this->job_order_no             = $job_order->id;
-            $this->ref_status_id            = $job_order->status->name;
-            $this->ref_category_id          = $job_order->category->name;
-            $this->ref_type_of_repair_id    = $job_order->type_of_repair->name;
-            $this->ref_sub_category_id_2    = $job_order->sub_category->name;
-            $this->ref_mechanics            = $job_order->mechanic->name;
-            $this->ref_location_id          = $job_order->location->name;
-            $this->issue_or_concern         = $job_order->issue_or_concern;
-            $this->date_and_time_out        = Carbon::parse($job_order->date_and_time_out)->format('M. d, Y g:i A');
-            $this->total_repair_time        = $job_order->total_repair_time;
-            $this->claimed_by               = $job_order->claimed_by;
-            $this->remarks                  = $job_order->remarks;
+            $job_order                           = TblJobOrderModel::findOrFail($key);
+            $this->ref_incoming_request_types_id = $job_order->incoming_request->ref_incoming_request_types_id;
+            $this->ref_types_id                  = $job_order->incoming_request->type->name;
+            $this->ref_models_id                 = $job_order->incoming_request->model->name;
+            $this->number                        = $job_order->incoming_request->number;
+            $this->mileage                       = $job_order->mileage;
+            $this->person_in_charge              = $job_order->person_in_charge;
+            $this->contact_number                = $job_order->contact_number;
+            $this->job_order_no                  = $job_order->id;
+            $this->ref_status_id                 = $job_order->status->name;
+            $this->ref_category_id               = $job_order->category->name;
+            $this->ref_type_of_repair_id         = $job_order->type_of_repair->name;
+            $this->ref_sub_category_id_2         = $job_order->sub_category->name;
+            $this->ref_mechanics                 = $job_order->mechanics()->pluck('name')->implode(', ');
+            $this->ref_location_id               = $job_order->location->name;
+            $this->issue_or_concern              = $job_order->issue_or_concern;
+            $this->date_and_time_out             = Carbon::parse($job_order->date_and_time_out)->format('M. d, Y g:i A');
+            $this->total_repair_time             = $job_order->total_repair_time;
+            $this->claimed_by                    = $job_order->claimed_by;
+            $this->remarks                       = $job_order->remarks;
 
             $this->dispatch('showJobOrderDetailsModal');
         } catch (\Throwable $th) {
+            dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }

@@ -151,7 +151,7 @@
         </tr>
         <tr>
             <td width="390px">DATE/TIME IN : <span style="font-weight: normal">{{ $date_and_time_in }}</span></td>
-            <td>PLATE NO. : <span style="font-weight: normal">{{ $plate_no }}</span></td>
+            <td>NO. : <span style="font-weight: normal">{{ $plate_no }}</span></td>
         </tr>
         <tr>
             <td width="390px">DATE/TIME OUT : <span style="font-weight: normal">{{ $date_and_time_out }}</span></td>
