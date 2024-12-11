@@ -737,7 +737,7 @@
 
                             const getBadgeClass = (status) => {
                                 if (status === 'Pending') return 'text-bg-danger';
-                                if (status === 'Done') return 'text-bg-success';
+                                if (status === 'Repaired') return 'text-bg-success';
                                 if (status === 'Referred to') return 'text-bg-info';
                             };
 

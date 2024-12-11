@@ -180,6 +180,10 @@ class Incoming extends Component
 
         if ($property === 'ref_status_id') {
             if ($this->ref_status_id == 2 || $this->ref_status_id == 3) {
+                if ($this->ref_status_id == 2) {
+                    # We automatically assigned that whoever's the person in charge, will be the one to claim. However, end user can still edit it.
+                    $this->claimed_by = $this->person_in_charge;
+                }
                 $this->dispatch('showStatusUpdateModal');
             }
         }
@@ -608,7 +612,7 @@ class Incoming extends Component
 
     public function updateJobOrder()
     {
-        // $this->validate($this->rules(), [], $this->attributes());
+        $this->validate($this->rules(), [], $this->attributes());
 
         try {
             DB::transaction(function () {
@@ -625,6 +629,7 @@ class Incoming extends Component
                 $job_order->date_and_time_in        = $this->date_and_time_in;
                 $job_order->issue_or_concern        = $this->issue_or_concern;
                 $job_order->findings                = $this->findings;
+                $job_order->mileage                 = $this->mileage;
 
                 if ($this->ref_status_id == 2) {
                     $job_order->date_and_time_out   = $this->date_and_time_out;
@@ -649,6 +654,7 @@ class Incoming extends Component
             $this->dispatch('load-table-job-orders', $job_orders->toJson());
 
             if ($this->ref_status_id == 2 || $this->ref_status_id == 3) {
+                $this->clear2();
                 $this->clear3();
                 $this->dispatch('hideBothJobOrderModalAndStatusUpdateModal');
             } else {
@@ -658,7 +664,6 @@ class Incoming extends Component
 
             $this->dispatch('show-success-update-message-toast');
         } catch (\Throwable $th) {
-            dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }
@@ -698,22 +703,22 @@ class Incoming extends Component
     public function readLogs($key)
     {
         try {
-            $this->job_order_logs = Activity::select('activity_log.*', 'ref_status.name as status_name') // Include ref_status.name in the result
-                ->join(
-                    'ref_status',
-                    'ref_status.id',
-                    '=',
-                    DB::raw("JSON_UNQUOTE(JSON_EXTRACT(activity_log.properties, '$.attributes.ref_status_id'))")
-                )
-                ->where('subject_type', TblJobOrderModel::class)
+            $this->job_order_logs = Activity::where('subject_type', TblJobOrderModel::class)
                 ->where('subject_id', $key)
-                ->where('description', '!=', 'created') // Exclude 'created' logs
-                // ->whereNotNull('properties->attributes->findings') // Check if 'findings' exists
-                // ->where('properties->attributes->findings', '!=', '') // Ensure 'findings' is not an empty string
+                ->whereNot('event', 'printed job order')
+                ->with([
+                    'causer',
+                    'subject.category',
+                    'subject.sub_category',
+                    'subject.type_of_repair',
+                    'subject.location'
+                ]) // Load the user that triggered the activity
+                ->orderBy('created_at', 'desc')
                 ->get();
 
             $this->dispatch('showJobOrderLogsModal');
         } catch (\Throwable $th) {
+            dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }

@@ -166,6 +166,10 @@
             color: #ffffff !important;
             background-color: #507f50 !important;
         }
+
+        .text-bg-info {
+            color: #ffffff !important;
+        }
     </style>
 </head>
 

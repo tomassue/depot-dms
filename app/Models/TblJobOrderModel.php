@@ -123,8 +123,8 @@ class TblJobOrderModel extends Model
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()
-            ->logOnly(['*']);
-        // ->logOnlyDirty();
+            ->logOnly(['*'])
+            ->logOnlyDirty();
     }
 
     /* -------------------------------------------------------------------------- */

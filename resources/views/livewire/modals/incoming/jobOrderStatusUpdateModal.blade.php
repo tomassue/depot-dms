@@ -35,7 +35,7 @@
                     <div class="form-group">
                         <div class="col-md-12">
                             <label for="inputClaimedBy">{{ $ref_status_id == 2 ? 'Claimed by' : 'Referred to' }}</label>
-                            <input type="text" class="form-control @error('claimed_by') is-invalid @enderror" id="inputClaimedBy" wire:model="claimed_by">
+                            <input type="text" class="form-control @error('claimed_by') is-invalid @enderror" id="inputClaimedBy" wire:model="claimed_by" value="sadasdasd">
                             @error('claimed_by')
                             <div class="custom-invalid-feedback">
                                 {{ $message }}
