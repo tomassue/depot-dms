@@ -37,19 +37,19 @@
     <title>DEPOT DMS</title>
 </head>
 
-<body>
+<body class="bg-cover bg-center bg-no-repeat" style="background-image: url('{{ asset('assets/images/city-depot-login-bg.png') }}');">
     <section class="vh-100">
         <div class="container py-5 h-100">
             <div class="row d-flex align-items-center justify-content-center h-100">
                 <div class="row col-md-8 col-lg-7 col-xl-6">
                     <div class="text-center">
-                        <img src="{{ asset('assets/images/login-image.png') }}" class="img-fluid" alt="cdo-logo" width="1000px">
+                        <img src="{{ asset('assets/images/city-depot-login.png') }}" class="img-fluid" alt="cdo-logo" width="1000px">
                     </div>
                 </div>
 
                 <div class="col-md-7 col-lg-5 col-xl-5 offset-xl-1">
                     <div class="text-center">
-                        <img src="{{ asset('assets/images/login-image-2.png') }}" class="img-fluid" alt="cdo-logo" width="600px">
+                        <img src="{{ asset('assets/images/login-image-2.png') }}" class="img-fluid" alt="cdo-logo" style="max-width: 100%; height: auto;">
                     </div>
                     <form method="POST" action="{{ route('login') }}">
                         @csrf
