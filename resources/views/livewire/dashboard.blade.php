@@ -97,6 +97,11 @@
         $('#jobOrderModal').modal('show');
     });
 
+    $wire.on('hideBothJobOrderModalAndStatusUpdateModal', () => {
+        $('#statusUpdate').modal('hide');
+        $('#incomingModal').modal('hide');
+    });
+
     /* -------------------------------------------------------------------------- */
 
     const data = @json($table_pending_job_orders); // Ensure that $mechanics includes 'deleted_at' field

@@ -121,6 +121,10 @@ class Dashboard extends Component
 
         if ($property === 'ref_status_id') {
             if ($this->ref_status_id == 2 || $this->ref_status_id == 3) {
+                if ($this->ref_status_id == 2) {
+                    # We automatically assigned that whoever's the person in charge, will be the one to claim. However, end user can still edit it.
+                    $this->claimed_by = $this->person_in_charge;
+                }
                 $this->dispatch('showStatusUpdateModal');
             }
         }
