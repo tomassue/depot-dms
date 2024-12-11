@@ -43,7 +43,7 @@
             <div class="row d-flex align-items-center justify-content-center h-100">
                 <div class="row col-md-8 col-lg-7 col-xl-6">
                     <div class="text-center">
-                        <img src="{{ asset('assets/images/city-depot-login.png') }}" class="img-fluid" alt="cdo-logo" width="1000px">
+                        <img src="{{ asset('assets/images/city-depot-login.png') }}" class="img-fluid" alt="cdo-logo" width="500px">
                     </div>
                 </div>
 
