@@ -10,6 +10,12 @@
                 <form class="forms-sample" wire:submit="updateJobOrder" novalidate>
                     <div class="form-group">
                         <div class="col-md-12">
+                            <label for="inputDateTimeIn">Date & Time (In)</label>
+                            <input type="text" class="form-control disabled_input" id="inputDateTimeIn" value="{{ \Carbon\Carbon::parse($date_and_time_in)->format('F d, Y g:i A') }}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-md-12">
                             <label for="inputDateTime">Date & Time (Out)</label>
                             <div wire:ignore>
                                 <input class="form-control date_and_time_out">

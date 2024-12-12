@@ -171,7 +171,10 @@ class Dashboard extends Component
         $referred = TblJobOrderModel::where('ref_status_id', 3)->count();
 
         # Table Pending Job Orders
-        $table_pending_job_orders = TblJobOrderModel::with(['category', 'sub_category', 'status'])->where('ref_status_id', 1)->get();
+        $table_pending_job_orders = TblJobOrderModel::with(['category', 'status'])->where('ref_status_id', 1)->get();
+        $table_pending_job_orders->each(function ($table_pending_job_orders) {
+            $table_pending_job_orders->append('sub_category_names');
+        });
 
         # status-select
         $statuses = RefStatusModel::all()
@@ -256,7 +259,7 @@ class Dashboard extends Component
 
             $this->job_order_no          = $job_order->id;
             $this->contact_number        = $job_order->contact_number;
-            $this->ref_sub_category_id_2 = $job_order->ref_sub_category_id;
+            $this->ref_sub_category_id_2 = json_decode($job_order->ref_sub_category_id);
             $this->person_in_charge      = $job_order->person_in_charge;
             $this->mileage               = $job_order->mileage;
 
@@ -293,7 +296,7 @@ class Dashboard extends Component
                 $job_order->contact_number          = $this->contact_number;
                 $job_order->ref_category_id         = $this->ref_category_id;
                 $job_order->ref_type_of_repair_id   = $this->ref_type_of_repair_id;
-                $job_order->ref_sub_category_id     = $this->ref_sub_category_id;
+                $job_order->ref_sub_category_id     = json_encode($this->ref_sub_category_id);
                 $job_order->ref_mechanics           = json_encode($this->ref_mechanics);
                 $job_order->ref_location_id         = $this->ref_location_id;
                 $job_order->date_and_time_in        = $this->date_and_time_in;

@@ -77,9 +77,18 @@ class TblJobOrderModel extends Model
         return $this->belongsTo(RefCategoryModel::class, 'ref_category_id', 'id');
     }
 
-    public function sub_category(): BelongsTo
+    // public function sub_category()
+    // {
+    //     return $this->belongsTo(RefSubCategoryModel::class, 'ref_sub_category_id', 'id');
+    // }
+
+    public function getSubCategoryNamesAttribute()
     {
-        return $this->belongsTo(RefSubCategoryModel::class, 'ref_sub_category_id', 'id');
+        $subCategoryIds = json_decode($this->ref_sub_category_id, true);
+
+        $subCategoryNames = RefSubCategoryModel::whereIn('id', $subCategoryIds)->pluck('name')->toArray();
+
+        return implode(', ', $subCategoryNames);
     }
 
     public function status(): BelongsTo
@@ -92,10 +101,11 @@ class TblJobOrderModel extends Model
         return $this->belongsTo(RefTypeOfRepairModel::class, 'ref_type_of_repair_id', 'id');
     }
 
-    public function mechanic(): BelongsTo
-    {
-        return $this->belongsTo(RefMechanicsModel::class, 'ref_mechanics', 'id');
-    }
+    // public function mechanic(): BelongsTo
+    // {
+    //     return $this->belongsTo(RefMechanicsModel::class, 'ref_mechanics', 'id');
+    // }
+
 
     public function mechanics()
     {

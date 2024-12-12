@@ -143,7 +143,7 @@
                             item.id, // Primary Key
                             item.id,
                             item.category.name,
-                            item.sub_category.name,
+                            item.sub_category_names, // Access the sub_category_names attribute
                             item.status.name,
                             item.date_and_time_out ?
                             new Date(item.date_and_time_out).toLocaleString('en-US', {
@@ -172,7 +172,7 @@
                                 item.id, // Primary Key
                                 item.id,
                                 item.category.name,
-                                item.sub_category.name,
+                                item.sub_category_names, // Access the sub_category_names attribute
                                 item.status.name,
                                 item.date_and_time_out ?
                                 new Date(item.date_and_time_out).toLocaleString('en-US', {
@@ -248,7 +248,8 @@
         ele: '#sub-category-select',
         options: @json($sub_categories),
         search: true,
-        maxWidth: '100%'
+        maxWidth: '100%',
+        multiple: true
     });
 
     let ref_sub_category_id = document.querySelector('#sub-category-select');

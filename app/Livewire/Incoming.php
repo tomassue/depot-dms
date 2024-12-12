@@ -56,7 +56,7 @@ class Incoming extends Component
 
     public $date_and_time_in;
     public $ref_category_id;
-    public $ref_sub_category_id, $ref_sub_category_id_2;
+    public $ref_sub_category_id = [], $ref_sub_category_id_2 = [];
     public $ref_location_id;
     public $person_in_charge;
     public $contact_number;
@@ -516,12 +516,17 @@ class Incoming extends Component
             $this->ref_models_id_2               = $incoming_request->model->name;
             $this->number                        = $incoming_request->number;
 
-            $job_orders = TblJobOrderModel::with(['category', 'sub_category', 'status'])
+            $job_orders = TblJobOrderModel::with(['category', 'status'])
                 ->where('reference_no', $incoming_request->reference_no)
                 ->get();
 
+            $job_orders->each(function ($job_order) {
+                $job_order->append('sub_category_names');
+            });
+
             $this->dispatch('load-table-job-orders', $job_orders->toJson());
         } catch (\Throwable $th) {
+            dd($th);
             $this->page = 1;
             $this->dispatch('show-something-went-wrong-toast');
         }
@@ -552,7 +557,7 @@ class Incoming extends Component
                 $job_order->reference_no            = $this->reference_no;
                 $job_order->date_and_time_in        = $this->date_and_time_in;
                 $job_order->ref_category_id         = $this->ref_category_id;
-                $job_order->ref_sub_category_id     = $this->ref_sub_category_id;
+                $job_order->ref_sub_category_id     = json_encode($this->ref_sub_category_id);
                 $job_order->mileage                 = $this->mileage;
                 $job_order->ref_location_id         = $this->ref_location_id;
                 $job_order->person_in_charge        = $this->person_in_charge;
@@ -566,9 +571,13 @@ class Incoming extends Component
                 $job_order->save();
             });
 
-            $job_orders = TblJobOrderModel::with(['category', 'sub_category', 'status'])
+            $job_orders = TblJobOrderModel::with(['category', 'status'])
                 ->where('reference_no', $this->reference_no)
                 ->get();
+
+            $job_orders->each(function ($job_order) {
+                $job_order->append('sub_category_names');
+            });
 
             $this->dispatch('load-table-job-orders', $job_orders->toJson());
 
@@ -576,6 +585,7 @@ class Incoming extends Component
             $this->dispatch('hideJobOrderModal');
             $this->dispatch('show-success-save-message-toast');
         } catch (\Throwable $th) {
+            dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }
@@ -593,7 +603,7 @@ class Incoming extends Component
             $this->person_in_charge      = $job_order->person_in_charge;
             $this->mileage               = $job_order->mileage;
             $this->contact_number        = $job_order->contact_number;
-            $this->ref_sub_category_id_2 = $job_order->ref_sub_category_id;
+            $this->ref_sub_category_id_2 = json_decode($job_order->ref_sub_category_id);
 
             $this->dispatch('set-category-select', $job_order->ref_category_id);
             $this->dispatch('set-type-of-repair-select', $job_order->ref_type_of_repair_id);
@@ -623,7 +633,7 @@ class Incoming extends Component
                 $job_order->contact_number          = $this->contact_number;
                 $job_order->ref_category_id         = $this->ref_category_id;
                 $job_order->ref_type_of_repair_id   = $this->ref_type_of_repair_id;
-                $job_order->ref_sub_category_id     = $this->ref_sub_category_id;
+                $job_order->ref_sub_category_id     = json_encode($this->ref_sub_category_id);
                 $job_order->ref_mechanics           = json_encode($this->ref_mechanics);
                 $job_order->ref_location_id         = $this->ref_location_id;
                 $job_order->date_and_time_in        = $this->date_and_time_in;
@@ -647,9 +657,13 @@ class Incoming extends Component
                 $job_order->save();
             });
 
-            $job_orders = TblJobOrderModel::with(['category', 'sub_category', 'status'])
+            $job_orders = TblJobOrderModel::with(['category', 'status'])
                 ->where('reference_no', $this->reference_no)
                 ->get();
+
+            $job_orders->each(function ($job_order) {
+                $job_order->append('sub_category_names');
+            });
 
             $this->dispatch('load-table-job-orders', $job_orders->toJson());
 
@@ -664,6 +678,7 @@ class Incoming extends Component
 
             $this->dispatch('show-success-update-message-toast');
         } catch (\Throwable $th) {
+            dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }
@@ -682,7 +697,7 @@ class Incoming extends Component
             $this->contact_number           = $job_order->contact_number;
             $this->ref_category_id          = $job_order->category->name;
             $this->ref_type_of_repair_id    = $job_order->type_of_repair->name;
-            $this->ref_sub_category_id_2    = $job_order->sub_category->name;
+            $this->ref_sub_category_id_2    = $job_order->sub_category_names;
             $this->ref_mechanics            = $job_order->mechanics()->pluck('name')->implode(', ');
             $this->ref_location_id          = $job_order->location->name;
             $this->mileage                  = $job_order->mileage;
@@ -709,7 +724,6 @@ class Incoming extends Component
                 ->with([
                     'causer',
                     'subject.category',
-                    'subject.sub_category',
                     'subject.type_of_repair',
                     'subject.location'
                 ]) // Load the user that triggered the activity
@@ -718,7 +732,7 @@ class Incoming extends Component
 
             $this->dispatch('showJobOrderLogsModal');
         } catch (\Throwable $th) {
-            dd($th);
+            // dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }

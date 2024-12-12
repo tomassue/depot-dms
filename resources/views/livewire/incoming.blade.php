@@ -488,6 +488,7 @@
             limit: 10
         },
         sort: true,
+        autoWidth: true,
         data: () => {
             return new Promise(resolve => {
                 setTimeout(() =>
@@ -694,7 +695,7 @@
                                     item.id,
                                     item.id,
                                     item.category.name,
-                                    item.sub_category.name,
+                                    item.sub_category_names, // Access the sub_category_names attribute
                                     item.status.name,
                                     item.date_and_time_out ?
                                     new Date(item.date_and_time_out).toLocaleString('en-US', {
@@ -734,10 +735,9 @@
                         name: "Status",
                         formatter: (cell, row) => {
                             const status = row.cells[4].data;
-
                             const getBadgeClass = (status) => {
                                 if (status === 'Pending') return 'text-bg-danger';
-                                if (status === 'Repaired') return 'text-bg-success';
+                                if (status === 'Completed') return 'text-bg-success';
                                 if (status === 'Referred to') return 'text-bg-info';
                             };
 
@@ -752,7 +752,6 @@
                     "Total Repair Time",
                     {
                         name: "Actions",
-                        width: "15%",
                         formatter: (cell, row) => {
                             const id = row.cells[0].data;
                             return gridjs.html(`
@@ -779,6 +778,7 @@
                     limit: 10
                 },
                 sort: true,
+                autoWidth: true,
                 data: () => {
                     return new Promise(resolve => {
                         setTimeout(() => {
@@ -788,7 +788,7 @@
                                     item.id,
                                     item.id,
                                     item.category.name,
-                                    item.sub_category.name,
+                                    item.sub_category_names, // Access the sub_category_names attribute
                                     item.status.name,
                                     item.date_and_time_out ?
                                     new Date(item.date_and_time_out).toLocaleString('en-US', {
@@ -890,6 +890,7 @@
         ele: '#sub-category-select',
         options: @json($sub_categories),
         search: true,
+        multiple: true,
         maxWidth: '100%'
     });
 

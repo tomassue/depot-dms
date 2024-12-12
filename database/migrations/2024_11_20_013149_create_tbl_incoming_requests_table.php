@@ -29,10 +29,10 @@ return new class extends Migration
             $table->string('reference_no');
             $table->dateTime('date_and_time_in');
             $table->string('ref_category_id');
-            $table->string('ref_sub_category_id');
-            $table->string('mileage')->nullable(); # Required if the incoming request type is vehicle
+            $table->json('ref_sub_category_id'); //* Array
+            $table->string('mileage')->nullable(); //* Required if the incoming request type is vehicle
             $table->string('ref_location_id');
-            $table->string('person_in_charge'); # Former driver_in_charge, we will make it to sound like more general since we have Aircon
+            $table->string('person_in_charge'); //* Former driver_in_charge, we will make it to sound like more general since we have Aircon
             $table->string('contact_number');
             $table->string('ref_status_id');
             $table->string('ref_type_of_repair_id');

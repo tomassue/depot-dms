@@ -1,6 +1,6 @@
 <!-- jobOrderModal -->
 <div class="modal fade" id="jobOrderModal" tabindex="-1" aria-labelledby="jobOrderModalLabel" aria-hidden="true" data-bs-backdrop="static" wire:ignore.self>
-    <div class="modal-dialog modal-xl">
+    <div class="modal-dialog modal-xl modal-dialog-scrollable">
         <div class="modal-content">
             <div class="modal-header">
                 <h1 class="modal-title fs-5" id="jobOrderModalLabel">{{ $editMode ? 'Update' : 'Add' }} Request Details</h1>
