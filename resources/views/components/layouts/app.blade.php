@@ -15,7 +15,7 @@
     <title>{{ $title ?? 'Page Title' }}</title>
 
     <!-- jquery -->
-    <script src="https://code.jquery.com/jquery-3.7.1.js"></script>
+    <script src="{{ asset('jquery-3.7.1/jquery-3.7.1.js') }}"></script>
 
     <!-- base:css -->
     <link rel="stylesheet" href="{{ asset('assets/vendors/typicons/typicons.css') }}" />
@@ -41,9 +41,6 @@
     <!-- Grid.js -->
     <link rel="stylesheet" href="{{ asset('grid.js/mermaid.min.css') }}" />
 
-    <!-- Sweetalert2 -->
-    <link rel="stylesheet" href="{{ asset('sweetalert2/sweetalert2.all.min.css') }}">
-
     <!-- Virtual Select -->
     <link rel="stylesheet" href="{{ asset('virtual-select/virtual-select.min.css') }}">
 
@@ -52,6 +49,10 @@
 
     <!-- Summernote -->
     <link href="{{ asset('summernote/summernote-bs5.css') }}" rel="stylesheet">
+
+    <!-- FilePond -->
+    <link href="{{ asset('jquery-filepond-master/filepond.css') }}" rel="stylesheet" />
+    <link rel="stylesheet" href="{{ asset('jquery-filepond-master/filepond-plugin-image-preview.css') }}">
 
     <style>
         body {
@@ -233,6 +234,13 @@
 
     <!-- summernote -->
     <script src="{{ asset('summernote/summernote-bs5.js') }}"></script>
+
+    <!-- FilePond -->
+    <script src="{{ asset('jquery-filepond-master/filepond.min.js') }}"></script>
+    <script src="{{ asset('jquery-filepond-master/filepond-plugin-file-validate-type.js') }}"></script>
+    <script src="{{ asset('jquery-filepond-master/filepond-plugin-file-validate-size.js') }}"></script>
+    <script src="{{ asset('jquery-filepond-master/filepond-plugin-image-preview.js') }}"></script>
+    <script src="{{ asset('jquery-filepond-master/filepond.jquery.js') }}"></script>
 
     <script>
         document.addEventListener('livewire:init', () => {

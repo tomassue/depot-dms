@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\FileDataModel;
 use App\Models\RefCategoryModel;
 use App\Models\RefIncomingRequestTypeModel;
 use App\Models\RefLocationModel;
@@ -23,12 +24,14 @@ use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithFileUploads;
 use Spatie\Activitylog\Models\Activity;
+use URL;
 
 #[Title('Incoming | DEPOT DMS')]
 class Incoming extends Component
 {
-    use AuthorizesRequests;
+    use AuthorizesRequests, WithFileUploads;
 
     public $page = 1; // Change this to 1 after finishing the modal's layout in jobOrderModal
 
@@ -70,6 +73,7 @@ class Incoming extends Component
     public $claimed_by;
     public $remarks;
     public $ref_signatories_id;
+    public $files = [], $previewFiles = [];
 
     public function rules()
     {
@@ -303,12 +307,24 @@ class Incoming extends Component
                 ];
             });
 
+        $jobOrderCounts = TblJobOrderModel::selectRaw('JSON_UNQUOTE(JSON_EXTRACT(ref_mechanics, "$[*]")) as mechanic_id')
+            ->where('ref_status_id', '1') // Only count pending job orders
+            ->get()
+            ->pluck('mechanic_id')
+            ->flatMap(function ($item) {
+                return json_decode($item); // Convert JSON string to array
+            })
+            ->countBy()
+            ->all();
+
         // mechanics-select
         $mechanics = RefMechanicsModel::all()
-            ->map(function ($item) {
+            ->map(function ($item) use ($jobOrderCounts) {
+                $count = $jobOrderCounts[$item->id] ?? 0; // Now it will match properly
                 return [
                     'label' => $item->name,
-                    'value' => $item->id
+                    'value' => $item->id,
+                    'description' => "Has {$count} pending job orders"
                 ];
             });
 
@@ -465,6 +481,7 @@ class Incoming extends Component
         $this->dispatch('reset-date-and-time-in');
         $this->dispatch('reset-issue-or-concern-summernote');
         $this->dispatch('reset-findings-summernote');
+        $this->dispatch('reset-my-pond-files');
 
         $this->dispatch('reset-signatories-select');
     }
@@ -541,6 +558,11 @@ class Incoming extends Component
         if ($check_pending_job_order) {
             $this->dispatch('show-can-not-add-job-order-alert');
         } else {
+            $virtual_select = $this->loadPageData();
+
+            // dd($virtual_select['mechanics']);
+
+            $this->dispatch('refresh-mechanics-select-options', options: $virtual_select['mechanics']);
             $this->dispatch('showJobOrderModal');
         }
     }
@@ -553,6 +575,17 @@ class Incoming extends Component
 
         try {
             DB::transaction(function () {
+                foreach ($this->files ?? [] as $file) {
+                    $fileData = FileDataModel::create([
+                        'name'    => $file->getClientOriginalName(),   // Original name of the file
+                        'size'    => $file->getSize(),                 // Size of the file
+                        'type'    => $file->getMimeType(),             // MIME type of the file
+                        'data'    => file_get_contents($file->path()), // File contents (stored as BLOB in DB)
+                        'user_id' => Auth::user()->id              // The ID of the authenticated user
+                    ]);
+                    $fileDataIds[] = $fileData->id;
+                }
+
                 $job_order                          = new TblJobOrderModel();
                 $job_order->reference_no            = $this->reference_no;
                 $job_order->date_and_time_in        = $this->date_and_time_in;
@@ -566,6 +599,7 @@ class Incoming extends Component
                 $job_order->ref_type_of_repair_id   = $this->ref_type_of_repair_id;
                 $job_order->ref_mechanics           = json_encode($this->ref_mechanics);
                 $job_order->issue_or_concern        = $this->issue_or_concern;
+                $job_order->files                   = json_encode($fileDataIds ?? []);
                 $job_order->findings                = $this->findings;
 
                 $job_order->save();
@@ -585,9 +619,22 @@ class Incoming extends Component
             $this->dispatch('hideJobOrderModal');
             $this->dispatch('show-success-save-message-toast');
         } catch (\Throwable $th) {
-            dd($th);
+            dd($th->getMessage());
             $this->dispatch('show-something-went-wrong-toast');
         }
+    }
+
+    public function viewFile($fileId)
+    {
+        // Generate the signed URL with a 10-minute expiration
+        $signedURL = URL::temporarySignedRoute(
+            'file.view',
+            now()->addMinutes(10),
+            ['id' => $fileId]
+        );
+
+        // Dispatch an event to the browser to open the URL in a new tab
+        $this->dispatch('open-file', url: $signedURL);
     }
 
     public function readJobOrder($key)
@@ -605,6 +652,16 @@ class Incoming extends Component
             $this->contact_number        = $job_order->contact_number;
             $this->ref_sub_category_id_2 = json_decode($job_order->ref_sub_category_id);
 
+            if ($job_order->files) {
+                foreach (json_decode($job_order->files) as $item) {
+                    $file = FileDataModel::find($item);
+
+                    if ($file) {
+                        $this->previewFiles[] = $file;
+                    }
+                }
+            }
+
             $this->dispatch('set-category-select', $job_order->ref_category_id);
             $this->dispatch('set-type-of-repair-select', $job_order->ref_type_of_repair_id);
             $this->dispatch('set-status-select', $job_order->ref_status_id);
@@ -612,10 +669,10 @@ class Incoming extends Component
             $this->dispatch('set-location-select', $job_order->ref_location_id);
             $this->dispatch('set-date-and-time-in', $job_order->date_and_time_in);
             $this->dispatch('set-issue-or-concern-summernote', $job_order->issue_or_concern);
-            // $this->dispatch('set-findings-summernote', $job_order->findings);
 
             $this->dispatch('showJobOrderModal');
         } catch (\Throwable $th) {
+            dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }

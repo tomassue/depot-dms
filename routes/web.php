@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FileController;
 use App\Livewire\AccountSettings\ChangePassword;
 use App\Livewire\Dashboard;
 use App\Livewire\Incoming;
@@ -34,6 +35,8 @@ Route::middleware(['auth', 'check_default_password', 'is_active'])->group(functi
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
     Route::get('/incoming', Incoming::class)->name('incoming');
     Route::get('/report', Report::class)->name('report');
+
+    Route::get('/file/view/{id}', [FileController::class, 'viewFile'])->name('file.view')->middleware('signed');
 
     Route::get('/settings/signatories', Signatories::class)->name('signatories');
     Route::get('/settings/equipment-or-vehicle-type', Type::class)->name('equipment-or-vehicle-type');

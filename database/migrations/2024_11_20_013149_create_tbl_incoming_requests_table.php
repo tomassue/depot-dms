@@ -29,7 +29,7 @@ return new class extends Migration
             $table->string('reference_no');
             $table->dateTime('date_and_time_in');
             $table->string('ref_category_id');
-            $table->json('ref_sub_category_id'); //* Array
+            $table->json('ref_sub_category_id'); // Array
             $table->string('mileage')->nullable(); //* Required if the incoming request type is vehicle
             $table->string('ref_location_id');
             $table->string('person_in_charge'); //* Former driver_in_charge, we will make it to sound like more general since we have Aircon
@@ -38,6 +38,7 @@ return new class extends Migration
             $table->string('ref_type_of_repair_id');
             $table->json('ref_mechanics'); # Array
             $table->longText('issue_or_concern');
+            $table->json('files')->nullable(); //* Stores file_ids.
             $table->longText('findings')->nullable();
             $table->dateTime('date_and_time_out')->nullable();
             $table->string('total_repair_time')->nullable();

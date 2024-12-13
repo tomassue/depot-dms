@@ -28,6 +28,7 @@ class TblJobOrderModel extends Model
         'ref_type_of_repair_id',
         'ref_mechanics',
         'issue_or_concern',
+        'files',
         'findings',
         'date_and_time_out',
         'total_repair_time',
