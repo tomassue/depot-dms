@@ -22,6 +22,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Livewire\WithFileUploads;
@@ -624,19 +625,6 @@ class Incoming extends Component
         }
     }
 
-    public function viewFile($fileId)
-    {
-        // Generate the signed URL with a 10-minute expiration
-        $signedURL = URL::temporarySignedRoute(
-            'file.view',
-            now()->addMinutes(10),
-            ['id' => $fileId]
-        );
-
-        // Dispatch an event to the browser to open the URL in a new tab
-        $this->dispatch('open-file', url: $signedURL);
-    }
-
     public function readJobOrder($key)
     {
         $this->authorize('read', TblIncomingRequestModel::class);
@@ -672,7 +660,55 @@ class Incoming extends Component
 
             $this->dispatch('showJobOrderModal');
         } catch (\Throwable $th) {
-            dd($th);
+            // dd($th);
+            $this->dispatch('show-something-went-wrong-toast');
+        }
+    }
+
+    public function viewFile($fileId)
+    {
+        // Generate the signed URL with a 10-minute expiration
+        $signedURL = URL::temporarySignedRoute(
+            'file.view',
+            now()->addMinutes(10),
+            ['id' => $fileId]
+        );
+
+        // Dispatch an event to the browser to open the URL in a new tab
+        $this->dispatch('open-file', url: $signedURL);
+    }
+
+    public function removeFile($fileId)
+    {
+        try {
+            DB::transaction(function () use ($fileId) {
+                // Step 1: Find the job order
+                $job_order = TblJobOrderModel::findOrFail($this->job_order_no);
+
+                // Step 2: Decode the existing file IDs from the files JSON column
+                $existingFileIds = json_decode($job_order->files, true) ?? [];
+
+                // Step 3: Check if the fileId exists in the array
+                if (in_array($fileId, $existingFileIds)) {
+                    // Step 4: Remove the file record from the FileDataModel
+                    FileDataModel::where('id', $fileId)->delete();
+
+                    // Step 5: Remove the file ID from the existing file IDs array
+                    $updatedFileIds = array_filter($existingFileIds, fn($id) => $id != $fileId);
+
+                    // Step 6: Save the updated file IDs back into the files column
+                    $job_order->files = json_encode(array_values($updatedFileIds)); // Re-index array
+                    $job_order->save();
+                }
+            });
+
+            // Step 7: Remove file from previewFiles
+            $this->previewFiles = array_filter($this->previewFiles, function ($file) use ($fileId) {
+                return $file->id != $fileId; // Remove the file with matching ID
+            });
+            $this->previewFiles = array_values($this->previewFiles); // Reset array keys to maintain clean indices
+        } catch (\Throwable $th) {
+            //throw $th;
             $this->dispatch('show-something-went-wrong-toast');
         }
     }
@@ -684,6 +720,28 @@ class Incoming extends Component
         try {
             DB::transaction(function () {
                 $job_order = TblJobOrderModel::findOrFail($this->job_order_no);
+
+                // Step 1: Initialize $fileDataIds as an empty array to avoid "undefined variable" error
+                $fileDataIds = [];
+
+                foreach ($this->files ?? [] as $file) {
+                    $fileData = FileDataModel::create([
+                        'name'    => $file->getClientOriginalName(),   // Original name of the file
+                        'size'    => $file->getSize(),                 // Size of the file
+                        'type'    => $file->getMimeType(),             // MIME type of the file
+                        'data'    => file_get_contents($file->path()), // File contents (stored as BLOB in DB)
+                        'user_id' => Auth::user()->id                  // The ID of the authenticated user
+                    ]);
+                    $fileDataIds[] = $fileData->id;
+                }
+
+                // Step 2: Check if $fileDataIds has any new file IDs
+                if (!empty($fileDataIds)) {
+                    // Get the existing file IDs from the JSON column, decode it, and merge it with the new file IDs
+                    $existingFileIds    = json_decode($job_order->files, true) ?? []; // Convert JSON to array
+                    $updatedFileIds     = array_unique(array_merge($existingFileIds, $fileDataIds)); // Merge and remove duplicates
+                    $job_order->files   = json_encode($updatedFileIds); // Save the updated file IDs
+                }
 
                 $job_order->ref_status_id           = $this->ref_status_id;
                 $job_order->person_in_charge        = $this->person_in_charge;
@@ -778,12 +836,12 @@ class Incoming extends Component
             $this->job_order_logs = Activity::where('subject_type', TblJobOrderModel::class)
                 ->where('subject_id', $key)
                 ->whereNot('event', 'printed job order')
-                ->with([
-                    'causer',
-                    'subject.category',
-                    'subject.type_of_repair',
-                    'subject.location'
-                ]) // Load the user that triggered the activity
+                // ->with([
+                //     'causer',
+                //     'subject.category',
+                //     'subject.type_of_repair',
+                //     'subject.location'
+                // ]) // Load the user that triggered the activity
                 ->orderBy('created_at', 'desc')
                 ->get();
 

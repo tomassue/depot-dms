@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\FileDataModel;
 use App\Models\RefCategoryModel;
 use App\Models\RefLocationModel;
 use App\Models\RefMechanicsModel;
@@ -10,13 +11,18 @@ use App\Models\RefSubCategoryModel;
 use App\Models\RefTypeOfRepairModel;
 use App\Models\TblIncomingRequestModel;
 use App\Models\TblJobOrderModel;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use Livewire\WithFileUploads;
+use URL;
 
 #[Title('Dashboard | DEPOT DMS')]
 class Dashboard extends Component
 {
+    use WithFileUploads;
+
     public $editMode;
     public $ref_incoming_request_types_id;
 
@@ -44,6 +50,8 @@ class Dashboard extends Component
     public $total_repair_time;
     public $claimed_by;
     public $remarks;
+    public $ref_signatories_id;
+    public $files = [], $previewFiles = [];
 
     public function render()
     {
@@ -143,6 +151,7 @@ class Dashboard extends Component
         $this->dispatch('reset-location-select');
         $this->dispatch('reset-date-and-time-in');
         $this->dispatch('reset-issue-or-concern-summernote');
+        $this->dispatch('reset-my-pond-files');
 
         $this->dispatch('reset-signatories-select');
     }
@@ -263,6 +272,16 @@ class Dashboard extends Component
             $this->person_in_charge      = $job_order->person_in_charge;
             $this->mileage               = $job_order->mileage;
 
+            if ($job_order->files) {
+                foreach (json_decode($job_order->files) as $item) {
+                    $file = FileDataModel::find($item);
+
+                    if ($file) {
+                        $this->previewFiles[] = $file;
+                    }
+                }
+            }
+
             $this->dispatch('set-category-select', $job_order->ref_category_id);
             $this->dispatch('set-type-of-repair-select', $job_order->ref_type_of_repair_id);
             $this->dispatch('set-status-select', $job_order->ref_status_id);
@@ -283,6 +302,54 @@ class Dashboard extends Component
         }
     }
 
+    public function viewFile($fileId)
+    {
+        // Generate the signed URL with a 10-minute expiration
+        $signedURL = URL::temporarySignedRoute(
+            'file.view',
+            now()->addMinutes(10),
+            ['id' => $fileId]
+        );
+
+        // Dispatch an event to the browser to open the URL in a new tab
+        $this->dispatch('open-file', url: $signedURL);
+    }
+
+    public function removeFile($fileId)
+    {
+        try {
+            DB::transaction(function () use ($fileId) {
+                // Step 1: Find the job order
+                $job_order = TblJobOrderModel::findOrFail($this->job_order_no);
+
+                // Step 2: Decode the existing file IDs from the files JSON column
+                $existingFileIds = json_decode($job_order->files, true) ?? [];
+
+                // Step 3: Check if the fileId exists in the array
+                if (in_array($fileId, $existingFileIds)) {
+                    // Step 4: Remove the file record from the FileDataModel
+                    FileDataModel::where('id', $fileId)->delete();
+
+                    // Step 5: Remove the file ID from the existing file IDs array
+                    $updatedFileIds = array_filter($existingFileIds, fn($id) => $id != $fileId);
+
+                    // Step 6: Save the updated file IDs back into the files column
+                    $job_order->files = json_encode(array_values($updatedFileIds)); // Re-index array
+                    $job_order->save();
+                }
+            });
+
+            // Step 7: Remove file from previewFiles
+            $this->previewFiles = array_filter($this->previewFiles, function ($file) use ($fileId) {
+                return $file->id != $fileId; // Remove the file with matching ID
+            });
+            $this->previewFiles = array_values($this->previewFiles); // Reset array keys to maintain clean indices
+        } catch (\Throwable $th) {
+            //throw $th;
+            $this->dispatch('show-something-went-wrong-toast');
+        }
+    }
+
     public function updateJobOrder()
     {
         $this->validate($this->rules(), [], $this->attributes());
@@ -290,6 +357,28 @@ class Dashboard extends Component
         try {
             DB::transaction(function () {
                 $job_order = TblJobOrderModel::findOrFail($this->job_order_no);
+
+                // Step 1: Initialize $fileDataIds as an empty array to avoid "undefined variable" error
+                $fileDataIds = [];
+
+                foreach ($this->files ?? [] as $file) {
+                    $fileData = FileDataModel::create([
+                        'name'    => $file->getClientOriginalName(),   // Original name of the file
+                        'size'    => $file->getSize(),                 // Size of the file
+                        'type'    => $file->getMimeType(),             // MIME type of the file
+                        'data'    => file_get_contents($file->path()), // File contents (stored as BLOB in DB)
+                        'user_id' => Auth::user()->id                  // The ID of the authenticated user
+                    ]);
+                    $fileDataIds[] = $fileData->id;
+                }
+
+                // Step 2: Check if $fileDataIds has any new file IDs
+                if (!empty($fileDataIds)) {
+                    // Get the existing file IDs from the JSON column, decode it, and merge it with the new file IDs
+                    $existingFileIds                = json_decode($job_order->files, true) ?? []; // Convert JSON to array
+                    $updatedFileIds                 = array_unique(array_merge($existingFileIds, $fileDataIds)); // Merge and remove duplicates
+                    $job_order->files               = json_encode($updatedFileIds); // Save the updated file IDs
+                }
 
                 $job_order->ref_status_id           = $this->ref_status_id;
                 $job_order->person_in_charge        = $this->person_in_charge;
@@ -332,6 +421,7 @@ class Dashboard extends Component
             $loadPageData = $this->loadPageData();
             $this->dispatch('refresh-table-incoming-requests', $loadPageData['table_pending_job_orders']);
         } catch (\Throwable $th) {
+            dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }

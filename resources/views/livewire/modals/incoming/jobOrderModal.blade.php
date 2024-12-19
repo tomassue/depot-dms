@@ -207,12 +207,17 @@
                                             {{ $item->type }}
                                         </td>
                                         <td>
-                                            <a class="btn btn-info" role="button" wire:click="viewFile('{{$item->id}}')">View</a>
+                                            <a class="btn btn-info" role="button" title="View File" wire:click="viewFile('{{ $item->id }}')">
+                                                <i class='bx bx-file bx-sm'></i>
+                                            </a>
+                                            <a class="btn btn-danger" role="button" title="Remove File" wire:click="$dispatch('confirm-file-deletion', {{ $item->id }})">
+                                                <i class="bx bx-trash bx-sm"></i>
+                                            </a>
                                         </td>
                                     </tr>
                                     @empty
                                     <tr>
-                                        <td colspan="4">No attachments found.</td>
+                                        <td colspan="4" class="text-center">No attachments found.</td>
                                     </tr>
                                     @endforelse
                                 </tbody>

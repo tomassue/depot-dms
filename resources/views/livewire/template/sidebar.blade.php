@@ -55,6 +55,13 @@
             </li>
 
             <li class="nav-item">
+                <a class="nav-link" href="{{ route('mechanics-list') }}">
+                    <i class='bx bxs-wrench bx-sm'></i>
+                    <span class="menu-title">Mechanic</span>
+                </a>
+            </li>
+
+            <li class="nav-item">
                 <a
                     class="nav-link"
                     data-bs-toggle="collapse"

@@ -440,5 +440,58 @@
         $('#findings-summernote').summernote('code', key[0]);
         $('#findings-summernote').summernote('disable');
     });
+
+    /* -------------------------------------------------------------------------- */
+
+    // Register the plugin 
+    FilePond.registerPlugin(FilePondPluginFileValidateType); // for file type validation
+    FilePond.registerPlugin(FilePondPluginFileValidateSize); // for file size validation
+    FilePond.registerPlugin(FilePondPluginImagePreview); // for image preview
+
+    // Turn input element into a pond with configuration options
+    $('.my-pond-files').filepond({
+        // required: true,
+        allowFileTypeValidation: true,
+        acceptedFileTypes: ['image/jpg', 'image/png', 'application/pdf'],
+        labelFileTypeNotAllowed: 'File of invalid type',
+        allowFileSizeValidation: true,
+        maxFileSize: '10MB',
+        labelMaxFileSizeExceeded: 'File is too large',
+        server: {
+            // This will assign the data to the files[] property.
+            process: (fieldName, file, metadata, load, error, progress, abort) => {
+                @this.upload('files', file, load, error, progress);
+            },
+            revert: (uniqueFileId, load, error) => {
+                @this.removeUpload('files', uniqueFileId, load, error);
+            }
+        }
+    });
+
+    $wire.on('reset-my-pond-files', () => {
+        $('.my-pond-files').each(function() {
+            $(this).filepond('removeFiles');
+        });
+    });
+
+    $wire.on('open-file', (url) => {
+        window.open(event.detail.url, '_blank'); // Open the signed URL in a new tab
+    });
+
+    $wire.on('confirm-file-deletion', (fileId) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $wire.removeFile(fileId);
+            }
+        });
+    });
 </script>
 @endscript

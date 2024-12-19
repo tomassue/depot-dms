@@ -766,7 +766,7 @@
                             <button class="btn btn-white btn-sm btn-icon-text me-3" title="Print" wire:click="assignSignatory('${id}')">
                                 <i class="bx bx-printer bx-sm"></i>
                             </button>
-                            <button class="btn btn-white btn-sm btn-icon-text me-3" title="Print" wire:click="readLogs('${id}')">
+                            <button class="btn btn-white btn-sm btn-icon-text me-3" title="Logs" wire:click="readLogs('${id}')">
                                 <i class="bx bx-history bx-sm"></i>
                             </button>
                         `);
@@ -1103,6 +1103,22 @@
 
     $wire.on('open-file', (url) => {
         window.open(event.detail.url, '_blank'); // Open the signed URL in a new tab
+    });
+
+    $wire.on('confirm-file-deletion', (fileId) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $wire.removeFile(fileId);
+            }
+        });
     });
 </script>
 @endscript

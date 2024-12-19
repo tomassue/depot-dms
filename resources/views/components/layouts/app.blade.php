@@ -93,9 +93,9 @@
             background-color: #e74c3c;
         }
 
-        /* Purple */
+        /* Yellow */
         .bg-color-3 {
-            background-color: #9b59b6;
+            background-color: rgb(182, 165, 89);
         }
 
         /* Orange */
@@ -216,6 +216,7 @@
     <script src="{{ asset('assets/js/settings.js') }}"></script>
     <script src="{{ asset('assets/js/todolist.js') }}"></script>
     <!-- endinject -->
+
     <!-- Custom js for this page-->
     <script src="{{ asset('assets/js/dashboard.js') }}"></script>
     <!-- End custom js for this page-->

@@ -102,6 +102,12 @@
                                                     $mechanics = \App\Models\RefMechanicsModel::whereIn('id', $mechanicIds)->get();
                                                     @endphp
                                                     {{ implode(', ', $mechanics->pluck('name')->toArray()) ?? 'Not available' }}
+                                                    @elseif ($key === 'files' && isset($oldAttributes[$key]))
+                                                    @php
+                                                    $filesIds = json_decode($oldAttributes[$key], true);
+                                                    $files = \App\Models\FileDataModel::whereIn('id', $filesIds)->get();
+                                                    @endphp
+                                                    {{ implode(', ', $files->pluck('name')->toArray()) ?? 'Not available' }}
                                                     @else
                                                     {{ $oldAttributes[$key] ?? 'Not available' }}
                                                     @endif
@@ -127,6 +133,12 @@
                                                     $mechanics = \App\Models\RefMechanicsModel::whereIn('id', $mechanicIds)->get(); // Retrieve the mechanics based on the IDs
                                                     @endphp
                                                     {{ implode(', ', $mechanics->pluck('name')->toArray()) ?? 'Not available' }}
+                                                    @elseif ($key === 'files')
+                                                    @php
+                                                    $filesIds = json_decode($updatedAttributes[$key], true);
+                                                    $files = \App\Models\FileDataModel::whereIn('id', $filesIds)->get();
+                                                    @endphp
+                                                    {{ implode(', ', $files->pluck('name')->toArray()) ?? 'Not available' }}
                                                     @else
                                                     {{ $updatedAttributes[$key] ?? 'Not available' }}
                                                     @endif
