@@ -148,6 +148,17 @@ class Roles extends Component
         // I will be using option group in virtual select but I will be making it manually since we are working on the permissions. This is for the front-end sake only.
         $permissions = [
             [
+                'label' => 'Mechanics List',
+                'options' => Permission::whereIn('id', [68, 69])
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'label' => $item->name,
+                            'value' => $item->id
+                        ];
+                    })->toArray()
+            ],
+            [
                 'label' => 'Reports',
                 'options' => Permission::whereIn('id', [66, 67])
                     ->get()

@@ -110,7 +110,8 @@ class Report extends Component
                 'created_at' => $item->created_at,
                 'office' => $item->incoming_request->office->name,
                 'category' => $item->category->name,
-                'sub_category' => $item->sub_category->name,
+                // TODO: Error in the sub_category relationship. Can't access name property.
+                // 'sub_category' => $item->sub_category->name,
                 'type' => $item->incoming_request->type->name,
                 'issue_or_concern' => $item->issue_or_concern
             ];

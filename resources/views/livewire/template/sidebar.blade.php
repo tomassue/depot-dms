@@ -47,19 +47,23 @@
                 </a>
             </li> -->
 
+            @can('read reports')
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('report') }}">
                     <i class='bx bxs-file bx-sm'></i>
                     <span class="menu-title">Report</span>
                 </a>
             </li>
+            @endcan
 
-            <li class="nav-item">
+            @can('read mechanic list')
+            <li class="nav-item {{ request()->is('mechanics-list*') ? 'active' : '' }}">
                 <a class="nav-link" href="{{ route('mechanics-list') }}">
                     <i class='bx bxs-wrench bx-sm'></i>
-                    <span class="menu-title">Mechanic</span>
+                    <span class="menu-title">Mechanic (List)</span>
                 </a>
             </li>
+            @endcan
 
             <li class="nav-item">
                 <a

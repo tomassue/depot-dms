@@ -78,10 +78,10 @@ class TblJobOrderModel extends Model
         return $this->belongsTo(RefCategoryModel::class, 'ref_category_id', 'id');
     }
 
-    // public function sub_category()
-    // {
-    //     return $this->belongsTo(RefSubCategoryModel::class, 'ref_sub_category_id', 'id');
-    // }
+    public function sub_category()
+    {
+        return $this->belongsTo(RefSubCategoryModel::class, 'ref_sub_category_id', 'id');
+    }
 
     public function getSubCategoryNamesAttribute()
     {
@@ -102,10 +102,10 @@ class TblJobOrderModel extends Model
         return $this->belongsTo(RefTypeOfRepairModel::class, 'ref_type_of_repair_id', 'id');
     }
 
-    // public function mechanic(): BelongsTo
-    // {
-    //     return $this->belongsTo(RefMechanicsModel::class, 'ref_mechanics', 'id');
-    // }
+    public function mechanic(): BelongsTo
+    {
+        return $this->belongsTo(RefMechanicsModel::class, 'ref_mechanics', 'id');
+    }
 
 
     public function mechanics()
@@ -124,10 +124,10 @@ class TblJobOrderModel extends Model
         return $this->belongsTo(RefLocationModel::class, 'ref_location_id', 'id');
     }
 
-    // public function signatories(): BelongsTo
-    // {
-    //     return $this->belongsTo(RefSignatoriesModel::class, 'ref_signatories_id', 'id');
-    // }
+    public function signatories(): BelongsTo
+    {
+        return $this->belongsTo(RefSignatoriesModel::class, 'ref_signatories_id', 'id');
+    }
 
     /* -------------------------------------------------------------------------- */
 
