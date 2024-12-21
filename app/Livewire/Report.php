@@ -111,7 +111,7 @@ class Report extends Component
                 'office' => $item->incoming_request->office->name,
                 'category' => $item->category->name,
                 // TODO: Error in the sub_category relationship. Can't access name property.
-                // 'sub_category' => $item->sub_category->name,
+                'sub_category' => $item->sub_category_names,
                 'type' => $item->incoming_request->type->name,
                 'issue_or_concern' => $item->issue_or_concern
             ];
@@ -141,7 +141,7 @@ class Report extends Component
             $this->ref_status_id                 = $job_order->status->name;
             $this->ref_category_id               = $job_order->category->name;
             $this->ref_type_of_repair_id         = $job_order->type_of_repair->name;
-            $this->ref_sub_category_id_2         = $job_order->sub_category->name;
+            $this->ref_sub_category_id_2         = $job_order->sub_category_names;
             $this->ref_mechanics                 = $job_order->mechanics()->pluck('name')->implode(', ');
             $this->ref_location_id               = $job_order->location->name;
             $this->issue_or_concern              = $job_order->issue_or_concern;

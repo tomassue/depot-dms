@@ -242,7 +242,10 @@
                 hidden: true
             },
             'Date',
-            'Office/Department',
+            {
+                name: 'Office/Department',
+                width: '30%'
+            },
             'Category',
             'Sub-category',
             'Type',
@@ -264,6 +267,7 @@
             limit: 10
         },
         sort: true,
+        autoWidth: true,
         data: () => {
             return new Promise(resolve => {
                 setTimeout(() =>
