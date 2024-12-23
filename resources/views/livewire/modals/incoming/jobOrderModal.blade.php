@@ -207,10 +207,10 @@
                                             {{ $item->type }}
                                         </td>
                                         <td>
-                                            <a class="btn btn-info" role="button" title="View File" wire:click="viewFile('{{ $item->id }}')">
+                                            <a class="btn btn-sm btn-info" role="button" title="View File" wire:click="viewFile('{{ $item->id }}')">
                                                 <i class='bx bx-file bx-sm'></i>
                                             </a>
-                                            <a class="btn btn-danger" role="button" title="Remove File" wire:click="$dispatch('confirm-file-deletion', {{ $item->id }})">
+                                            <a class="btn btn-sm btn-danger" role="button" title="Remove File" wire:click="$dispatch('confirm-file-deletion', {{ $item->id }})">
                                                 <i class="bx bx-trash bx-sm"></i>
                                             </a>
                                         </td>

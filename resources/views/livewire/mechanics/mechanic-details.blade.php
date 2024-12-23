@@ -92,7 +92,7 @@
                     resolve(
                         data.map(item => [
                             item.id,
-                            item.job_order_no,
+                            item.id,
                             item.category.name,
                             item.sub_category_names,
                             item.status.name,
@@ -111,7 +111,7 @@
                         resolve(
                             data[0].map(item => [
                                 item.id,
-                                item.job_order_no,
+                                item.id,
                                 item.ref_category_id,
                                 item.ref_sub_category_id,
                                 item.ref_status_id,
