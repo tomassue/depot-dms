@@ -25,14 +25,6 @@
         <div class="card">
             <div class="card-body">
                 <div class="col-md-12 my-2">
-                    @livewire('tables.incoming.incoming-requests')
-                </div>
-            </div>
-        </div>
-
-        <div class="card mt-2">
-            <div class="card-body">
-                <div class="col-md-12 my-2">
                     <div id="table_incoming_requests" wire:ignore></div>
                 </div>
             </div>
