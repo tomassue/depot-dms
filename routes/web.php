@@ -66,8 +66,8 @@ Route::middleware(['auth', 'is_active'])->group(function () {
 });
 
 Livewire::setScriptRoute(function ($handle) {
-    return Route::get('/cdo-dts/livewire/livewire.js', $handle);
+    return Route::get('/depot-dms/livewire/livewire.js', $handle);
 });
 Livewire::setUpdateRoute(function ($handle) {
-    return Route::post('/cdo-dts/livewire/update', $handle);
+    return Route::post('/depot-dms/livewire/update', $handle);
 });
