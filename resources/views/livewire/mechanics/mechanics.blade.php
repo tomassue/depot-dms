@@ -25,7 +25,7 @@
                     placeholder="Search..."
                     wire:model.live="search" />
             </div>
-            <div class="row g-2">
+            <div class="row g-2 pb-3">
                 @forelse($mechanics as $item)
                 <div class="col-xl-4 stretch-card pointer">
                     <div class="card profile-card hover-bg position-relative" style="background-color: #314e4f; border-radius: 5px;">
@@ -55,9 +55,9 @@
                                             <p class="text-white font-weight-bold">Total</p>
                                         </div>
                                         <div>
-                                            <p class="text-white">{{ $item->pending_jobs }}</p>
-                                            <p class="text-white">{{ $item->completed_jobs }}</p>
-                                            <p class="text-white">{{ $item->total_jobs }}</p>
+                                            <p class="text-white fw-bold">{{ $item->pending_jobs }}</p>
+                                            <p class="text-white fw-bold">{{ $item->completed_jobs }}</p>
+                                            <p class="text-white fw-bold">{{ $item->total_jobs }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -69,6 +69,17 @@
                 <div class="text-center">No record.</div>
                 @endforelse
             </div>
+            <div>
+                {{ $mechanics->links() }}
+            </div>
         </div>
     </div>
 </div>
+
+@script
+<script>
+    $wire.on('generate-pdf', (url) => {
+        window.open(event.detail.url, '_blank'); // Open new tab
+    });
+</script>
+@endscript

@@ -3,6 +3,9 @@
 
     <div class="card">
         <div class="card-body">
+            <div class="col-md-12 my-2 d-inline-flex align-content-center justify-content-start">
+                <button class="btn btn-info btn-md btn-icon-text" title="Print" wire:click="generateMechanicsPDF"><i class="bx bx-printer bx-sm btn-icon-append"></i></button>
+            </div>
             @can('can create mechanics')
             <div class="col-md-12 my-2 d-inline-flex align-content-center justify-content-end">
                 <button class="btn btn-primary btn-md btn-icon-text" wire:click="showAddMechanicsModal"> Add <i class="typcn typcn-plus-outline btn-icon-append"></i></button>
@@ -46,6 +49,12 @@
 
 @script
 <script>
+    $wire.on('print-pdf', (url) => {
+        window.open(event.detail.url, '_blank');
+    });
+
+    /* -------------------------------------------------------------------------- */
+
     $wire.on('showAddMechanicsModal', () => {
         $('#mechanicsModal').modal('show');
     });
@@ -62,7 +71,7 @@
                 name: "ID",
                 hidden: true
             },
-            "Mechanics",
+            "Name of Mechanics",
             {
                 name: "Status",
                 formatter: (cell, row) => {

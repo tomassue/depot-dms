@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
 use Sqids\Sqids;
+use URL;
 
 #[Title('Mechanic Details | DEPOT DMS')]
 class MechanicDetails extends Component
@@ -66,5 +67,16 @@ class MechanicDetails extends Component
             'mechanic' => $mechanic,
             'mechanic_jobs' => $mechanic_jobs
         ];
+    }
+
+    public function printJobOrders()
+    {
+        $signedURL = URL::temporarySignedRoute(
+            'generate-job-orders-pdf',
+            now()->addMinutes(5),
+            ['id' => $this->mechanic_id]
+        );
+
+        $this->dispatch('generate-pdf', url: $signedURL);
     }
 }

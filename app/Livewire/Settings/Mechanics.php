@@ -8,6 +8,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
 use Livewire\Attributes\Title;
 use Livewire\Component;
+use URL;
 
 #[Title('Mechanics | DEPOT DMS')]
 class Mechanics extends Component
@@ -159,5 +160,15 @@ class Mechanics extends Component
             DB::rollBack();
             $this->dispatch('show-something-went-wrong-toast');
         }
+    }
+
+    public function generateMechanicsPDF()
+    {
+        $signedURL = URL::temporarySignedRoute(
+            'generate-mechanics-pdf',
+            now()->addMinutes(5)
+        );
+
+        $this->dispatch('print-pdf', url: $signedURL);
     }
 }

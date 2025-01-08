@@ -30,9 +30,9 @@
                                 <p class="text-white font-weight-bold">Total</p>
                             </div>
                             <div>
-                                <p class="text-white">{{ $mechanic->pending_jobs }}</p>
-                                <p class="text-white">{{ $mechanic->completed_jobs }}</p>
-                                <p class="text-white">{{ $mechanic->total_jobs }}</p>
+                                <p class="text-white fw-bold">{{ $mechanic->pending_jobs }}</p>
+                                <p class="text-white fw-bold">{{ $mechanic->completed_jobs }}</p>
+                                <p class="text-white fw-bold">{{ $mechanic->total_jobs }}</p>
                             </div>
                         </div>
                     </div>
@@ -43,6 +43,11 @@
 
     <div class="card mb-2">
         <div class="card-body">
+            <div class="col-md-12 my-2 d-inline-flex align-items-center" title="Filter">
+                <button class="btn btn-info btn-md btn-icon-text me-4" title="Print" wire:click="printJobOrders">
+                    <i class="bx bx-printer bx-sm"></i>
+                </button>
+            </div>
             <div class="col-md-12 my-2">
                 <div id="table_mechanic_job_orders" wire:ignore></div>
             </div>
@@ -52,6 +57,12 @@
 
 @script
 <script>
+    $wire.on('generate-pdf', (url) => {
+        window.open(event.detail.url, '_blank'); // Open new tab
+    });
+
+    /* -------------------------------------------------------------------------- */
+
     const data = @json($mechanic_jobs);
     const table_mechanic_job_orders = new gridjs.Grid({
         columns: [{

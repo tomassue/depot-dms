@@ -830,6 +830,17 @@ class Incoming extends Component
         }
     }
 
+    public function printReleaseForm($id)
+    {
+        $signedURL = URL::temporarySignedRoute(
+            'job-order.release-form',
+            now()->addMinutes(10),
+            ['id' => $id]
+        );
+
+        $this->dispatch('generate-pdf', url: $signedURL);
+    }
+
     public function readLogs($key)
     {
         try {

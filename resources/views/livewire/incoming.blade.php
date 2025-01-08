@@ -386,6 +386,12 @@
 
 @script
 <script>
+    $wire.on('generate-pdf', (url) => {
+        window.open(event.detail.url, '_blank');
+    });
+
+    /* -------------------------------------------------------------------------- */
+
     $wire.on('showIncomingModal', () => {
         $('#incomingModal').modal('show');
 
@@ -761,6 +767,9 @@
                             </button>
                             <button class="btn btn-info btn-sm btn-icon-text me-3" title="View" style="display: ${row.cells[4].data === 'Pending' ? 'none' : ''}" wire:click="readJobOrdersDetails('${id}')">
                                 <i class="bx bx-detail bx-sm"></i>
+                            </button>
+                            <button class="btn btn-white btn-sm btn-icon-text me-3" title="Release Form" style="display: ${row.cells[4].data === 'Pending' ? 'none' : ''}" wire:click="printReleaseForm('${id}')">
+                                <i class="bx bxs-file-pdf bx-sm"></i>
                             </button>
                             @endcan
                             <button class="btn btn-white btn-sm btn-icon-text me-3" title="Print" wire:click="assignSignatory('${id}')">

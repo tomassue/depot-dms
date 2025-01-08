@@ -65,7 +65,7 @@
             </li>
             @endcan
 
-            <li class="nav-item">
+            <li class="nav-item {{ request()->is('settings*') ? 'active' : '' }}">
                 <a
                     class="nav-link"
                     data-bs-toggle="collapse"
