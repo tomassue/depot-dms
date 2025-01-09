@@ -15,6 +15,7 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('designation');
+            $table->string('is_division_chief')->nullable()->value('0');
             $table->timestamps();
             $table->timestamp('deleted_at')->nullable();
         });

@@ -19,6 +19,7 @@ class Signatories extends Component
     /* -------------------------------------------------------------------------- */
     public $name;
     public $designation;
+    public $is_division_chief;
 
     public function render()
     {
@@ -52,25 +53,38 @@ class Signatories extends Component
                 'required',
                 Rule::unique('ref_signatories')->where(function ($query) {
                     return $query->where('designation', $this->designation);
-                })
+                })->ignore($this->signatory_id, 'id')
             ],
-            'designation' => 'required'
+            'designation' => 'required',
+            'is_division_chief' => [
+                Rule::unique('ref_signatories')->where(function ($query) {
+                    return $query->where('is_division_chief', true);
+                })
+            ]
         ];
 
         return $rules;
+    }
+
+    public function attributes()
+    {
+        return [
+            'is_division_chief' => 'division chief'
+        ];
     }
 
     public function createSignatory()
     {
         $this->authorize('create signatory', RefSignatoriesModel::class);
 
-        $this->validate();
+        $this->validate($this->rules(), [], $this->attributes());
 
         try {
             DB::transaction(function () {
                 $signatory              = new RefSignatoriesModel();
                 $signatory->name        = $this->name;
                 $signatory->designation = $this->designation;
+                $signatory->is_division_chief = $this->is_division_chief;
                 $signatory->save();
             });
 
@@ -95,6 +109,7 @@ class Signatories extends Component
             $signatory = RefSignatoriesModel::findOrFail($key);
             $this->name = $signatory->name;
             $this->designation = $signatory->designation;
+            $this->is_division_chief = $signatory->is_division_chief;
 
             $this->signatory_id = $key;
             $this->dispatch('showSignatoryModal');
@@ -109,12 +124,13 @@ class Signatories extends Component
 
         $this->authorize('update', $signatory);
 
-        $this->validate();
+        $this->validate($this->rules(), [], $this->attributes());
 
         try {
             DB::transaction(function () use ($signatory) {
                 $signatory->name        = $this->name;
                 $signatory->designation = $this->designation;
+                $signatory->is_division_chief = $this->is_division_chief;
                 $signatory->save();
             });
 

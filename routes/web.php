@@ -38,14 +38,14 @@ Route::middleware(['auth', 'check_default_password', 'is_active'])->group(functi
     Route::get('/dashboard', Dashboard::class)->name('dashboard');
 
     Route::get('/incoming', Incoming::class)->name('incoming');
-    Route::get('/generate-release-form/{id}', [GeneratePDFController::class, 'generateReleaseForm'])->name('generate-release-form');
+    Route::get('/generate-release-form/{id}', [GeneratePDFController::class, 'generateReleaseForm'])->name('generate-release-form')->middleware('signed');
 
     Route::get('/report', Report::class)->name('report');
 
     Route::get('/mechanics-list', MechanicsMechanics::class)->name('mechanics-list');
-    Route::get('/generate-mechanics-list-pdf', [GeneratePDFController::class, 'generateMechanicsListPDF'])->name('generate-mechanics-list-pdf');
+    Route::get('/generate-mechanics-list-pdf', [GeneratePDFController::class, 'generateMechanicsListPDF'])->name('generate-mechanics-list-pdf')->middleware('signed');
     Route::get('/mechanics-list/{id}', MechanicDetails::class)->name('mechanic-details');
-    Route::get('/generate-job-orders-pdf/{id}', [GeneratePDFController::class, 'generateJobOrdersPDF'])->name('generate-job-orders-pdf');
+    Route::get('/generate-job-orders-pdf/{id}', [GeneratePDFController::class, 'generateJobOrdersPDF'])->name('generate-job-orders-pdf')->middleware('signed');
 
     Route::get('/file/view/{id}', [FileController::class, 'viewFile'])->name('file.view')->middleware('signed');
 
@@ -73,6 +73,8 @@ Route::middleware(['auth', 'check_default_password', 'is_active'])->group(functi
 Route::middleware(['auth', 'is_active'])->group(function () {
     Route::get('account-settings/change-password', ChangePassword::class)->name('change-password');
 });
+
+/* -------------------------------------------------------------------------- */
 
 Livewire::setScriptRoute(function ($handle) {
     return Route::get('/depot-dms/livewire/livewire.js', $handle);

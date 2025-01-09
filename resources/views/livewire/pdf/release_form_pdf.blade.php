@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Job Order Print</title>
+    <title>Equipment/Vehicle Releasing Print</title>
     <style>
         html {
             font-size: x-small;
@@ -30,71 +30,41 @@
         }
 
         .job-order-title {
-            font-size: 30px;
+            font-size: 21px;
             font-weight: bolder;
             margin-left: -90px;
         }
 
         table.content-table {
-            width: 90%;
-            /* Adjust width as needed */
-            margin: 20px auto;
-            /* Centers the table horizontally */
-            border-collapse: collapse;
-        }
-
-        table.content-table td {
-            padding: 5px;
-
-            /* border: 1px solid #ccc; */
-            font-weight: bold;
-            /* Optional for better visibility */
-        }
-
-        table.content-table-2 {
             width: 100%;
             /* Adjust width as needed */
             margin: 20px auto;
             /* Centers the table horizontally */
             border-collapse: collapse;
+            /* border: solid 1px black; */
         }
 
-        table.content-table-2 td {
-            padding: 10px;
-            border: 1px solid #000000;
-            font-weight: bold;
-            /* Optional for better visibility */
-        }
-
-        table.content-table-3 {
-            width: 90%;
-            /* Adjust width as needed */
-            margin: 20px auto;
-            /* Centers the table horizontally */
-            border-collapse: collapse;
-        }
-
-        table.content-table-3 td {
-            padding: 10px;
-            border: 1px solid #000000;
+        table.content-table td {
+            padding: 5px;
+            border: 1px solid black;
             font-weight: bold;
             /* Optional for better visibility */
         }
 
         .no-top-border {
-            border-top: none !important;
+            border-top: unset !important;
         }
 
         .no-bottom-border {
-            border-bottom: none !important;
+            border-bottom: unset !important;
         }
 
         .no-right-border {
-            border-right: none !important;
+            border-right: unset !important;
         }
 
         .no-left-border {
-            border-left: none !important;
+            border-left: unset !important;
         }
 
         #watermark {
@@ -131,7 +101,7 @@
                 <img src="data:image/png;base64,{{ $cdo_full }}" alt="CDO Seal" width="140" />
             </td>
             <td class="job-order-cell">
-                <span class="job-order-title">JOB ORDER</span>
+                <span class="job-order-title">EQUIPMENT/VEHICLE RELEASING</span>
             </td>
             <td style="text-align: right;">
                 <img src="data:image/png;base64,{{ $rise_logo }}" alt="Rise Logo" width="84" />
@@ -139,69 +109,59 @@
         </tr>
     </table>
 
-    <!-- Content table with details -->
-    <table class="content-table">
-        <tr>
-            <td width="390px">JOB ORDER NO.: <span style="font-weight: normal;">{{ $job_order_no }}</span></td>
-            <td>EQPT/VEHICLE TYPE: <span style="font-weight: normal">{{ $equipment_type }}</span></td>
-        </tr>
-        <tr>
-            <td width="390px">DEPARTMENT: <span style="font-weight: normal">{{ $department }}</span></td>
-            <td>MODEL: <span style="font-weight: normal">{{ $model }}</span></td>
-        </tr>
-        <tr>
-            <td width="390px">DATE/TIME IN : <span style="font-weight: normal">{{ $date_and_time_in }}</span></td>
-            <td>NO. : <span style="font-weight: normal">{{ $plate_no }}</span></td>
-        </tr>
-        <tr>
-            <td width="390px">DATE/TIME OUT : <span style="font-weight: normal">{{ $date_and_time_out }}</span></td>
-            <td></td>
-        </tr>
-    </table>
+    <div style="padding-top: 40px;">
+        <span style="font-size: 15px; font-weight: bold;">
+            COMMENTS/RECOMMENDATION:
+        </span>
+    </div>
 
-    <!-- Content table with details 2 -->
-    <table class="content-table-2">
-        <tr>
-            <td class="no-right-border" width="300px">STATEMENT OF WORK</td>
-            <td class="no-left-border" style="text-align:center;">MECHANICS ASSIGNED</td>
-        </tr>
-        <tr>
-            <td class="no-right-border"><span style="font-weight: normal">{{ $issues_or_concern }}</span></td>
-            <td class="no-left-border"><span style="font-weight: normal">{{ $mechanic }}</span></td>
-        </tr>
-    </table>
+    <div style="padding-top: 10px; text-indent: 50px; text-align: justify;">
+        <span style="font-size: 14px; text-decoration: underline; display: inline-block; width: 100%;">
+            {{ $job_order->remarks }}
+        </span>
+    </div>
 
-    <!-- Content table with details 3 -->
-    <table class="content-table-3">
-        <tr>
-            <td width="190px" class="no-top-border no-bottom-border no-left-border no-right-border">REQUESTED BY: </td>
-            <td width="2px" class="no-top-border no-bottom-border no-left-border no-right-border"></td>
-            <td width="120px" class="no-top-border no-bottom-border no-left-border no-right-border"></td>
-            <td width="10px" class="no-top-border no-bottom-border no-left-border no-right-border"></td>
-            <td style="text-align:center;" class="no-top-border no-bottom-border no-left-border no-right-border">JOB AUTHORIZED / APPROVED BY: </td>
-        </tr>
-        <tr>
-            <td class="no-top-border no-bottom-border no-left-border no-right-border"></td>
-            <td class="no-top-border no-bottom-border no-left-border no-right-border"></td>
-            <td class="no-top-border no-bottom-border no-left-border no-right-border"></td>
-            <td class="no-top-border no-bottom-border no-left-border no-right-border"></td>
-            <td class="no-top-border no-bottom-border no-left-border no-right-border"></td>
-        </tr>
-        <tr height="200px;">
-            <td class="no-top-border no-bottom-border no-left-border no-right-border" style="text-align:center; text-transform: uppercase; font-weight: normal;">{{ $name }}</td>
-            <td class="no-top-border no-bottom-border no-left-border no-right-border"></td>
-            <td class="no-top-border no-bottom-border no-left-border no-right-border" style="text-align:center; font-weight: normal;">{{ $contact_number }}</td>
-            <td class="no-top-border no-bottom-border no-left-border no-right-border"></td>
-            <td class="no-top-border no-bottom-border no-left-border no-right-border" style="text-align:center; text-transform: uppercase; font-weight: normal;">{{ $signatory_name }}</td>
-        </tr>
-        <tr>
-            <td style="text-align:center; vertical-align: top" class="no-bottom-border no-left-border no-right-border">NAME & SIGNATURE</td>
-            <td class="no-top-border no-bottom-border no-left-border no-right-border"></td>
-            <td style="text-align:center; vertical-align: top" class="no-bottom-border no-left-border no-right-border">CONTACT NUMBER</td>
-            <td class="no-top-border no-bottom-border no-left-border no-right-border"></td>
-            <td style="text-align:center; text-transform: uppercase; vertical-align: top" class="no-bottom-border no-left-border no-right-border">{{ $signatory_designation }}</td>
-        </tr>
-    </table>
+    <!-- Wrapper for remarks and table -->
+    <div style="margin-top: 50px; position: relative;">
+        <table class="content-table">
+            <tr>
+                <td style="border: unset;" width="35%">Equipment/Vehicle Received by:</td>
+                <td style="border: unset;" width="1%"></td>
+                <td style="border: unset;" width="15%"></td>
+                <td style="border: unset;" width="5%"></td>
+                <td style="border: unset;">Approved Release by:</td>
+            </tr>
+            <tr>
+                <td style="border: unset; text-align: center; vertical-align: bottom; font-weight: normal;" height="25">{{ $job_order->claimed_by }}</td>
+                <td style="border: unset;" width="1%"></td>
+                <td style="border: unset; text-align: center; vertical-align: bottom; font-weight: normal;" height="25"></td>
+                <td style="border: unset;" width="5%"></td>
+                <td style="border: unset; text-align: center; vertical-align: bottom; font-weight: normal;" height="25">
+                    {{ $division_chief->name }}
+                </td>
+            </tr>
+            <tr>
+                <td style="border-bottom: none; border-right: none; border-left: none; text-align: center;">Driver/Operator</td>
+                <td style="border: unset;" width="1%"></td>
+                <td style="border-bottom: none; border-right: none; border-left: none; text-align: center;">Date Received</td>
+                <td style="border: unset;" width="5%"></td>
+                <td style="border-bottom: none; border-right: none; border-left: none; text-align: center;">
+                    {{ $division_chief->designation }}
+                    <br>
+                    Chief, Repair & Maintenance Division
+                </td>
+            </tr>
+        </table>
+    </div>
+
+    <div style="margin-top: 10%; position: relative;">
+        <div style="text-align: center; border-top: 1px dashed black; margin: 20px 0; position: relative;">
+            <span style="background: white; padding: 0 10px; position: absolute; top: -10px; left: 50%; transform: translateX(-50%); font-size: 12px; font-weight: bold;">
+                Cut Here
+            </span>
+        </div>
+    </div>
+
 </body>
 
 </html>

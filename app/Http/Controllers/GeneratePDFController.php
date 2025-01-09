@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\RefMechanicsModel;
+use App\Models\RefSignatoriesModel;
 use App\Models\TblJobOrderModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -164,10 +165,25 @@ class GeneratePDFController extends Controller
                 abort(403, 'Invalid or expired URL');
             }
 
+            $cdo_full = public_path('assets/images/compressed_cdofull.png');
+            $rise_logo = public_path('assets/images/risev2.png');
+            $watermark = public_path('assets/images/CITY DEPOT LOGO.png');
+
             $job_order_id = request()->route('id');
 
-            //TODO: Add the necessary query to get the job order details
-            $pdf = Pdf::loadView('livewire.pdf.release_form_pdf'); // Load the PDF to the view
+            $job_order = TblJobOrderModel::findOrFail($job_order_id);
+            $division_chief = RefSignatoriesModel::where('is_division_chief', '1')->first();
+
+            $data = [
+                'cdo_full' => base64_encode(file_get_contents($cdo_full)),
+                'rise_logo' => base64_encode(file_get_contents($rise_logo)),
+                'watermark' => base64_encode(file_get_contents($watermark)),
+                'job_order' => $job_order,
+                'division_chief' => $division_chief
+            ];
+
+            $pdf = Pdf::loadView('livewire.pdf.release_form_pdf', $data); // Load the PDF to the view
+
             return $pdf->stream('release_form_pdf'); // Stream the PDF to the browser
         } catch (\Throwable $th) {
             return response()->json([

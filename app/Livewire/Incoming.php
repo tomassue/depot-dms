@@ -825,20 +825,26 @@ class Incoming extends Component
 
             $this->dispatch('showJobOrderDetailsModal');
         } catch (\Throwable $th) {
-            dd($th);
+            // dd($th);
             $this->dispatch('show-something-went-wrong-toast');
         }
     }
 
     public function printReleaseForm($id)
     {
-        $signedURL = URL::temporarySignedRoute(
-            'job-order.release-form',
-            now()->addMinutes(10),
-            ['id' => $id]
-        );
+        $division_chief = RefSignatoriesModel::where('is_division_chief', '1')->first();
 
-        $this->dispatch('generate-pdf', url: $signedURL);
+        if ($division_chief) {
+            $signedURL = URL::temporarySignedRoute(
+                'generate-release-form',
+                now()->addMinutes(5),
+                ['id' => $id]
+            );
+
+            $this->dispatch('generate-pdf', url: $signedURL);
+        } else {
+            $this->dispatch('show-assign-division-chief-toast');
+        }
     }
 
     public function readLogs($key)

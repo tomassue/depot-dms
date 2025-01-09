@@ -15,7 +15,8 @@ class RefSignatoriesModel extends Model
 
     protected $fillable = [
         'name',
-        'designation'
+        'designation',
+        'is_division_chief'
     ];
 
     public function getActivitylogOptions(): LogOptions

@@ -1,6 +1,10 @@
 <div>
     @include('livewire.template.loading-spinner')
 
+    <div class="alert alert-warning" role="alert" style="display: {{ $signatories->where('is_division_chief')->count() == '1' ? 'none' : ''}};">
+        Please designate one signatory as the Division Chief.
+    </div>
+
     <div class="card">
         <div class="card-body">
             @can('create signatory')
@@ -38,6 +42,24 @@
                             <input type="text" class="form-control @error('designation') is-invalid @enderror" id="inputDesignation" placeholder="Designation" wire:model="designation">
                             @error('designation')
                             <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="inputDivisionChief">
+                                Division Chief?
+                                <small class="text-muted">
+                                    Only select if applicable
+                                </small>
+                            </label>
+                            <select class="form-control form-control-sm" id="inputDivisionChief" wire:model="is_division_chief">
+                                <option selected>-Select-</option>
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                            @error('is_division_chief')
+                            <div class="custom-invalid-feedback">
                                 {{ $message }}
                             </div>
                             @enderror
@@ -113,7 +135,12 @@
                     resolve(
                         data.map(item => [
                             item.id,
-                            item.name,
+                            gridjs.html(`
+                                <span class="name-text">
+                                    ${item.name}
+                                    ${item.is_division_chief == '1' ? '<span class="badge bg-warning ms-2">Division Chief</span>' : ''}
+                                </span>
+                            `), // Add the badge here based on is_division_chief
                             item.designation,
                             item.deleted_at ? 'Inactive' : 'Active' // Use plain text for status here
                         ])
@@ -130,7 +157,12 @@
                         resolve(
                             data[0].map(item => [
                                 item.id,
-                                item.name,
+                                gridjs.html(`
+                                    <span class="name-text">
+                                        ${item.name}
+                                        ${item.is_division_chief == '1' ? '<span class="badge bg-warning ms-2">Division Chief</span>' : ''}
+                                    </span>
+                                `), // Add the badge here based on is_division_chief
                                 item.designation,
                                 item.deleted_at ? 'Inactive' : 'Active' // Use plain text for status here
                             ])

@@ -62,6 +62,7 @@
                         'total_repair_time' => 'Total repair time',
                         'claimed_by' => 'Claimed by',
                         'remarks' => 'Remarks',
+                        'ref_status_id' => 'Status',
                         ];
                         @endphp
                         <tr>
@@ -79,7 +80,7 @@
                                     </thead>
                                     <tbody>
                                         @foreach (array_keys(array_merge($oldAttributes, $updatedAttributes)) as $key)
-                                        @if (!in_array($key, ['id', 'job_order_no', 'reference_no', 'ref_signatories_id', 'ref_status_id', 'updated_at', 'created_at', 'deleted_at']))
+                                        @if (!in_array($key, ['id', 'job_order_no', 'reference_no', 'ref_signatories_id', 'updated_at', 'created_at', 'deleted_at']))
                                         <tr>
                                             <td class="field-column align-top">{{ $fieldLabels[$key] ?? ucwords(str_replace('_', ' ', $key)) }}</td>
                                             <td class="value-column align-top">
@@ -108,6 +109,8 @@
                                                     $files = \App\Models\FileDataModel::whereIn('id', $filesIds)->get();
                                                     @endphp
                                                     {{ implode(', ', $files->pluck('name')->toArray()) ?? 'Not available' }}
+                                                    @elseif ($key === 'ref_status_id' && isset($oldAttributes[$key]))
+                                                    {{ optional(\App\Models\RefStatusModel::find($oldAttributes[$key]))->name ?? 'Not available' }}
                                                     @else
                                                     {{ $oldAttributes[$key] ?? 'Not available' }}
                                                     @endif
@@ -139,6 +142,8 @@
                                                     $files = \App\Models\FileDataModel::whereIn('id', $filesIds)->get();
                                                     @endphp
                                                     {{ implode(', ', $files->pluck('name')->toArray()) ?? 'Not available' }}
+                                                    @elseif ($key === 'ref_status_id')
+                                                    {{ optional(\App\Models\RefStatusModel::find($updatedAttributes[$key]))->name ?? 'Not available' }}
                                                     @else
                                                     {{ $updatedAttributes[$key] ?? 'Not available' }}
                                                     @endif
