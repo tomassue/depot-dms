@@ -41,7 +41,7 @@ class GeneratePDFController extends Controller
 
             $cdo_full = public_path('assets/images/compressed_cdofull.png');
             $rise_logo = public_path('assets/images/risev2.png');
-            $watermark = public_path('assets/images/CITY DEPOT LOGO.png');
+            $watermark = public_path('assets/images/compressed_city_depot_logo.png');
 
             $data = [
                 'cdo_full' => base64_encode(file_get_contents($cdo_full)),
@@ -77,7 +77,7 @@ class GeneratePDFController extends Controller
 
             $cdo_full = public_path('assets/images/compressed_cdofull.png');
             $rise_logo = public_path('assets/images/risev2.png');
-            $watermark = public_path('assets/images/CITY DEPOT LOGO.png');
+            $watermark = public_path('assets/images/compressed_city_depot_logo.png');
 
             $data = [
                 'cdo_full' => base64_encode(file_get_contents($cdo_full)),
@@ -139,7 +139,7 @@ class GeneratePDFController extends Controller
 
             $cdo_full = public_path('assets/images/compressed_cdofull.png');
             $rise_logo = public_path('assets/images/risev2.png');
-            $watermark = public_path('assets/images/CITY DEPOT LOGO.png');
+            $watermark = public_path('assets/images/compressed_city_depot_logo.png');
 
             $data = [
                 'cdo_full' => base64_encode(file_get_contents($cdo_full)),
@@ -167,7 +167,7 @@ class GeneratePDFController extends Controller
 
             $cdo_full = public_path('assets/images/compressed_cdofull.png');
             $rise_logo = public_path('assets/images/risev2.png');
-            $watermark = public_path('assets/images/CITY DEPOT LOGO.png');
+            $watermark = public_path('assets/images/compressed_city_depot_logo.png');
 
             $job_order_id = request()->route('id');
 
