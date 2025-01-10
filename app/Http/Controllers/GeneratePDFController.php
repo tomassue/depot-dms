@@ -7,6 +7,7 @@ use App\Models\RefSignatoriesModel;
 use App\Models\TblJobOrderModel;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class GeneratePDFController extends Controller
@@ -39,7 +40,7 @@ class GeneratePDFController extends Controller
             )
                 ->get();
 
-            $cdo_full = public_path('assets/images/compressed_cdofull.png');
+            $cdo_full = public_path('assets/images/cdo-seal.png');
             $rise_logo = public_path('assets/images/risev2.png');
             $watermark = public_path('assets/images/compressed_city_depot_logo.png');
 
@@ -75,7 +76,7 @@ class GeneratePDFController extends Controller
                 )
                 ->get();
 
-            $cdo_full = public_path('assets/images/compressed_cdofull.png');
+            $cdo_full = public_path('assets/images/cdo-seal.png');
             $rise_logo = public_path('assets/images/risev2.png');
             $watermark = public_path('assets/images/compressed_city_depot_logo.png');
 
@@ -137,7 +138,7 @@ class GeneratePDFController extends Controller
                 $mechanic_job->append('sub_category_names');
             });
 
-            $cdo_full = public_path('assets/images/compressed_cdofull.png');
+            $cdo_full = public_path('assets/images/cdo-seal.png');
             $rise_logo = public_path('assets/images/risev2.png');
             $watermark = public_path('assets/images/compressed_city_depot_logo.png');
 
@@ -165,7 +166,7 @@ class GeneratePDFController extends Controller
                 abort(403, 'Invalid or expired URL');
             }
 
-            $cdo_full = public_path('assets/images/compressed_cdofull.png');
+            $cdo_full = public_path('assets/images/cdo-seal.png');
             $rise_logo = public_path('assets/images/risev2.png');
             $watermark = public_path('assets/images/compressed_city_depot_logo.png');
 
@@ -181,6 +182,15 @@ class GeneratePDFController extends Controller
                 'job_order' => $job_order,
                 'division_chief' => $division_chief
             ];
+
+            activity()
+                ->causedBy(Auth::user()) // The user who printed the job order
+                ->performedOn($job_order) // The job order being printed
+                ->withProperties([
+                    'job_order_id' => $job_order->id
+                ])
+                ->event('printed job order release form')
+                ->log("Release form of Job Order #{$job_order->id} is printed.");
 
             $pdf = Pdf::loadView('livewire.pdf.release_form_pdf', $data); // Load the PDF to the view
 

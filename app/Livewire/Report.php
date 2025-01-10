@@ -197,14 +197,16 @@ class Report extends Component
                     ];
                 });
 
+            $user = Auth::user();
 
             $loadImage = fn($path) => base64_encode(File::get(public_path($path)));
 
             $data = [
-                'cdo_full'       => $loadImage('assets/images/compressed_cdofull.png'),
+                'cdo_full'       => $loadImage('assets/images/cdo-seal.png'),
                 'rise_logo'      => $loadImage('assets/images/risev2.png'),
                 'watermark'      => $loadImage('assets/images/compressed_city_depot_logo.png'),
-                'table_requests' => $table_requests
+                'table_requests' => $table_requests,
+                'prepared_by'    => $user
             ];
 
             $htmlContent = view('livewire.pdf.weekly_depot_repair_bay_vehicle_or_equipment_inventory_report', $data)->render();
@@ -222,7 +224,6 @@ class Report extends Component
 
             $this->dispatch('showPdfModal');
 
-            $user = Auth::user();
             $filter_date_range   = $this->filter_date_range ?? 'All';
             $filter_status_range = $this->filter_status_range ?? 'All';
 

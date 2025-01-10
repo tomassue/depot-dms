@@ -21,6 +21,11 @@
 
         #header {
             width: 100%;
+            /* border: 1px solid black; */
+        }
+
+        #header td {
+            /* border: 1px solid black; */
         }
 
         .title-cell {
@@ -47,6 +52,21 @@
             padding: 15px;
             border: 1px solid #000000;
             font-weight: bold;
+            /* Optional for better visibility */
+        }
+
+        table.content-table-2 {
+            width: 25%;
+            /* Adjust width as needed */
+            /* margin: 20px auto; */
+            /* Centers the table horizontally */
+            border-collapse: collapse;
+        }
+
+        table.content-table-2 td {
+            border: 1px solid #000000;
+            font-weight: bold;
+            vertical-align: bottom;
             /* Optional for better visibility */
         }
 
@@ -95,11 +115,13 @@
     <!-- Header table with logo and title -->
     <table id="header">
         <tr>
-            <td style="text-align: left;">
-                <img src="data:image/png;base64,{{ $cdo_full }}" alt="CDO Seal" width="200" />
+            <td style="text-align: left;" width="20">
+                <img src="data:image/png;base64,{{ $cdo_full }}" alt="CDO Seal" width="70" />
             </td>
-            <td class="title-cell">
-
+            <td>
+                Republic of the Philippines <br>
+                City of Cagayan de Oro <br>
+                CITY EQUIPMENT DEPOT
             </td>
             <td style="text-align: right;">
                 <img src="data:image/png;base64,{{ $rise_logo }}" alt="Rise Logo" width="120" />
@@ -143,6 +165,22 @@
             <td colspan="7" style="text-align:center">No record found.</td>
         </tr>
         @endforelse
+    </table>
+
+    <table class="content-table-2">
+        <tr>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border">
+                Prepared by:
+            </td>
+        </tr>
+        <tr>
+            <td class="no-top-border no no-left-border no-right-border" height="35" style="text-align: center;">
+                {{ $prepared_by->name }}
+            </td>
+        </tr>
+        <tr>
+            <td class="no-left-border no-right-border no-bottom-border"></td>
+        </tr>
     </table>
 </body>
 

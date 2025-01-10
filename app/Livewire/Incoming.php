@@ -536,6 +536,7 @@ class Incoming extends Component
 
             $job_orders = TblJobOrderModel::with(['category', 'status'])
                 ->where('reference_no', $incoming_request->reference_no)
+                ->orderBy('created_at', 'desc')
                 ->get();
 
             $job_orders->each(function ($job_order) {
@@ -544,7 +545,7 @@ class Incoming extends Component
 
             $this->dispatch('load-table-job-orders', $job_orders->toJson());
         } catch (\Throwable $th) {
-            dd($th);
+            // dd($th);
             $this->page = 1;
             $this->dispatch('show-something-went-wrong-toast');
         }
@@ -885,7 +886,7 @@ class Incoming extends Component
             $signatory = RefSignatoriesModel::findOrFail($this->ref_signatories_id);
 
             $data = [
-                'cdo_full'              => base64_encode(file_get_contents(public_path('assets/images/compressed_cdofull.png'))),
+                'cdo_full'              => base64_encode(file_get_contents(public_path('assets/images/cdo-seal.png'))),
                 'rise_logo'             => base64_encode(file_get_contents(public_path('assets/images/risev2.png'))),
                 'watermark'             => base64_encode(file_get_contents(public_path('assets/images/compressed_city_depot_logo.png'))),
                 'job_order_no'          => $job_order->id,

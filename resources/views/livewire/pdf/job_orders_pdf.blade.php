@@ -21,6 +21,11 @@
 
         #header {
             width: 100%;
+            /* border: 1px solid black; */
+        }
+
+        #header td {
+            /* border: 1px solid black; */
         }
 
         .title-cell {
@@ -95,11 +100,13 @@
     <!-- Header table with logo and title -->
     <table id="header">
         <tr>
-            <td style="text-align: left;">
-                <img src="data:image/png;base64,{{ $cdo_full }}" alt="CDO Seal" width="200" />
+            <td style="text-align: left;" width="20">
+                <img src="data:image/png;base64,{{ $cdo_full }}" alt="CDO Seal" width="70" />
             </td>
-            <td class="title-cell">
-
+            <td>
+                Republic of the Philippines <br>
+                City of Cagayan de Oro <br>
+                CITY EQUIPMENT DEPOT
             </td>
             <td style="text-align: right;">
                 <img src="data:image/png;base64,{{ $rise_logo }}" alt="Rise Logo" width="120" />

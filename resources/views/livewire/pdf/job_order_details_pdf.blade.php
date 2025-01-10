@@ -21,6 +21,11 @@
 
         #header {
             width: 100%;
+            /* border: 1px solid black; */
+        }
+
+        #header td {
+            /* border: 1px solid black; */
         }
 
         .job-order-cell {
@@ -32,7 +37,7 @@
         .job-order-title {
             font-size: 30px;
             font-weight: bolder;
-            margin-left: -90px;
+            /* margin-left: -90px; */
         }
 
         table.content-table {
@@ -105,7 +110,7 @@
                 This should center it vertically
             **/
             /* bottom: 12cm; */
-            bottom: 17cm;
+            bottom: 16cm;
             left: 5.6cm;
 
             /** Change image dimensions**/
@@ -127,14 +132,21 @@
     <!-- Header table with logo and title -->
     <table id="header">
         <tr>
-            <td style="text-align: left;">
-                <img src="data:image/png;base64,{{ $cdo_full }}" alt="CDO Seal" width="140" />
+            <td style="text-align: left;" width="20">
+                <img src="data:image/png;base64,{{ $cdo_full }}" alt="CDO Seal" width="70" />
             </td>
-            <td class="job-order-cell">
-                <span class="job-order-title">JOB ORDER</span>
+            <td>
+                Republic of the Philippines <br>
+                City of Cagayan de Oro <br>
+                CITY EQUIPMENT DEPOT
             </td>
             <td style="text-align: right;">
                 <img src="data:image/png;base64,{{ $rise_logo }}" alt="Rise Logo" width="84" />
+            </td>
+        </tr>
+        <tr>
+            <td class="job-order-cell" colspan="3">
+                <span class="job-order-title">JOB ORDER</span>
             </td>
         </tr>
     </table>
