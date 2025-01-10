@@ -150,7 +150,9 @@ class GeneratePDFController extends Controller
                 'mechanic_jobs' => $mechanic_jobs
             ];
 
-            $pdf = Pdf::loadView('livewire.pdf.job_orders_pdf', $data); // Load the PDF to the view
+            $pdf = Pdf::loadView('livewire.pdf.job_orders_pdf', $data)
+                ->setPaper('a4', 'landscape'); // Load the PDF to the view
+
             return $pdf->stream('job_orders_pdf'); // Stream the PDF to the browser
         } catch (\Throwable $th) {
             return response()->json([

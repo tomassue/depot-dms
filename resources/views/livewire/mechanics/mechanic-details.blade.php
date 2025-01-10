@@ -43,6 +43,13 @@
 
     <div class="card mb-2">
         <div class="card-body">
+            <div class="col-md-2 my-2 d-inline-flex align-items-center" title="Filter">
+                <div class="form-group w-100">
+                    <div wire:ignore>
+                        <input class="form-control filter_date_range" placeholder="Date">
+                    </div>
+                </div>
+            </div>
             <div class="col-md-12 my-2 d-inline-flex align-items-center" title="Filter">
                 <button class="btn btn-info btn-md btn-icon-text me-4" title="Print" wire:click="printJobOrders">
                     <i class="bx bx-printer bx-sm"></i>
@@ -59,6 +66,28 @@
 <script>
     $wire.on('generate-pdf', (url) => {
         window.open(event.detail.url, '_blank'); // Open new tab
+    });
+
+    /* -------------------------------------------------------------------------- */
+
+    $(".filter_date_range").flatpickr({
+        mode: "range",
+        altInput: true,
+        altFormat: 'M j, Y',
+        dateFormat: "Y-m-d",
+        onChange: function(selectedDates, dateStr) {
+            @this.set('filter_date_range', dateStr);
+        }
+    });
+
+    $wire.on('set-date-and-time', (key) => {
+        $(".filter_date_range")[0]._flatpickr.setDate(key[0]);
+        @this.set('filter_date_range', key[0]);
+    });
+
+    $wire.on('reset-date-and-time', () => {
+        $(".filter_date_range")[0]._flatpickr.clear(); // Clear the Flatpickr input without using a variable
+        @this.set('filter_date_range', null);
     });
 
     /* -------------------------------------------------------------------------- */

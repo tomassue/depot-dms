@@ -13,6 +13,7 @@ use URL;
 #[Title('Mechanic Details | DEPOT DMS')]
 class MechanicDetails extends Component
 {
+    public $filter_date_range;
     public $mechanic_id; //* This is the obfuscated ID from the URL
 
     public function mount($id)

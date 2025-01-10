@@ -49,7 +49,7 @@
         }
 
         table.content-table td {
-            padding: 15px;
+            padding: 5px;
             border: 1px solid #000000;
             font-weight: bold;
             /* Optional for better visibility */
@@ -78,11 +78,11 @@
                 Set a position in the page for your image
                 This should center it vertically
             **/
-            bottom: 11cm;
-            left: 3.3cm;
+            bottom: 6.8cm;
+            left: 7.7cm;
 
             /** Change image dimensions**/
-            width: 9cm;
+            width: 8cm;
             height: 8cm;
 
             /** Your watermark should be behind every content**/
@@ -131,6 +131,11 @@
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;"><span style="font-weight: normal;">{{ $mechanic->name }}</span></td>
         </tr>
         <tr>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="20%">DATE(S)</td>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="2%">:</td>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;"><span style="font-weight: normal;">wewewewe</span></td>
+        </tr>
+        <tr>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="20%">PENDING ORDERS</td>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="2%">:</td>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;"><span style="font-weight: normal;">{{ $mechanic->pending_jobs }}</span></td>
@@ -150,17 +155,25 @@
     <!-- Content table with details -->
     <table class="content-table">
         <tr>
-            <td class="no-right-border" style="text-align:center;" width="9%">JO #</td>
+            <td class="no-right-border" style="text-align:center;" width="7%">JO #</td>
             <td style="text-align:center">Category</td>
             <td style="text-align:center">Sub-category</td>
+            <td style="text-align:center">Office</td>
+            <td style="text-align:center">Type</td>
+            <td style="text-align:center">Model</td>
+            <td style="text-align:center">Number</td>
             <td style="text-align:center" width="10%">Status</td>
-            <td style="text-align:center" width="15%">Type of Repair</td>
+            <td style="text-align:center" width="9%">Type of Repair</td>
         </tr>
         @forelse($mechanic_jobs as $item)
         <tr>
             <td class="no-right-border" style="text-align:center; font-weight: normal;">{{ $item->id }}</td>
             <td style="font-weight: normal;">{{ $item->category->name }}</td>
             <td style="font-weight: normal;">{{ $item->sub_category_names }}</td>
+            <td style="font-weight: normal;">{{ $item->incoming_request->office->name }}</td>
+            <td style="font-weight: normal;">{{ $item->incoming_request->type->name }}</td>
+            <td style="font-weight: normal;">{{ $item->incoming_request->model->name }}</td>
+            <td style="font-weight: normal;">{{ $item->incoming_request->number }}</td>
             <td style="text-align:center; font-weight: normal;">{{ $item->status->name }}</td>
             <td style="text-align:center; font-weight: normal;">{{ $item->type_of_repair->name }}</td>
         </tr>
