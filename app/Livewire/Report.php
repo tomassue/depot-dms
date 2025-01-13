@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use App\Models\RefSignatoriesModel;
 use App\Models\RefStatusModel;
 use App\Models\TblIncomingRequestModel;
 use App\Models\TblJobOrderModel;
@@ -197,6 +198,8 @@ class Report extends Component
                     ];
                 });
 
+            $division_chief = RefSignatoriesModel::where('is_division_chief', '1')->first();
+
             $user = Auth::user();
 
             $loadImage = fn($path) => base64_encode(File::get(public_path($path)));
@@ -206,7 +209,8 @@ class Report extends Component
                 'rise_logo'      => $loadImage('assets/images/risev2.png'),
                 'watermark'      => $loadImage('assets/images/compressed_city_depot_logo.png'),
                 'table_requests' => $table_requests,
-                'prepared_by'    => $user
+                'prepared_by'    => $user,
+                'division_chief' => $division_chief
             ];
 
             $htmlContent = view('livewire.pdf.weekly_depot_repair_bay_vehicle_or_equipment_inventory_report', $data)->render();

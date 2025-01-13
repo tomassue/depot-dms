@@ -6,6 +6,7 @@ use App\Models\RefMechanicsModel;
 use App\Models\RefSignatoriesModel;
 use App\Models\TblJobOrderModel;
 use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -18,6 +19,8 @@ class GeneratePDFController extends Controller
             if (!request()->hasValidSignature()) {
                 abort(401);
             }
+
+            $date = request()->route('date');
 
             $mechanics = RefMechanicsModel::select(
                 'id',
@@ -38,6 +41,17 @@ class GeneratePDFController extends Controller
                             WHERE JSON_CONTAINS(tbl_job_order.ref_mechanics, JSON_QUOTE(CAST(ref_mechanics.id AS CHAR)))
                     ) as total_jobs")
             )
+                ->when($date != NULL, function ($query) use ($date) {
+                    if (str_contains($date, ' to ')) {
+                        [$startDate, $endDate] = array_map('trim', explode(' to ', $date));
+                        $query->whereBetween('created_at', [
+                            Carbon::parse($startDate)->startOfDay(),
+                            Carbon::parse($endDate)->endOfDay()
+                        ]);
+                    } else {
+                        $query->whereDate('created_at', Carbon::parse($date));
+                    }
+                })
                 ->get();
 
             $cdo_full = public_path('assets/images/cdo-seal.png');
@@ -48,6 +62,7 @@ class GeneratePDFController extends Controller
                 'cdo_full' => base64_encode(file_get_contents($cdo_full)),
                 'rise_logo' => base64_encode(file_get_contents($rise_logo)),
                 'watermark' => base64_encode(file_get_contents($watermark)),
+                'date' => $date ?? '-',
                 'mechanics' => $mechanics
             ];
 
@@ -68,12 +83,25 @@ class GeneratePDFController extends Controller
                 abort(403, 'Invalid or expired URL');
             }
 
+            $date = request()->route('date');
+
             $mechanics = RefMechanicsModel::withTrashed()
                 ->select(
                     'id',
                     'name',
                     DB::raw("IF(deleted_at IS NULL, 'Active', 'Inactive') as status")
                 )
+                ->when($date != NULL, function ($query) use ($date) {
+                    if (str_contains($date, ' to ')) {
+                        [$startDate, $endDate] = array_map('trim', explode(' to ', $date));
+                        $query->whereBetween('created_at', [
+                            Carbon::parse($startDate)->startOfDay(),
+                            Carbon::parse($endDate)->endOfDay()
+                        ]);
+                    } else {
+                        $query->whereDate('created_at', Carbon::parse($date));
+                    }
+                })
                 ->get();
 
             $cdo_full = public_path('assets/images/cdo-seal.png');
@@ -84,6 +112,7 @@ class GeneratePDFController extends Controller
                 'cdo_full' => base64_encode(file_get_contents($cdo_full)),
                 'rise_logo' => base64_encode(file_get_contents($rise_logo)),
                 'watermark' => base64_encode(file_get_contents($watermark)),
+                'date' => $date ?? '-',
                 'mechanics' => $mechanics
             ];
 
@@ -105,6 +134,7 @@ class GeneratePDFController extends Controller
             }
 
             $mechanic_id = request()->route('id');
+            $date_range = request()->route('date');
 
             $mechanic = RefMechanicsModel::withTrashed()
                 ->select(
@@ -132,6 +162,17 @@ class GeneratePDFController extends Controller
             // Cast mechanic_id to string to avoid the JSON_QUOTE error
             $mechanic_jobs = TblJobOrderModel::with(['category', 'status', 'type_of_repair'])
                 ->whereRaw("JSON_CONTAINS(ref_mechanics, JSON_QUOTE(?))", [(string) $mechanic_id])
+                ->when($date_range != NULL, function ($query) use ($date_range) {
+                    if (str_contains($date_range, ' to ')) {
+                        [$startDate, $endDate] = array_map('trim', explode(' to ', $date_range));
+                        $query->whereBetween('created_at', [
+                            Carbon::parse($startDate)->startOfDay(),
+                            Carbon::parse($endDate)->endOfDay()
+                        ]);
+                    } else {
+                        $query->whereDate('created_at', Carbon::parse($date_range));
+                    }
+                })
                 ->get();
 
             $mechanic_jobs->each(function ($mechanic_job) {
@@ -146,6 +187,7 @@ class GeneratePDFController extends Controller
                 'cdo_full' => base64_encode(file_get_contents($cdo_full)),
                 'rise_logo' => base64_encode(file_get_contents($rise_logo)),
                 'watermark' => base64_encode(file_get_contents($watermark)),
+                'date' => $date_range ?? '-',
                 'mechanic' => $mechanic,
                 'mechanic_jobs' => $mechanic_jobs
             ];

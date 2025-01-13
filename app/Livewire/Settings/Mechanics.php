@@ -3,6 +3,7 @@
 namespace App\Livewire\Settings;
 
 use App\Models\RefMechanicsModel;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
@@ -15,6 +16,8 @@ class Mechanics extends Component
 {
     use AuthorizesRequests;
 
+    public $filter_date_range;
+
     public $editMode, $disable_input;
     public $id_mechanic;
 
@@ -24,6 +27,20 @@ class Mechanics extends Component
     public function mount()
     {
         $this->authorize('can read mechanics');
+    }
+
+    public function updated($property)
+    {
+        if ($property === 'filter_date_range') {
+            $this->dispatch('refresh-table-mechanics', $this->readMechanics());
+        }
+    }
+
+    public function clear()
+    {
+        $this->reset();
+        $this->resetValidation();
+        $this->dispatch('reset-date-and-time');
     }
 
     public function rules()
@@ -44,12 +61,6 @@ class Mechanics extends Component
         return view('livewire.settings.mechanics', $data);
     }
 
-    public function clear()
-    {
-        $this->reset();
-        $this->resetValidation();
-    }
-
     public function refreshTableMechanics()
     {
         $this->dispatch('refresh-table-mechanics', $this->readMechanics());
@@ -57,7 +68,19 @@ class Mechanics extends Component
 
     public function readMechanics()
     { // table_mechanics
-        $mechanics = RefMechanicsModel::withTrashed()->get();
+        $mechanics = RefMechanicsModel::withTrashed()
+            ->when($this->filter_date_range != NULL, function ($query) {
+                if (str_contains($this->filter_date_range, ' to ')) {
+                    [$startDate, $endDate] = array_map('trim', explode(' to ', $this->filter_date_range));
+                    $query->whereBetween('created_at', [
+                        Carbon::parse($startDate)->startOfDay(),
+                        Carbon::parse($endDate)->endOfDay()
+                    ]);
+                } else {
+                    $query->whereDate('created_at', Carbon::parse($this->filter_date_range));
+                }
+            })
+            ->get();
 
         return $mechanics;
     }
@@ -166,7 +189,8 @@ class Mechanics extends Component
     {
         $signedURL = URL::temporarySignedRoute(
             'generate-mechanics-pdf',
-            now()->addMinutes(5)
+            now()->addMinutes(5),
+            ['date' => $this->filter_date_range]
         );
 
         $this->dispatch('print-pdf', url: $signedURL);

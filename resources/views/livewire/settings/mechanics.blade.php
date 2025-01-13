@@ -3,8 +3,20 @@
 
     <div class="card">
         <div class="card-body">
-            <div class="col-md-12 my-2 d-inline-flex align-content-center justify-content-start">
-                <button class="btn btn-info btn-md btn-icon-text" title="Print" wire:click="generateMechanicsPDF"><i class="bx bx-printer bx-sm btn-icon-append"></i></button>
+            <div class="col-md-2 my-2 d-flex flex-column align-items-start" title="Filter">
+                <div class="form-group w-100">
+                    <div wire:ignore>
+                        <input class="form-control filter_date_range" placeholder="Select date range">
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 my-2 d-inline-flex align-items-center mb-5">
+                <button class=" btn btn-info btn-md btn-icon-text me-4" title="Print" wire:click="generateMechanicsPDF">
+                    <i class="bx bx-printer bx-sm btn-icon-append"></i>
+                </button>
+                <button class="btn btn-secondary btn-md btn-icon-text" title="Clear" wire:click="clear">
+                    <i class="bx bxs-eraser bx-sm"></i>
+                </button>
             </div>
             @can('can create mechanics')
             <div class="col-md-12 my-2 d-inline-flex align-content-center justify-content-end">
@@ -61,6 +73,28 @@
 
     $wire.on('hideAddMechanicsModal', () => {
         $('#mechanicsModal').modal('hide');
+    });
+
+    /* -------------------------------------------------------------------------- */
+
+    $(".filter_date_range").flatpickr({
+        mode: "range",
+        altInput: true,
+        altFormat: 'M j, Y',
+        dateFormat: "Y-m-d",
+        onChange: function(selectedDates, dateStr) {
+            @this.set('filter_date_range', dateStr);
+        }
+    });
+
+    $wire.on('set-date-and-time', (key) => {
+        $(".filter_date_range")[0]._flatpickr.setDate(key[0]);
+        @this.set('filter_date_range', key[0]);
+    });
+
+    $wire.on('reset-date-and-time', () => {
+        $(".filter_date_range")[0]._flatpickr.clear(); // Clear the Flatpickr input without using a variable
+        @this.set('filter_date_range', null);
     });
 
     /* -------------------------------------------------------------------------- */

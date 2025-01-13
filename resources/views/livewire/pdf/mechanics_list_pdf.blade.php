@@ -122,10 +122,24 @@
         </tr>
     </table>
 
+    <table class="content-table" style="margin-bottom: 5px;">
+        <tr>
+            <td class="no-top-border no-bottom-border no-left-border no-right-border" width="2">
+                <span>Date(s)</span>
+            </td>
+            <td class="no-top-border no-bottom-border no-left-border no-right-border" width="2" style="padding-left: 5px;">
+                :
+            </td>
+            <td class="no-top-border no-bottom-border no-left-border no-right-border" style="padding-left: 5px;">
+                {{ $date }}
+            </td>
+        </tr>
+    </table>
+
     <br>
 
     <!-- Content table with details -->
-    <table class="content-table">
+    <table class="content-table" style="margin-top: unset">
         <tr>
             <td class="no-right-border" width="60%">Name</td>
             <td style="text-align:center" width="13%">Pending</td>

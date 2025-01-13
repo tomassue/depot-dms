@@ -43,9 +43,9 @@ Route::middleware(['auth', 'check_default_password', 'is_active'])->group(functi
     Route::get('/report', Report::class)->name('report');
 
     Route::get('/mechanics-list', MechanicsMechanics::class)->name('mechanics-list');
-    Route::get('/generate-mechanics-list-pdf', [GeneratePDFController::class, 'generateMechanicsListPDF'])->name('generate-mechanics-list-pdf')->middleware('signed');
+    Route::get('/generate-mechanics-list-pdf/{date?}', [GeneratePDFController::class, 'generateMechanicsListPDF'])->name('generate-mechanics-list-pdf')->middleware('signed');
     Route::get('/mechanics-list/{id}', MechanicDetails::class)->name('mechanic-details');
-    Route::get('/generate-job-orders-pdf/{id}', [GeneratePDFController::class, 'generateJobOrdersPDF'])->name('generate-job-orders-pdf')->middleware('signed');
+    Route::get('/generate-job-orders-pdf/{id}/{date?}', [GeneratePDFController::class, 'generateJobOrdersPDF'])->name('generate-job-orders-pdf')->middleware('signed');
 
     Route::get('/file/view/{id}', [FileController::class, 'viewFile'])->name('file.view')->middleware('signed');
 
@@ -55,7 +55,7 @@ Route::middleware(['auth', 'check_default_password', 'is_active'])->group(functi
     Route::get('/settings/type-of-repair', TypeOfRepair::class)->name('type-of-repair');
 
     Route::get('/settings/reference-mechanics', Mechanics::class)->name('mechanics');
-    Route::get('/settings/mechanics-pdf', [GeneratePDFController::class, 'generateMechanicsPDF'])->name('generate-mechanics-pdf');
+    Route::get('/settings/mechanics-pdf/{date?}', [GeneratePDFController::class, 'generateMechanicsPDF'])->name('generate-mechanics-pdf');
 
     Route::get('/settings/category', Category::class)->name('category');
     Route::get('/settings/sub-category', SubCategory::class)->name('sub-category');

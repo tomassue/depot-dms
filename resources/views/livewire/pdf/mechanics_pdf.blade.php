@@ -132,6 +132,10 @@
     <br>
 
     <div>
+        <span style="font-weight: bold;">Date(s):</span> {{ $date }}
+    </div>
+
+    <div>
         <span style="font-weight: bold;">Total:</span> {{ $mechanics->count() }}
     </div>
 

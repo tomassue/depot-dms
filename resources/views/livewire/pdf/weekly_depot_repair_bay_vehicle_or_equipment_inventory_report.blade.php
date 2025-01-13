@@ -56,7 +56,7 @@
         }
 
         table.content-table-2 {
-            width: 25%;
+            width: 70%;
             /* Adjust width as needed */
             /* margin: 20px auto; */
             /* Centers the table horizontally */
@@ -64,6 +64,7 @@
         }
 
         table.content-table-2 td {
+            padding: 5px;
             border: 1px solid #000000;
             font-weight: bold;
             vertical-align: bottom;
@@ -169,17 +170,31 @@
 
     <table class="content-table-2">
         <tr>
-            <td class="no-top-border no-bottom-border no-right-border no-left-border">
+            <td class="no-top-border no-bottom-border no-left-border no-right-border" width="35%">
                 Prepared by:
             </td>
-        </tr>
-        <tr>
-            <td class="no-top-border no no-left-border no-right-border" height="35" style="text-align: center;">
-                {{ $prepared_by->name }}
+            <td class="no-top-border no-bottom-border no-left-border no-right-border" width="30%"></td>
+            <td class="no-top-border no-bottom-border no-left-border no-right-border" width="35%">
+                Verified by:
             </td>
         </tr>
         <tr>
-            <td class="no-left-border no-right-border no-bottom-border"></td>
+            <td class="no-top-border no-left-border no-right-border" height="35" style="text-align: center;">
+                {{ $prepared_by->name }}
+            </td>
+            <td class="no-top-border no-bottom-border no-left-border no-right-border"></td>
+            <td class="no-top-border no-left-border no-right-border" style="text-align: center;">
+                {{ $division_chief->name }}
+            </td>
+        </tr>
+        <tr>
+            <td class="no-top-border no-bottom-border no-left-border no-right-border"></td>
+            <td class="no-top-border no-bottom-border no-left-border no-right-border"></td>
+            <td class="no-top-border no-bottom-border no-left-border no-right-border" style="text-align: center;">
+                {{ $division_chief->designation }}
+                <br>
+                Chief, Repair & Maintenance Division
+            </td>
         </tr>
     </table>
 </body>

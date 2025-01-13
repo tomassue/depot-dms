@@ -43,18 +43,23 @@
 
     <div class="card mb-2">
         <div class="card-body">
-            <div class="col-md-2 my-2 d-inline-flex align-items-center" title="Filter">
+            <div class="col-md-2 my-2 d-flex flex-column align-items-start" title="Filter">
                 <div class="form-group w-100">
                     <div wire:ignore>
-                        <input class="form-control filter_date_range" placeholder="Date">
+                        <input class="form-control filter_date_range" placeholder="Select date range">
                     </div>
                 </div>
             </div>
-            <div class="col-md-12 my-2 d-inline-flex align-items-center" title="Filter">
+
+            <div class="col-md-12 my-2 d-inline-flex align-items-center mb-5" title="Filter">
                 <button class="btn btn-info btn-md btn-icon-text me-4" title="Print" wire:click="printJobOrders">
                     <i class="bx bx-printer bx-sm"></i>
                 </button>
+                <button class="btn btn-secondary btn-md btn-icon-text" title="Clear" wire:click="clear">
+                    <i class="bx bxs-eraser bx-sm"></i>
+                </button>
             </div>
+
             <div class="col-md-12 my-2">
                 <div id="table_mechanic_job_orders" wire:ignore></div>
             </div>
@@ -152,10 +157,10 @@
                             data[0].map(item => [
                                 item.id,
                                 item.id,
-                                item.ref_category_id,
-                                item.ref_sub_category_id,
-                                item.ref_status_id,
-                                item.ref_type_of_repair_id
+                                item.category.name,
+                                item.sub_category_names,
+                                item.status.name,
+                                item.type_of_repair.name
                             ])
                         ), 1000);
                 });

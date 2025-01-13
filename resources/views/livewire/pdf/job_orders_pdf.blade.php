@@ -133,7 +133,7 @@
         <tr>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="20%">DATE(S)</td>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="2%">:</td>
-            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;"><span style="font-weight: normal;">wewewewe</span></td>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;"><span style="font-weight: normal;">{{ $date }}</span></td>
         </tr>
         <tr>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="20%">PENDING ORDERS</td>

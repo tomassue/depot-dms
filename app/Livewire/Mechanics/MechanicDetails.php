@@ -4,6 +4,7 @@ namespace App\Livewire\Mechanics;
 
 use App\Models\RefMechanicsModel;
 use App\Models\TblJobOrderModel;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -23,6 +24,20 @@ class MechanicDetails extends Component
 
         // Assuming the ID is the first element in the returned array
         $this->mechanic_id = $decodedValue[0]; // Extract the first element of the array
+    }
+
+    public function updated($property)
+    {
+        $pageData = $this->loadPageData();
+
+        if ($property === 'filter_date_range') {
+            $this->dispatch('refresh-table_mechanic_job_orders', $pageData['mechanic_jobs']);
+        }
+    }
+
+    public function clear()
+    {
+        $this->dispatch('reset-date-and-time');
     }
 
     public function render()
@@ -58,6 +73,17 @@ class MechanicDetails extends Component
         // Cast mechanic_id to string to avoid the JSON_QUOTE error
         $mechanic_jobs = TblJobOrderModel::with(['category', 'status', 'type_of_repair'])
             ->whereRaw("JSON_CONTAINS(ref_mechanics, JSON_QUOTE(?))", [(string) $this->mechanic_id])
+            ->when($this->filter_date_range != NULL, function ($query) {
+                if (str_contains($this->filter_date_range, ' to ')) {
+                    [$startDate, $endDate] = array_map('trim', explode(' to ', $this->filter_date_range));
+                    $query->whereBetween('created_at', [
+                        Carbon::parse($startDate)->startOfDay(),
+                        Carbon::parse($endDate)->endOfDay()
+                    ]);
+                } else {
+                    $query->whereDate('created_at', Carbon::parse($this->filter_date_range));
+                }
+            })
             ->get();
 
         $mechanic_jobs->each(function ($mechanic_job) {
@@ -75,7 +101,10 @@ class MechanicDetails extends Component
         $signedURL = URL::temporarySignedRoute(
             'generate-job-orders-pdf',
             now()->addMinutes(5),
-            ['id' => $this->mechanic_id]
+            [
+                'id' => $this->mechanic_id,
+                'date' => $this->filter_date_range
+            ]
         );
 
         $this->dispatch('generate-pdf', url: $signedURL);
