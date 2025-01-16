@@ -112,6 +112,26 @@
                         </li>
                     </ul>
                     @endcan
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link text-truncate"
+                                href="{{ route('sections-mechanic') }}"
+                                title="Sections (Mechanics)">
+                                Sections (Mechanics)
+                            </a>
+                        </li>
+                    </ul>
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link text-truncate"
+                                href="#"
+                                title="Sub-sections (Mechanics)">
+                                Sub-sections (Mechanics)
+                            </a>
+                        </li>
+                    </ul>
                     @can('can read category')
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
