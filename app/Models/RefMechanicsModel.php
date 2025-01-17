@@ -15,7 +15,8 @@ class RefMechanicsModel extends Model
 
     protected $fillable = [
         'name',
-        'deleted_at'
+        'ref_sections_mechanic_id',
+        'ref_sub_sections_mechanic_id'
     ];
 
     public function getActivitylogOptions(): LogOptions

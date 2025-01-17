@@ -20,7 +20,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="sectionsMechanicsModalLabel">{{ $editMode ? 'Update' : 'Add' }} Mechanic</h1>
+                    <h1 class="modal-title fs-5" id="sectionsMechanicsModalLabel">{{ $editMode ? 'Update' : 'Add' }} Section</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="clear"></button>
                 </div>
                 <div class="modal-body">
@@ -28,49 +28,6 @@
                         <div class="form-group">
                             <label for="inputSection">Section</label>
                             <input type="text" class="form-control @error('name') is-invalid @enderror" id="inputSection" wire:model="name">
-                            @error('name')
-                            <div class="invalid-feedback">
-                                {{ $message }}
-                            </div>
-                            @enderror
-                        </div>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear">Close</button>
-                    <button type="submit" class="btn btn-primary">{{ $editMode ? 'Update' : 'Save' }}</button>
-                    </form>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="card mt-3">
-        <div class="card-body">
-            <h4 class="card-title">Sub-sections</h4>
-
-            <div class="col-md-12 my-2 d-inline-flex align-content-center justify-content-end">
-                <button class="btn btn-primary btn-md btn-icon-text" wire:click="$dispatch('showSectionsMechanicsModal')"> Add <i class="typcn typcn-plus-outline btn-icon-append"></i></button>
-            </div>
-
-            <div class="col-md-12 my-2">
-                <div id="table_sub_sections_mechanic" wire:ignore></div>
-            </div>
-        </div>
-    </div>
-
-    <!-- subSectionsMechanicsModal -->
-    <div class="modal fade" id="subSectionsMechanicsModal" tabindex="-1" aria-labelledby="subSectionsMechanicsModalLabel" aria-hidden="true" wire:ignore.self>
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="subSectionsMechanicsModalLabel">{{ $editMode ? 'Update' : 'Add' }} Mechanic</h1>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" wire:click="clear"></button>
-                </div>
-                <div class="modal-body">
-                    <form class="forms-sample" wire:submit="{{ $editMode ? 'updateSubSection' : 'createSubSection' }}" novalidate>
-                        <div class="form-group">
-                            <label for="inputSubSection">Sub-section</label>
-                            <input type="text" class="form-control @error('name') is-invalid @enderror" id="inputSubSection" wire:model="name">
                             @error('name')
                             <div class="invalid-feedback">
                                 {{ $message }}

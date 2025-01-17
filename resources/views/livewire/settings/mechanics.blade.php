@@ -40,6 +40,38 @@
                 <div class="modal-body">
                     <form class="forms-sample" wire:submit="{{ $editMode ? 'updateMechanic' : 'createMechanic' }}" novalidate>
                         <div class="form-group">
+                            <label for="inputSection">Section</label>
+                            <select class="form-select  @error('ref_sections_mechanic_id') is-invalid @enderror" aria-label="Default select example" wire:model.live="ref_sections_mechanic_id">
+                                <option selected>Select a section</option>
+                                @forelse($sections as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @empty
+                                <option value="">Please add sections</option>
+                                @endforelse
+                            </select>
+                            @error('ref_sections_mechanic_id')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
+                            <label for="inputSubSection" style="display: {{ $sub_sections->count() > 0 ? '' : 'none' }}">Sub-section</label>
+                            <select class="form-select  @error('ref_sub_sections_mechanic_id') is-invalid @enderror" style="display: {{ $sub_sections->count() > 0 ? '' : 'none' }}" aria-label="Default select example" wire:model.live="ref_sub_sections_mechanic_id">
+                                <option selected>Select a sub-section</option>
+                                @forelse($sub_sections as $item)
+                                <option value="{{ $item->id }}">{{ $item->name }}</option>
+                                @empty
+                                <option value="">Please add sections</option>
+                                @endforelse
+                            </select>
+                            @error('ref_sub_sections_mechanic_id')
+                            <div class="invalid-feedback">
+                                {{ $message }}
+                            </div>
+                            @enderror
+                        </div>
+                        <div class="form-group">
                             <label for="inputMechanic">Mechanic</label>
                             <input type="text" class="form-control @error('mechanic') is-invalid @enderror" id="inputMechanic" placeholder="Mechanic" wire:model="mechanic">
                             @error('mechanic')
@@ -106,12 +138,14 @@
                 hidden: true
             },
             "Name of Mechanics",
+            "Section",
+            "Sub-section",
             {
                 name: "Status",
                 formatter: (cell, row) => {
                     return gridjs.html(`
-                    <span class="${row.cells[2].data === 'Inactive' ? 'text-danger' : 'text-success'}">
-                    ${row.cells[2].data}
+                    <span class="${row.cells[4].data === 'Inactive' ? 'text-danger' : 'text-success'}">
+                    ${row.cells[4].data}
                     </span>
                 `);
                 }
@@ -120,7 +154,7 @@
                 name: "Actions",
                 formatter: (cell, row) => {
                     const id = row.cells[0].data;
-                    const isInactive = row.cells[2].data === 'Inactive';
+                    const isInactive = row.cells[4].data === 'Inactive';
                     return gridjs.html(`
                         @can('can update mechanics')
                         <button class="btn btn-success btn-sm btn-icon-text me-3" wire:click="readMechanic('${id}')"> Edit <i class="typcn typcn-edit btn-icon-append"></i></button>
@@ -147,6 +181,8 @@
                         data.map(item => [
                             item.id,
                             item.name,
+                            item.ref_sections_mechanic_id,
+                            item.ref_sub_sections_mechanic_id,
                             item.deleted_at ? 'Inactive' : 'Active' // Use plain text for status here
                         ])
                     ), 3000);
@@ -163,6 +199,8 @@
                             data[0].map(item => [
                                 item.id,
                                 item.name,
+                                item.ref_sections_mechanic_id,
+                                item.ref_sub_sections_mechanic_id,
                                 item.deleted_at ? 'Inactive' : 'Active' // Use plain text for status here
                             ])
                         ), 3000);

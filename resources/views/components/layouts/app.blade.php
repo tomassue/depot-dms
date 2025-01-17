@@ -176,6 +176,13 @@
         .hover-bg:hover {
             background-color: #718e8f !important;
         }
+
+        select.form-select {
+            padding: 0.4375rem 0.75rem;
+            border: 0;
+            outline: 1px solid #f3f3f3;
+            color: #747474;
+        }
     </style>
 </head>
 

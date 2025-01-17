@@ -3,6 +3,8 @@
 namespace App\Livewire\Settings;
 
 use App\Models\RefMechanicsModel;
+use App\Models\RefSectionsMechanicModel;
+use App\Models\RefSubSectionsMechanicModel;
 use Carbon\Carbon;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +24,7 @@ class Mechanics extends Component
     public $id_mechanic;
 
     /* ---------------------------------- Model --------------------------------- */
-    public $mechanic;
+    public $ref_sections_mechanic_id, $ref_sub_sections_mechanic_id, $mechanic;
 
     public function mount()
     {
@@ -52,10 +54,24 @@ class Mechanics extends Component
         return $rules;
     }
 
+    public function loadSections()
+    {
+        // Select
+        return RefSectionsMechanicModel::all();
+    }
+
+    public function loadSubSections()
+    {
+        return RefSubSectionsMechanicModel::where('ref_sections_mechanic_id', $this->ref_sections_mechanic_id)
+            ->get();
+    }
+
     public function render()
     {
         $data = [
-            'mechanics' => $this->readMechanics()
+            'mechanics' => $this->readMechanics(),
+            'sections' => $this->loadSections(),
+            'sub_sections' => $this->loadSubSections(),
         ];
 
         return view('livewire.settings.mechanics', $data);
@@ -100,6 +116,8 @@ class Mechanics extends Component
         try {
             $mechanic = new RefMechanicsModel();
             $mechanic->name = $this->mechanic;
+            $mechanic->ref_sections_mechanic_id = $this->ref_sections_mechanic_id;
+            $mechanic->ref_sub_sections_mechanic_id = $this->ref_sub_sections_mechanic_id;
             $mechanic->save();
             DB::commit();
             $this->clear();
@@ -133,6 +151,8 @@ class Mechanics extends Component
         DB::beginTransaction();
         try {
             $mechanic->name = $this->mechanic;
+            $mechanic->ref_sections_mechanic_id = $this->ref_sections_mechanic_id;
+            $mechanic->ref_sub_sections_mechanic_id = $this->ref_sub_sections_mechanic_id;
             $mechanic->save();
             DB::commit();
             $this->clear();

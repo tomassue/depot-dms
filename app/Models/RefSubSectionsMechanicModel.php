@@ -16,6 +16,12 @@ class RefSubSectionsMechanicModel extends Model
         'ref_sections_mechanic_id',
         'name'
     ];
+
+    public function section()
+    {
+        return $this->belongsTo(RefSectionsMechanicModel::class, 'ref_sections_mechanic_id', 'id');
+    }
+
     public function getActivitylogOptions(): LogOptions
     {
         return LogOptions::defaults()

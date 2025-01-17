@@ -126,7 +126,7 @@
                         <li class="nav-item">
                             <a
                                 class="nav-link text-truncate"
-                                href="#"
+                                href="{{ route('sub-sections-mechanic') }}"
                                 title="Sub-sections (Mechanics)">
                                 Sub-sections (Mechanics)
                             </a>

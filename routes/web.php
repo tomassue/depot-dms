@@ -15,6 +15,7 @@ use App\Livewire\Settings\Model;
 use App\Livewire\Settings\Office;
 use App\Livewire\Settings\Permissions;
 use App\Livewire\Settings\RefSectionsMechanic;
+use App\Livewire\Settings\RefSubSectionsMechanic;
 use App\Livewire\Settings\Roles;
 use App\Livewire\Settings\Signatories;
 use App\Livewire\Settings\Status;
@@ -58,6 +59,7 @@ Route::middleware(['auth', 'check_default_password', 'is_active'])->group(functi
     Route::get('/settings/reference-mechanics', Mechanics::class)->name('mechanics');
     Route::get('/settings/mechanics-pdf/{date?}', [GeneratePDFController::class, 'generateMechanicsPDF'])->name('generate-mechanics-pdf');
     Route::get('/settings/sections-mechanics', RefSectionsMechanic::class)->name('sections-mechanic');
+    Route::get('/settings/sub-sections', RefSubSectionsMechanic::class)->name('sub-sections-mechanic');
 
     Route::get('/settings/category', Category::class)->name('category');
     Route::get('/settings/sub-category', SubCategory::class)->name('sub-category');
