@@ -25,4 +25,14 @@ class RefMechanicsModel extends Model
             ->logOnly(['*'])
             ->logOnlyDirty();
     }
+
+    public function section()
+    {
+        return $this->belongsTo(RefSectionsMechanicModel::class, 'ref_sections_mechanic_id', 'id');
+    }
+
+    public function sub_section()
+    {
+        return $this->belongsTo(RefSubSectionsMechanicModel::class, 'ref_sub_sections_mechanic_id', 'id');
+    }
 }

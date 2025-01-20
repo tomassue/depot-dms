@@ -23,6 +23,16 @@
                                 {{ $mechanic->status }}
                             </span>
                         </p>
+                        <div class="d-flex align-items-center justify-content-between pt-2">
+                            <div>
+                                <p class="text-white font-weight-bold">Section</p>
+                                <p class="text-white font-weight-bold">Sub-section</p>
+                            </div>
+                            <div>
+                                <p class="text-white fw-bold">{{ $mechanic->section->name ?? '-' }}</p>
+                                <p class="text-white fw-bold">{{ $mechanic->sub_section->name ?? '-' }}</p>
+                            </div>
+                        </div>
                         <div class="d-flex align-items-center justify-content-between info pt-2">
                             <div>
                                 <p class="text-white font-weight-bold">Pending</p>

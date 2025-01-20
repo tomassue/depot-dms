@@ -181,8 +181,8 @@
                         data.map(item => [
                             item.id,
                             item.name,
-                            item.ref_sections_mechanic_id,
-                            item.ref_sub_sections_mechanic_id,
+                            item.section ? item.section.name : '-', // Access section name
+                            item.sub_section ? item.sub_section.name : '-', // Access sub-section name
                             item.deleted_at ? 'Inactive' : 'Active' // Use plain text for status here
                         ])
                     ), 3000);
@@ -199,8 +199,8 @@
                             data[0].map(item => [
                                 item.id,
                                 item.name,
-                                item.ref_sections_mechanic_id,
-                                item.ref_sub_sections_mechanic_id,
+                                item.section ? item.section.name : '-', // Access section name
+                                item.sub_section ? item.sub_section.name : '-', // Access sub-section name
                                 item.deleted_at ? 'Inactive' : 'Active' // Use plain text for status here
                             ])
                         ), 3000);

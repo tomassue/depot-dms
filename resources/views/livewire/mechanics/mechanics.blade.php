@@ -39,7 +39,7 @@
             </div>
             <div class="row g-2 pb-3">
                 @forelse($mechanics as $item)
-                <div class="col-xl-4 stretch-card pointer">
+                <div class="col-lg-4 col-xl-3 stretch-card pointer">
                     <div class="card profile-card hover-bg position-relative" style="background-color: #314e4f; border-radius: 5px;">
                         <!-- Full-size transparent link -->
                         <a href="{{ route('mechanic-details', ['id' => $item->sqid]) }}" class="stretched-link"></a>

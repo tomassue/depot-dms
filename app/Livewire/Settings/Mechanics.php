@@ -84,7 +84,7 @@ class Mechanics extends Component
 
     public function readMechanics()
     { // table_mechanics
-        $mechanics = RefMechanicsModel::withTrashed()
+        $mechanics = RefMechanicsModel::with(['section', 'sub_section'])
             ->when($this->filter_date_range != NULL, function ($query) {
                 if (str_contains($this->filter_date_range, ' to ')) {
                     [$startDate, $endDate] = array_map('trim', explode(' to ', $this->filter_date_range));
@@ -96,6 +96,7 @@ class Mechanics extends Component
                     $query->whereDate('created_at', Carbon::parse($this->filter_date_range));
                 }
             })
+            ->withTrashed()
             ->get();
 
         return $mechanics;
