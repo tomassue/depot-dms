@@ -129,26 +129,41 @@
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="20%">MECHANIC'S NAME</td>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="2%">:</td>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;"><span style="font-weight: normal;">{{ $mechanic->name }}</span></td>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="10%">SECTION</td>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="2%">:</td>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;"><span style="font-weight: normal;">{{ $mechanic->section->name ?? '-' }}</span></td>
         </tr>
         <tr>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="20%">DATE(S)</td>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="2%">:</td>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;"><span style="font-weight: normal;">{{ $date }}</span></td>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="10%">SUB-SECTION</td>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="2%">:</td>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;"><span style="font-weight: normal;">{{ $mechanic->sub_section->name ?? '-' }}</span></td>
         </tr>
         <tr>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="20%">PENDING ORDERS</td>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="2%">:</td>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;"><span style="font-weight: normal;">{{ $mechanic->pending_jobs }}</span></td>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="10%"></td>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="2%"></td>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;"></td>
         </tr>
         <tr>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="20%">COMPLETED ORDERS</td>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="2%">:</td>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;"><span style="font-weight: normal;">{{ $mechanic->completed_jobs }}</span></td>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="10%"></td>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="2%"></td>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;"></td>
         </tr>
         <tr>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="20%">TOTAL ORDERS</td>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="2%">:</td>
             <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;"><span style="font-weight: normal;">{{ $mechanic->total_jobs }}</span></td>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="10%"></td>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;" width="2%"></td>
+            <td class="no-top-border no-bottom-border no-right-border no-left-border" style="padding: 5px;"></td>
         </tr>
     </table>
 
@@ -162,6 +177,7 @@
             <td style="text-align:center">Type</td>
             <td style="text-align:center">Model</td>
             <td style="text-align:center">Number</td>
+            <td style="text-align:center">Issue/Concern/Request</td>
             <td style="text-align:center" width="10%">Status</td>
             <td style="text-align:center" width="9%">Type of Repair</td>
         </tr>
@@ -174,12 +190,13 @@
             <td style="font-weight: normal;">{{ $item->incoming_request->type->name }}</td>
             <td style="font-weight: normal;">{{ $item->incoming_request->model->name }}</td>
             <td style="font-weight: normal;">{{ $item->incoming_request->number }}</td>
+            <td style="font-weight: normal;">{{ $item->issue_or_concern }}</td>
             <td style="text-align:center; font-weight: normal;">{{ $item->status->name }}</td>
             <td style="text-align:center; font-weight: normal;">{{ $item->type_of_repair->name }}</td>
         </tr>
         @empty
         <tr>
-            <td colspan="4" style="text-align:center">No record found.</td>
+            <td colspan="10" style="text-align:center">No record found.</td>
         </tr>
         @endforelse
     </table>

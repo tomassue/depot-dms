@@ -113,16 +113,20 @@
             "Job Order No.",
             "Category",
             "Sub-category",
+            "Type",
+            "No.",
+            "Issue/Concern/Request",
             "Status",
             "Date & Time (Out)",
             "Total Repair Time",
             {
                 name: "Actions",
+                sort: false,
                 formatter: (cell, row) => {
                     const id = row.cells[0].data;
                     return gridjs.html(`
                         @can('read incoming')
-                        <button class="btn btn-success btn-sm btn-icon-text me-3" title="Edit" style="display: ${row.cells[4].data === 'Pending' ? '' : 'none'}" wire:click="readJobOrder('${id}')">
+                        <button class="btn btn-success btn-sm btn-icon-text me-3" title="Edit" style="display: ${row.cells[7].data === 'Pending' ? '' : 'none'}" wire:click="readJobOrder('${id}')">
                             <i class="bx bx-edit bx-sm"></i>
                         </button>
                         @endcan
@@ -135,6 +139,7 @@
             limit: 10
         },
         sort: true,
+        resizable: true,
         data: () => {
             return new Promise(resolve => {
                 setTimeout(() =>
@@ -144,6 +149,9 @@
                             item.id,
                             item.category.name,
                             item.sub_category_names, // Access the sub_category_names attribute
+                            item.incoming_request.type.name, // Access nested property
+                            item.incoming_request.number,
+                            item.issue_or_concern,
                             item.status.name,
                             item.date_and_time_out ?
                             new Date(item.date_and_time_out).toLocaleString('en-US', {
@@ -173,6 +181,9 @@
                                 item.id,
                                 item.category.name,
                                 item.sub_category_names, // Access the sub_category_names attribute
+                                item.incoming_request.type.name, // Access nested property
+                                item.incoming_request.number,
+                                item.issue_or_concern,
                                 item.status.name,
                                 item.date_and_time_out ?
                                 new Date(item.date_and_time_out).toLocaleString('en-US', {

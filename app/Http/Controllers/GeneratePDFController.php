@@ -136,7 +136,7 @@ class GeneratePDFController extends Controller
             $mechanic_id = request()->route('id');
             $date_range = request()->route('date');
 
-            $mechanic = RefMechanicsModel::withTrashed()
+            $mechanic = RefMechanicsModel::with(['section', 'sub_section'])
                 ->select(
                     'id',
                     'name',
@@ -154,8 +154,11 @@ class GeneratePDFController extends Controller
                     DB::raw("(SELECT COUNT(*)
                     FROM tbl_job_order
                         WHERE JSON_CONTAINS(tbl_job_order.ref_mechanics, JSON_QUOTE(CAST(ref_mechanics.id AS CHAR)))
-                ) as total_jobs")
+                ) as total_jobs"),
+                    'ref_sections_mechanic_id',
+                    'ref_sub_sections_mechanic_id'
                 )
+                ->withTrashed()
                 ->findOrFail($mechanic_id);
 
             // Query to get job orders where this mechanic is listed in the 'ref_mechanics' JSON array
