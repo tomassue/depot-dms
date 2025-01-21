@@ -2,7 +2,10 @@
 
 namespace App\Livewire\Mechanics;
 
+use App\Livewire\Settings\RefSectionsMechanic;
 use App\Models\RefMechanicsModel;
+use App\Models\RefSectionsMechanicModel;
+use App\Models\RefSubSectionsMechanicModel;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Livewire\Attributes\Title;
@@ -17,7 +20,7 @@ class Mechanics extends Component
     use WithPagination;
 
     public $search;
-    public $filter_date_range;
+    public $filter_date_range, $filter_section, $filter_sub_section;
 
     public function mount()
     {
@@ -35,18 +38,27 @@ class Mechanics extends Component
 
     public function clear()
     {
+        $this->reset();
         $this->dispatch('reset-date-and-time');
     }
 
     public function render()
     {
-        return view('livewire.mechanics.mechanics', $this->loadPageData());
+        $pageData = $this->loadPageData();
+
+        return view('livewire.mechanics.mechanics', [
+            'groupedSections' => $pageData['groupedSections'],
+            'mechanics' => $pageData['mechanics'],
+            'filter_sections' => $this->loadSections(),
+            'filter_sub_sections' => $this->loadSubSections()
+        ]);
     }
 
     //* With pagination
     public function loadPageData()
     {
-        $sqids = new Sqids(minLength: 10); // For URL obfuscation
+        $sqids = new Sqids(minLength: 10);
+
         $mechanics = RefMechanicsModel::with(['section', 'sub_section'])
             ->select(
                 'id',
@@ -65,12 +77,20 @@ class Mechanics extends Component
                 DB::raw("(SELECT COUNT(*)
                     FROM tbl_job_order
                         WHERE JSON_CONTAINS(tbl_job_order.ref_mechanics, JSON_QUOTE(CAST(ref_mechanics.id AS CHAR)))
-                ) as total_jobs")
+                ) as total_jobs"),
+                'ref_sections_mechanic_id',
+                'ref_sub_sections_mechanic_id'
             )
             ->when($this->search, function ($query) {
                 $query->where('name', 'like', '%' . $this->search . '%');
             })
-            ->when($this->filter_date_range != NULL, function ($query) {
+            ->when($this->filter_section != NULL, function ($query) {
+                $query->where('ref_sections_mechanic_id', $this->filter_section);
+            })
+            ->when($this->filter_sub_section != NULL, function ($query) {
+                $query->where('ref_sub_sections_mechanic_id', $this->filter_sub_section);
+            })
+            ->when($this->filter_date_range != null, function ($query) {
                 if (str_contains($this->filter_date_range, ' to ')) {
                     [$startDate, $endDate] = array_map('trim', explode(' to ', $this->filter_date_range));
                     $query->whereBetween('created_at', [
@@ -81,19 +101,44 @@ class Mechanics extends Component
                     $query->whereDate('created_at', Carbon::parse($this->filter_date_range));
                 }
             })
-            ->paginate(10);
+            ->get();
 
-        // Process items within the paginator
-        $mechanics->getCollection()->transform(function ($mechanic) use ($sqids) {
+        // Transform and add sqid to each mechanic
+        $mechanics->transform(function ($mechanic) use ($sqids) {
             $mechanic->sqid = $sqids->encode([$mechanic->id]);
             return $mechanic;
         });
 
+        // Group by sections and subsections
+        $groupedSections = $mechanics->groupBy(function ($mechanic) {
+            return $mechanic->section->name ?? 'Unassigned Section';
+        })->map(function ($sectionGroup) {
+            return $sectionGroup->groupBy(function ($mechanic) {
+                return $mechanic->sub_section->name ?? null; // If no subsection, group under null
+            });
+        });
+
+        // Pass the grouped sections to the view
         return [
+            'groupedSections' => $groupedSections,
             'mechanics' => $mechanics
         ];
     }
 
+    public function loadSections()
+    {
+        // Select filtered sections
+        return RefSectionsMechanicModel::all();
+    }
+
+    public function loadSubSections()
+    {
+        // Select filtered subsections
+        return RefSubSectionsMechanicModel::when($this->filter_section != NULL, function ($query) {
+            $query->where('ref_sections_mechanic_id', $this->filter_section);
+        })
+            ->get();
+    }
 
     public function print()
     {

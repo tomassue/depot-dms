@@ -146,13 +146,35 @@
             <td style="text-align:center" width="13%">Completed</td>
             <td style="text-align:center" width="13%">Total</td>
         </tr>
-        @forelse($mechanics as $item)
+        @forelse($groupedSections as $sectionName => $subSections)
+        <tr>
+            <td colspan="4" style="font-weight:unset">{{ $sectionName }}</td>
+        </tr>
+        @forelse ($subSections as $subSectionName => $mechanics)
+        @if ($subSectionName !== null)
+        <tr>
+            <td colspan="4" style="font-weight:unset">
+                <span style="padding-right: 5px;">{{ $subSectionName }}</span>
+            </td>
+        </tr>
+        @endif
+        @forelse ($mechanics as $item)
         <tr>
             <td style="font-weight:unset">{{ $item->name }}</td>
             <td style="text-align:center; font-weight:unset">{{ $item->pending_jobs }}</td>
             <td style="text-align:center; font-weight:unset">{{ $item->completed_jobs }}</td>
             <td style="text-align:center; font-weight:unset">{{ $item->total_jobs }}</td>
         </tr>
+        @empty
+        <tr>
+            <td colspan="4">-</td>
+        </tr>
+        @endforelse
+        @empty
+        <tr>
+            <td colspan="4">-</td>
+        </tr>
+        @endforelse
         @empty
         <tr>
             <td colspan="4" style="text-align:center">No record found.</td>

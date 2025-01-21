@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\DB;
 
 class GeneratePDFController extends Controller
 {
+    //* This function is from the Mechanics page
     public function generateMechanicsListPDF()
     {
         try {
@@ -21,27 +22,74 @@ class GeneratePDFController extends Controller
             }
 
             $date = request()->route('date');
+            $filter_section = request()->route('section');
+            $filter_sub_section = request()->route('sub_section');
+            $search = request()->route('search');
 
-            $mechanics = RefMechanicsModel::select(
-                'id',
-                'name',
-                DB::raw("IF(deleted_at IS NULL, 'Active', 'Inactive') as status"),
-                DB::raw("(SELECT COUNT(*)
-                        FROM tbl_job_order
-                        WHERE ref_status_id = 1
-                            AND JSON_CONTAINS(tbl_job_order.ref_mechanics, JSON_QUOTE(CAST(ref_mechanics.id AS CHAR)))
-                    ) as pending_jobs"),
-                DB::raw("(SELECT COUNT(*)
-                        FROM tbl_job_order
-                        WHERE ref_status_id = 2
-                            AND JSON_CONTAINS(tbl_job_order.ref_mechanics, JSON_QUOTE(CAST(ref_mechanics.id AS CHAR)))
-                    ) as completed_jobs"),
-                DB::raw("(SELECT COUNT(*)
-                        FROM tbl_job_order
-                            WHERE JSON_CONTAINS(tbl_job_order.ref_mechanics, JSON_QUOTE(CAST(ref_mechanics.id AS CHAR)))
-                    ) as total_jobs")
-            )
-                ->when($date != NULL, function ($query) use ($date) {
+            // $mechanics = RefMechanicsModel::select(
+            //     'id',
+            //     'name',
+            //     DB::raw("IF(deleted_at IS NULL, 'Active', 'Inactive') as status"),
+            //     DB::raw("(SELECT COUNT(*)
+            //             FROM tbl_job_order
+            //             WHERE ref_status_id = 1
+            //                 AND JSON_CONTAINS(tbl_job_order.ref_mechanics, JSON_QUOTE(CAST(ref_mechanics.id AS CHAR)))
+            //         ) as pending_jobs"),
+            //     DB::raw("(SELECT COUNT(*)
+            //             FROM tbl_job_order
+            //             WHERE ref_status_id = 2
+            //                 AND JSON_CONTAINS(tbl_job_order.ref_mechanics, JSON_QUOTE(CAST(ref_mechanics.id AS CHAR)))
+            //         ) as completed_jobs"),
+            //     DB::raw("(SELECT COUNT(*)
+            //             FROM tbl_job_order
+            //                 WHERE JSON_CONTAINS(tbl_job_order.ref_mechanics, JSON_QUOTE(CAST(ref_mechanics.id AS CHAR)))
+            //         ) as total_jobs")
+            // )
+            //     ->when($date != NULL, function ($query) use ($date) {
+            //         if (str_contains($date, ' to ')) {
+            //             [$startDate, $endDate] = array_map('trim', explode(' to ', $date));
+            //             $query->whereBetween('created_at', [
+            //                 Carbon::parse($startDate)->startOfDay(),
+            //                 Carbon::parse($endDate)->endOfDay()
+            //             ]);
+            //         } else {
+            //             $query->whereDate('created_at', Carbon::parse($date));
+            //         }
+            //     })
+            //     ->get();
+
+            $mechanics = RefMechanicsModel::with(['section', 'sub_section'])
+                ->select(
+                    'id',
+                    'name',
+                    DB::raw("IF(deleted_at IS NULL, 'Active', 'Inactive') as status"),
+                    DB::raw("(SELECT COUNT(*)
+                    FROM tbl_job_order
+                    WHERE ref_status_id = 1
+                        AND JSON_CONTAINS(tbl_job_order.ref_mechanics, JSON_QUOTE(CAST(ref_mechanics.id AS CHAR)))
+                ) as pending_jobs"),
+                    DB::raw("(SELECT COUNT(*)
+                    FROM tbl_job_order
+                    WHERE ref_status_id = 2
+                        AND JSON_CONTAINS(tbl_job_order.ref_mechanics, JSON_QUOTE(CAST(ref_mechanics.id AS CHAR)))
+                ) as completed_jobs"),
+                    DB::raw("(SELECT COUNT(*)
+                    FROM tbl_job_order
+                        WHERE JSON_CONTAINS(tbl_job_order.ref_mechanics, JSON_QUOTE(CAST(ref_mechanics.id AS CHAR)))
+                ) as total_jobs"),
+                    'ref_sections_mechanic_id',
+                    'ref_sub_sections_mechanic_id'
+                )
+                ->when($search, function ($query) {
+                    $query->where('name', 'like', '%' . $search . '%');
+                })
+                ->when($filter_section != NULL, function ($query) {
+                    $query->where('ref_sections_mechanic_id', $filter_section);
+                })
+                ->when($filter_sub_section != NULL, function ($query) {
+                    $query->where('ref_sub_sections_mechanic_id', $filter_sub_section);
+                })
+                ->when($date != null, function ($query) {
                     if (str_contains($date, ' to ')) {
                         [$startDate, $endDate] = array_map('trim', explode(' to ', $date));
                         $query->whereBetween('created_at', [
@@ -54,6 +102,15 @@ class GeneratePDFController extends Controller
                 })
                 ->get();
 
+            // Group by sections and subsections
+            $groupedSections = $mechanics->groupBy(function ($mechanic) {
+                return $mechanic->section->name ?? 'Unassigned Section';
+            })->map(function ($sectionGroup) {
+                return $sectionGroup->groupBy(function ($mechanic) {
+                    return $mechanic->sub_section->name ?? null; // If no subsection, group under null
+                });
+            });
+
             $cdo_full = public_path('assets/images/cdo-seal.png');
             $rise_logo = public_path('assets/images/risev2.png');
             $watermark = public_path('assets/images/compressed_city_depot_logo.png');
@@ -63,7 +120,8 @@ class GeneratePDFController extends Controller
                 'rise_logo' => base64_encode(file_get_contents($rise_logo)),
                 'watermark' => base64_encode(file_get_contents($watermark)),
                 'date' => $date ?? '-',
-                'mechanics' => $mechanics
+                'mechanics' => $mechanics,
+                'groupedSections' => $groupedSections
             ];
 
             $pdf = Pdf::loadView('livewire.pdf.mechanics_list_pdf', $data); // Load the PDF to the view

@@ -1,10 +1,35 @@
 <div>
     <div class="card mb-2">
         <div class="card-body">
-            <div class="col-md-2 my-2 d-flex flex-column align-items-start" title="Filter">
-                <div class="form-group w-100">
-                    <div wire:ignore>
-                        <input class="form-control filter_date_range" placeholder="Select date range">
+            <div class="row g-2">
+                <div class="col-lg-2 my-2 d-flex flex-column align-items-start" title="Filter">
+                    <div class="form-group w-100">
+                        <select class="form-select" aria-label="Default select example" style="height: 48px; border-radius: unset;" wire:model.live="filter_section">
+                            <option value="" selected>Section</option>
+                            @foreach ($filter_sections as $item)
+                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+                <div class="col-lg-2 my-2 d-flex flex-column align-items-start" title="Filter">
+                    <div class="form-group w-100">
+                        <select class="form-select" aria-label="Default select example" style="height: 48px; border-radius: unset;" wire:model.live="filter_sub_section">
+                            <option value="" selected>Sub-section</option>
+                            @foreach ($filter_sub_sections as $item)
+                            <option value="{{ $item->id }}">{{ $item->name }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 col-lg-4 my-2 d-flex flex-column align-items-start" title="Filter">
+                    <div class="form-group w-100">
+                        <div wire:ignore>
+                            <input class="form-control filter_date_range" placeholder="Select date range">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -22,6 +47,7 @@
             </div>
         </div>
     </div>
+
     <div class="card">
         <div class="card-body">
             <div class="col-sm-12 col-md-4 col-lg-2 pb-3">
@@ -37,13 +63,22 @@
                     placeholder="Search..."
                     wire:model.live="search" />
             </div>
+            @foreach ($groupedSections as $sectionName => $subSections)
+            <div class="d-flex justify-content-between align-items-center flex-wrap my-3">
+                <h3 class="mb-2 mb-md-0 text-uppercase font-weight-medium">{{ $sectionName }}</h3>
+            </div>
+            @foreach ($subSections as $subSectionName => $mechanics)
+            @if ($subSectionName !== null)
+            <div class="d-flex justify-content-between align-items-center flex-wrap my-2">
+                <h4 class="mb-2 mb-md-0 text-uppercase font-weight-medium" style="color: #3c3c3c">{{ $subSectionName }}</h4>
+            </div>
+            @endif
             <div class="row g-2 pb-3">
-                @forelse($mechanics as $item)
+                @foreach ($mechanics as $item)
                 <div class="col-lg-4 col-xl-3 stretch-card pointer">
                     <div class="card profile-card hover-bg position-relative" style="background-color: #314e4f; border-radius: 5px;">
                         <!-- Full-size transparent link -->
                         <a href="{{ route('mechanic-details', ['id' => $item->sqid]) }}" class="stretched-link"></a>
-
                         <div class="card-body">
                             <div class="row align-items-center h-100">
                                 <div class="col-md-4">
@@ -77,13 +112,10 @@
                         </div>
                     </div>
                 </div>
-                @empty
-                <div class="text-center">No record.</div>
-                @endforelse
+                @endforeach
             </div>
-            <div>
-                {{ $mechanics->links() }}
-            </div>
+            @endforeach
+            @endforeach
         </div>
     </div>
 </div>
