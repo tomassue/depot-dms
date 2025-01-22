@@ -49,7 +49,7 @@
         }
 
         table.content-table td {
-            padding: 15px;
+            padding: 5px;
             border: 1px solid #000000;
             font-weight: bold;
             /* Optional for better visibility */
@@ -147,33 +147,34 @@
             <td style="text-align:center" width="13%">Total</td>
         </tr>
         @forelse($groupedSections as $sectionName => $subSections)
+        {{-- Section Row --}}
         <tr>
-            <td colspan="4" style="font-weight:unset">{{ $sectionName }}</td>
+            <td colspan="4" style="font-weight:bold; padding-left: 5px;">{{ $sectionName }}</td>
         </tr>
         @forelse ($subSections as $subSectionName => $mechanics)
-        @if ($subSectionName !== null)
+        @if ($subSectionName)
+        {{-- Subsection Row --}}
         <tr>
-            <td colspan="4" style="font-weight:unset">
-                <span style="padding-right: 5px;">{{ $subSectionName }}</span>
+            <td colspan="4" style="font-weight:normal; padding-left: 20px;">
+                {{ $subSectionName }}
             </td>
         </tr>
         @endif
         @forelse ($mechanics as $item)
+        {{-- Mechanic Row --}}
         <tr>
-            <td style="font-weight:unset">{{ $item->name }}</td>
-            <td style="text-align:center; font-weight:unset">{{ $item->pending_jobs }}</td>
-            <td style="text-align:center; font-weight:unset">{{ $item->completed_jobs }}</td>
-            <td style="text-align:center; font-weight:unset">{{ $item->total_jobs }}</td>
+            <td style="font-weight:normal; padding-left: 40px;">{{ $item->name }}</td>
+            <td style="text-align:center; font-weight:normal;">{{ $item->pending_jobs }}</td>
+            <td style="text-align:center; font-weight:normal;">{{ $item->completed_jobs }}</td>
+            <td style="text-align:center; font-weight:normal;">{{ $item->total_jobs }}</td>
         </tr>
         @empty
         <tr>
-            <td colspan="4">-</td>
+            <td colspan="4" style="padding-left: 40px;">-</td>
         </tr>
         @endforelse
         @empty
-        <tr>
-            <td colspan="4">-</td>
-        </tr>
+        {{-- Skip rendering if no subsections --}}
         @endforelse
         @empty
         <tr>
@@ -181,6 +182,7 @@
         </tr>
         @endforelse
     </table>
+
 </body>
 
 </html>

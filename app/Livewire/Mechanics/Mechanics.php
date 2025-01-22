@@ -142,11 +142,18 @@ class Mechanics extends Component
 
     public function print()
     {
-        // Generate signed URL
+        // Example of manually passing query parameters
+        $params = http_build_query([
+            'filter_section' => $this->filter_section,
+            'filter_sub_section' => $this->filter_sub_section,
+            'search' => $this->search,
+            'date' => $this->filter_date_range
+        ]);
+
         $signedURL = URL::temporarySignedRoute(
             'generate-mechanics-list-pdf',
             now()->addMinutes(5),
-            ['date' => $this->filter_date_range]
+            $params  // This will now be passed as query string
         );
 
         // Dispatch the event

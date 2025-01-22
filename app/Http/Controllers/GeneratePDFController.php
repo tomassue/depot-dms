@@ -21,10 +21,16 @@ class GeneratePDFController extends Controller
                 abort(401);
             }
 
-            $date = request()->route('date');
-            $filter_section = request()->route('section');
-            $filter_sub_section = request()->route('sub_section');
-            $search = request()->route('search');
+            // $date = request()->route('date');
+            // $filter_section = request()->route('section');
+            // $filter_sub_section = request()->route('sub_section');
+            // $search = request()->route('search');
+
+            // Retrieve parameters from route or query string
+            $date = request()->route('date') ?? request()->query('date');
+            $filter_section = request()->route('filter_section') ?? request()->query('filter_section');
+            $filter_sub_section = request()->route('filter_sub_section') ?? request()->query('filter_sub_section');
+            $search = request()->route('search') ?? request()->query('search');
 
             // $mechanics = RefMechanicsModel::select(
             //     'id',
@@ -80,16 +86,16 @@ class GeneratePDFController extends Controller
                     'ref_sections_mechanic_id',
                     'ref_sub_sections_mechanic_id'
                 )
-                ->when($search, function ($query) {
+                ->when(!empty($search), function ($query) use ($search) {
                     $query->where('name', 'like', '%' . $search . '%');
                 })
-                ->when($filter_section != NULL, function ($query) {
+                ->when(!empty($filter_section), function ($query) use ($filter_section) {
                     $query->where('ref_sections_mechanic_id', $filter_section);
                 })
-                ->when($filter_sub_section != NULL, function ($query) {
+                ->when(!empty($filter_sub_section), function ($query) use ($filter_sub_section) {
                     $query->where('ref_sub_sections_mechanic_id', $filter_sub_section);
                 })
-                ->when($date != null, function ($query) {
+                ->when(!empty($date), function ($query) use ($date) {
                     if (str_contains($date, ' to ')) {
                         [$startDate, $endDate] = array_map('trim', explode(' to ', $date));
                         $query->whereBetween('created_at', [

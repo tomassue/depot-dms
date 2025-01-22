@@ -45,7 +45,7 @@ Route::middleware(['auth', 'check_default_password', 'is_active'])->group(functi
     Route::get('/report', Report::class)->name('report');
 
     Route::get('/mechanics-list', MechanicsMechanics::class)->name('mechanics-list');
-    Route::get('/generate-mechanics-list-pdf/{date?}/{filter_section?}/{filter_sub_section?}/{search?}', [GeneratePDFController::class, 'generateMechanicsListPDF'])->name('generate-mechanics-list-pdf')->middleware('signed');
+    Route::get('/generate-mechanics-list-pdf', [GeneratePDFController::class, 'generateMechanicsListPDF'])->name('generate-mechanics-list-pdf')->middleware('signed'); //* I did not include the date parameter here because I have http_build_query in the Component.
     Route::get('/mechanics-list/{id}', MechanicDetails::class)->name('mechanic-details');
     Route::get('/generate-job-orders-pdf/{id}/{date?}', [GeneratePDFController::class, 'generateJobOrdersPDF'])->name('generate-job-orders-pdf')->middleware('signed');
 
