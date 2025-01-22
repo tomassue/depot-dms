@@ -88,7 +88,11 @@
                                                     @if ($key === 'ref_location_id' && isset($oldAttributes[$key]))
                                                     {{ optional(\App\Models\RefLocationModel::find($oldAttributes[$key]))->name ?? 'Not available' }}
                                                     @elseif ($key === 'ref_category_id' && isset($oldAttributes[$key]))
-                                                    {{ optional(\App\Models\RefCategoryModel::find($oldAttributes[$key]))->name ?? 'Not available' }}
+                                                    @php
+                                                    $categoryIds = json_decode($oldAttributes[$key], true);
+                                                    $category = \App\Models\RefCategoryModel::whereIn('id', $categoryIds)->get();
+                                                    @endphp
+                                                    {{ implode(', ', $category->pluck('name')->toArray()) ?? 'Not available' }}
                                                     @elseif ($key === 'ref_sub_category_id' && isset($oldAttributes[$key]))
                                                     @php
                                                     $subCategoryIds = json_decode($oldAttributes[$key], true);
@@ -121,7 +125,11 @@
                                                     @if ($key === 'ref_location_id')
                                                     {{ $item->subject->location->name ?? 'Not available' }}
                                                     @elseif ($key === 'ref_category_id')
-                                                    {{ $item->subject->category->name ?? 'Not available' }}
+                                                    @php
+                                                    $categoryIds = json_decode($updatedAttributes[$key], true);
+                                                    $category = \App\Models\RefCategoryModel::whereIn('id', $categoryIds)->get();
+                                                    @endphp
+                                                    {{ implode(', ', $category->pluck('name')->toArray() ?? 'Not available') }}
                                                     @elseif ($key === 'ref_sub_category_id')
                                                     @php
                                                     $subCategoryIds = json_decode($updatedAttributes[$key], true);

@@ -286,7 +286,7 @@
                     <div class="form-group row">
                         <div class="col-md-6">
                             <label for="selectSubCategory">Sub-category</label>
-                            <input type="text" class="form-control disabled_input" id="selectSubCategory" wire:model="ref_sub_category_id_2">
+                            <input type="text" class="form-control disabled_input" id="selectSubCategory" wire:model="ref_sub_category_id">
                         </div>
                         <div class="col-md-6">
                             <label for="selectMechanics">Mechanics Assigned</label>
@@ -700,7 +700,7 @@
                                 data_2.map(item => [
                                     item.id,
                                     item.id,
-                                    item.category.name,
+                                    item.category_names,
                                     item.sub_category_names, // Access the sub_category_names attribute
                                     item.status.name,
                                     item.date_and_time_out ?
@@ -796,7 +796,7 @@
                                 data_2.map(item => [
                                     item.id,
                                     item.id,
-                                    item.category.name,
+                                    item.category_names,
                                     item.sub_category_names, // Access the sub_category_names attribute
                                     item.status.name,
                                     item.date_and_time_out ?
@@ -853,6 +853,7 @@
         ele: '#category-select',
         options: @json($categories),
         search: true,
+        multiple: true,
         maxWidth: '100%'
     });
 

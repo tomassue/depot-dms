@@ -35,8 +35,8 @@ class Dashboard extends Component
     public $job_order_no;
     public $person_in_charge;
     public $contact_number;
-    public $ref_sub_category_id, $ref_sub_category_id_2;
-    public $ref_category_id;
+    public $ref_sub_category_id = [];
+    public $ref_category_id = [];
     public $ref_type_of_repair_id;
     public $ref_status_id;
     public $ref_mechanics;
@@ -121,12 +121,6 @@ class Dashboard extends Component
 
     public function updated($property)
     {
-        $loadPageData = $this->loadPageData();
-
-        if ($property === 'ref_category_id') {
-            $this->dispatch('refresh-sub-category-select-options', options: $loadPageData['sub_categories'], selected: $this->ref_sub_category_id_2);
-        }
-
         if ($property === 'ref_status_id') {
             if ($this->ref_status_id == 2 || $this->ref_status_id == 3) {
                 if ($this->ref_status_id == 2) {
@@ -183,6 +177,7 @@ class Dashboard extends Component
         $table_pending_job_orders = TblJobOrderModel::with(['category', 'status', 'incoming_request.type'])->where('ref_status_id', 1)->get();
         $table_pending_job_orders->each(function ($table_pending_job_orders) {
             $table_pending_job_orders->append('sub_category_names');
+            $table_pending_job_orders->append('category_names');
         });
 
         # status-select
@@ -204,10 +199,7 @@ class Dashboard extends Component
             });
 
         // sub-category-select
-        $sub_categories = RefSubCategoryModel::when($this->ref_category_id, function ($query) {
-            return $query->where('id_ref_category', $this->ref_category_id);
-        })
-            ->get()
+        $sub_categories = RefSubCategoryModel::all()
             ->map(function ($item) {
                 return [
                     'label' => $item->name,
@@ -268,7 +260,6 @@ class Dashboard extends Component
 
             $this->job_order_no          = $job_order->id;
             $this->contact_number        = $job_order->contact_number;
-            $this->ref_sub_category_id_2 = json_decode($job_order->ref_sub_category_id);
             $this->person_in_charge      = $job_order->person_in_charge;
             $this->mileage               = $job_order->mileage;
 
@@ -282,7 +273,8 @@ class Dashboard extends Component
                 }
             }
 
-            $this->dispatch('set-category-select', $job_order->ref_category_id);
+            $this->dispatch('set-category-select', json_decode($job_order->ref_category_id));
+            $this->dispatch('set-sub-category-select', json_decode($job_order->ref_sub_category_id));
             $this->dispatch('set-type-of-repair-select', $job_order->ref_type_of_repair_id);
             $this->dispatch('set-status-select', $job_order->ref_status_id);
             $this->dispatch('set-mechanics-select', json_decode($job_order->ref_mechanics));

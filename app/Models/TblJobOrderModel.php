@@ -92,6 +92,15 @@ class TblJobOrderModel extends Model
         return implode(', ', $subCategoryNames);
     }
 
+    public function getCategoryNamesAttribute()
+    {
+        $categoryIds = json_decode($this->ref_category_id, true);
+
+        $categoryNames = RefCategoryModel::whereIn('id', $categoryIds)->pluck('name')->toArray();
+
+        return implode(', ', $categoryNames);
+    }
+
     public function status(): BelongsTo
     {
         return $this->belongsTo(RefStatusModel::class, 'ref_status_id', 'id');

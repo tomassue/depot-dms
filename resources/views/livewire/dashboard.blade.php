@@ -147,7 +147,7 @@
                         data.map(item => [
                             item.id, // Primary Key
                             item.id,
-                            item.category.name,
+                            item.category_names,
                             item.sub_category_names, // Access the sub_category_names attribute
                             item.incoming_request.type.name, // Access nested property
                             item.incoming_request.number,
@@ -179,7 +179,7 @@
                             data[0].map(item => [
                                 item.id, // Primary Key
                                 item.id,
-                                item.category.name,
+                                item.category_names,
                                 item.sub_category_names, // Access the sub_category_names attribute
                                 item.incoming_request.type.name, // Access nested property
                                 item.incoming_request.number,

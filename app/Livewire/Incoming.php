@@ -59,8 +59,8 @@ class Incoming extends Component
     /* ----------------------------- Job Order Model ---------------------------- */
 
     public $date_and_time_in;
-    public $ref_category_id;
-    public $ref_sub_category_id = [], $ref_sub_category_id_2 = [];
+    public $ref_category_id = [];
+    public $ref_sub_category_id = [];
     public $ref_location_id;
     public $person_in_charge;
     public $contact_number;
@@ -179,9 +179,10 @@ class Incoming extends Component
             $this->dispatch('refresh-model-select-options', options: $virtual_select['models'], selected: $this->ref_models_id_2);
         }
 
-        if ($property === 'ref_category_id') {
-            $this->dispatch('refresh-sub-category-select-options', options: $virtual_select['sub_categories'], selected: $this->ref_sub_category_id_2);
-        }
+        //* We disabled this because sub-category is not dependent on category.
+        // if ($property === 'ref_category_id') {
+        //     $this->dispatch('refresh-sub-category-select-options', options: $virtual_select['sub_categories'], selected: $this->ref_sub_category_id_2);
+        // }
 
         if ($property === 'ref_status_id') {
             if ($this->ref_status_id == 2 || $this->ref_status_id == 3) {
@@ -288,10 +289,7 @@ class Incoming extends Component
             });
 
         // sub-category-select
-        $sub_categories = RefSubCategoryModel::when($this->ref_category_id, function ($query) {
-            return $query->where('id_ref_category', $this->ref_category_id);
-        })
-            ->get()
+        $sub_categories = RefSubCategoryModel::all()
             ->map(function ($item) {
                 return [
                     'label' => $item->name,
@@ -540,6 +538,10 @@ class Incoming extends Component
                 ->get();
 
             $job_orders->each(function ($job_order) {
+                $job_order->append('category_names');
+            });
+
+            $job_orders->each(function ($job_order) {
                 $job_order->append('sub_category_names');
             });
 
@@ -591,7 +593,7 @@ class Incoming extends Component
                 $job_order                          = new TblJobOrderModel();
                 $job_order->reference_no            = $this->reference_no;
                 $job_order->date_and_time_in        = $this->date_and_time_in;
-                $job_order->ref_category_id         = $this->ref_category_id;
+                $job_order->ref_category_id         = json_encode($this->ref_category_id);
                 $job_order->ref_sub_category_id     = json_encode($this->ref_sub_category_id);
                 $job_order->mileage                 = $this->mileage;
                 $job_order->ref_location_id         = $this->ref_location_id;
@@ -610,6 +612,10 @@ class Incoming extends Component
             $job_orders = TblJobOrderModel::with(['category', 'status'])
                 ->where('reference_no', $this->reference_no)
                 ->get();
+
+            $job_orders->each(function ($job_order) {
+                $job_order->append('category_names');
+            });
 
             $job_orders->each(function ($job_order) {
                 $job_order->append('sub_category_names');
@@ -639,7 +645,6 @@ class Incoming extends Component
             $this->person_in_charge      = $job_order->person_in_charge;
             $this->mileage               = $job_order->mileage;
             $this->contact_number        = $job_order->contact_number;
-            $this->ref_sub_category_id_2 = json_decode($job_order->ref_sub_category_id);
 
             if ($job_order->files) {
                 foreach (json_decode($job_order->files) as $item) {
@@ -651,7 +656,8 @@ class Incoming extends Component
                 }
             }
 
-            $this->dispatch('set-category-select', $job_order->ref_category_id);
+            $this->dispatch('set-category-select', json_decode($job_order->ref_category_id));
+            $this->dispatch('set-sub-category-select', json_decode($job_order->ref_sub_category_id));
             $this->dispatch('set-type-of-repair-select', $job_order->ref_type_of_repair_id);
             $this->dispatch('set-status-select', $job_order->ref_status_id);
             $this->dispatch('set-mechanics-select', json_decode($job_order->ref_mechanics));
@@ -747,7 +753,7 @@ class Incoming extends Component
                 $job_order->ref_status_id           = $this->ref_status_id;
                 $job_order->person_in_charge        = $this->person_in_charge;
                 $job_order->contact_number          = $this->contact_number;
-                $job_order->ref_category_id         = $this->ref_category_id;
+                $job_order->ref_category_id         = json_encode($this->ref_category_id);
                 $job_order->ref_type_of_repair_id   = $this->ref_type_of_repair_id;
                 $job_order->ref_sub_category_id     = json_encode($this->ref_sub_category_id);
                 $job_order->ref_mechanics           = json_encode($this->ref_mechanics);
@@ -776,6 +782,10 @@ class Incoming extends Component
             $job_orders = TblJobOrderModel::with(['category', 'status'])
                 ->where('reference_no', $this->reference_no)
                 ->get();
+
+            $job_orders->each(function ($job_order) {
+                $job_order->append('category_names');
+            });
 
             $job_orders->each(function ($job_order) {
                 $job_order->append('sub_category_names');
@@ -811,9 +821,9 @@ class Incoming extends Component
             $this->ref_status_id            = $job_order->status->name;
             $this->person_in_charge         = $job_order->person_in_charge;
             $this->contact_number           = $job_order->contact_number;
-            $this->ref_category_id          = $job_order->category->name;
+            $this->ref_category_id          = $job_order->category_names;
             $this->ref_type_of_repair_id    = $job_order->type_of_repair->name;
-            $this->ref_sub_category_id_2    = $job_order->sub_category_names;
+            $this->ref_sub_category_id      = $job_order->sub_category_names;
             $this->ref_mechanics            = $job_order->mechanics()->pluck('name')->implode(', ');
             $this->ref_location_id          = $job_order->location->name;
             $this->mileage                  = $job_order->mileage;
