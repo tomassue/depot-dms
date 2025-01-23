@@ -375,7 +375,6 @@ class Dashboard extends Component
                 $job_order->ref_status_id           = $this->ref_status_id;
                 $job_order->person_in_charge        = $this->person_in_charge;
                 $job_order->contact_number          = $this->contact_number;
-                // $job_order->ref_category_id         = $this->ref_category_id;
                 $job_order->ref_category_id         = json_encode($this->ref_category_id);
                 $job_order->ref_type_of_repair_id   = $this->ref_type_of_repair_id;
                 $job_order->ref_sub_category_id     = json_encode($this->ref_sub_category_id);

@@ -236,6 +236,7 @@
         ele: '#category-select',
         options: @json($categories),
         search: true,
+        multiple: true,
         maxWidth: '100%'
     });
 
