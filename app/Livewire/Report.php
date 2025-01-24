@@ -110,7 +110,7 @@ class Report extends Component
                 'id' => $item->id,
                 'created_at' => $item->created_at,
                 'office' => $item->incoming_request->office->name,
-                'category' => $item->category->name,
+                'category' => $item->category_names,
                 // TODO: Error in the sub_category relationship. Can't access name property.
                 'sub_category' => $item->sub_category_names,
                 'type' => $item->incoming_request->type->name,
@@ -140,7 +140,7 @@ class Report extends Component
             $this->contact_number                = $job_order->contact_number;
             $this->job_order_no                  = $job_order->id;
             $this->ref_status_id                 = $job_order->status->name;
-            $this->ref_category_id               = $job_order->category->name;
+            $this->ref_category_id               = $job_order->category_names;
             $this->ref_type_of_repair_id         = $job_order->type_of_repair->name;
             $this->ref_sub_category_id_2         = $job_order->sub_category_names;
             $this->ref_mechanics                 = $job_order->mechanics()->pluck('name')->implode(', ');
