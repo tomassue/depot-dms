@@ -244,6 +244,7 @@ class GeneratePDFController extends Controller
 
             $mechanic_jobs->each(function ($mechanic_job) {
                 $mechanic_job->append('sub_category_names');
+                $mechanic_job->append('category_names');
             });
 
             $cdo_full = public_path('assets/images/cdo-seal.png');

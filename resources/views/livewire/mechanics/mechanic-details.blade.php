@@ -148,7 +148,7 @@
                         data.map(item => [
                             item.id,
                             item.id,
-                            item.category.name,
+                            item.category_names,
                             item.sub_category_names,
                             item.status.name,
                             item.type_of_repair.name
@@ -167,7 +167,7 @@
                             data[0].map(item => [
                                 item.id,
                                 item.id,
-                                item.category.name,
+                                item.category_names,
                                 item.sub_category_names,
                                 item.status.name,
                                 item.type_of_repair.name

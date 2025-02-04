@@ -91,6 +91,7 @@ class MechanicDetails extends Component
 
         $mechanic_jobs->each(function ($mechanic_job) {
             $mechanic_job->append('sub_category_names');
+            $mechanic_job->append('category_names');
         });
 
         return [

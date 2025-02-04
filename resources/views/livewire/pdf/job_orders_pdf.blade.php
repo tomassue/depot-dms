@@ -184,7 +184,7 @@
         @forelse($mechanic_jobs as $item)
         <tr>
             <td class="no-right-border" style="text-align:center; font-weight: normal;">{{ $item->id }}</td>
-            <td style="font-weight: normal;">{{ $item->category->name }}</td>
+            <td style="font-weight: normal;">{{ $item->category_names }}</td>
             <td style="font-weight: normal;">{{ $item->sub_category_names }}</td>
             <td style="font-weight: normal;">{{ $item->incoming_request->office->name }}</td>
             <td style="font-weight: normal;">{{ $item->incoming_request->type->name }}</td>
