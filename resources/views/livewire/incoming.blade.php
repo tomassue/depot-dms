@@ -327,6 +327,51 @@
                             <textarea class="form-control disabled_input" id="exampleTextarea1" rows="4" spellcheck="false" wire:model="remarks"></textarea>
                         </div>
                     </div>
+                    <div class="col-md-12">
+                        <label for="files">Uploaded Files</small></label>
+                        <table class="table table-bordered">
+                            <thead>
+                                <tr>
+                                    <th>
+                                        #
+                                    </th>
+                                    <th>
+                                        File Name
+                                    </th>
+                                    <th>
+                                        File Type
+                                    </th>
+                                    <th>
+                                        Action
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @forelse ($previewFiles as $index=>$item)
+                                <tr>
+                                    <td>
+                                        {{ $index+1 }}
+                                    </td>
+                                    <td>
+                                        {{ $item->name }}
+                                    </td>
+                                    <td>
+                                        {{ $item->type }}
+                                    </td>
+                                    <td>
+                                        <a class="btn btn-sm btn-info" role="button" title="View File" wire:click="viewFile('{{ $item->id }}')">
+                                            <i class='bx bx-file bx-sm'></i>
+                                        </a>
+                                    </td>
+                                </tr>
+                                @empty
+                                <tr>
+                                    <td colspan="4" class="text-center">No attachments found.</td>
+                                </tr>
+                                @endforelse
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" wire:click="clear2">Close</button>

@@ -834,6 +834,16 @@ class Incoming extends Component
             $this->remarks                  = $job_order->remarks;
             $this->ref_signatories_id       = $job_order->ref_signatories_id;
 
+            if ($job_order->files) {
+                foreach (json_decode($job_order->files) as $item) {
+                    $file = FileDataModel::find($item);
+
+                    if ($file) {
+                        $this->previewFiles[] = $file;
+                    }
+                }
+            }
+
             $this->dispatch('showJobOrderDetailsModal');
         } catch (\Throwable $th) {
             // dd($th);
@@ -907,7 +917,9 @@ class Incoming extends Component
                 'date_and_time_out'     => $job_order->date_and_time_out ? Carbon::parse($job_order->date_and_time_out)->format('M. d, Y g:i A') : '-',
                 'plate_no'              => $job_order->incoming_request->number,
                 'issues_or_concern'     => $job_order->issue_or_concern,
-                'mechanic'              => $job_order->mechanics()->pluck('name')->implode(', '),
+                'mechanic'              => $job_order->mechanics()->pluck('name')->map(function ($name) {
+                    return $name . ' ________ ';
+                })->implode(''),
                 'name'                  => $job_order->person_in_charge,
                 'contact_number'        => $job_order->contact_number,
                 'signatory_name'        => $signatory->name,
@@ -920,9 +932,11 @@ class Incoming extends Component
             $options->set('isRemoteEnabled', true);
             $options->set('isHtml5ParserEnabled', true); // Helps with complex HTML
 
+            $customPaper = array(0, 0, 594, 923); // Still A4 but adjustments in DPI will make the content fit in the paper
+
             $dompdf = new Dompdf();
             $dompdf->loadHtml($htmlContent);
-            $dompdf->setPaper('A4', 'portrait');
+            $dompdf->setPaper($customPaper, 'portrait');
             $dompdf->render();
 
             $this->job_order_details_pdf = 'data:application/pdf;base64,' . base64_encode($dompdf->output());
