@@ -3,6 +3,7 @@
 
     <div class="card mb-2">
         <div class="card-body">
+            <h4 class="card-title">Weekly Depot Repair Bay Vehicle / Equipment Inventory Report</h4>
             <div class="col-md-2 my-2 d-flex flex-column align-items-start">
                 <div class="form-group w-100">
                     <div wire:ignore>
@@ -36,6 +37,8 @@
             </div>
         </div>
     </div>
+
+    <livewire:mechanics-job-order-report />
 
     <!-- jobOrderDetails -->
     <div class="modal fade" id="jobOrderDetails" tabindex="-1" aria-labelledby="jobOrderDetailsModalLabel" aria-hidden="true" data-bs-backdrop="static" wire:ignore.self>
