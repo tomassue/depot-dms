@@ -38,8 +38,6 @@
         </div>
     </div>
 
-    <livewire:mechanics-job-order-report />
-
     <!-- jobOrderDetails -->
     <div class="modal fade" id="jobOrderDetails" tabindex="-1" aria-labelledby="jobOrderDetailsModalLabel" aria-hidden="true" data-bs-backdrop="static" wire:ignore.self>
         <div class="modal-dialog modal-xl">

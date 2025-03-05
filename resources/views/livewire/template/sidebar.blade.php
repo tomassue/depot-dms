@@ -48,11 +48,40 @@
             </li> -->
 
             @can('read reports')
-            <li class="nav-item">
-                <a class="nav-link" href="{{ route('report') }}">
+            <li class="nav-item {{ request()->is('settings*') ? 'active' : '' }}">
+                <a
+                    class="nav-link"
+                    data-bs-toggle="collapse"
+                    href="#auth"
+                    aria-expanded="false"
+                    aria-controls="auth">
                     <i class='bx bxs-file bx-sm'></i>
-                    <span class="menu-title">Report</span>
+                    <span class="menu-title">Reports</span>
+                    <i class="menu-arrow"></i>
                 </a>
+                <div class="collapse" id="auth">
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link text-truncate"
+                                href="{{ route('weekly-depot-repair-bay-vehicle-or-equipment-inventory') }}"
+                                title="Weekly Depot Repair Bay Vehicle / Equipment Inventory Report">
+                                Weekly Depot Repair Bay Vehicle / Equipment Inventory Report
+                            </a>
+                        </li>
+                    </ul>
+
+                    <ul class="nav flex-column sub-menu">
+                        <li class="nav-item">
+                            <a
+                                class="nav-link text-truncate"
+                                href="{{ route('mechanics-job-order') }}"
+                                title="Mechanics Job Order Report">
+                                Mechanics Job Order Report
+                            </a>
+                        </li>
+                    </ul>
+                </div>
             </li>
             @endcan
 

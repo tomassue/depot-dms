@@ -1,4 +1,6 @@
 <div>
+    @include('livewire.template.loading-spinner')
+
     <div class="card mb-2">
         <div class="card-body">
             <h4 class="card-title">Mechanics Job Order Report</h4>

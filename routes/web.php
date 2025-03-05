@@ -7,6 +7,7 @@ use App\Livewire\Dashboard;
 use App\Livewire\Incoming;
 use App\Livewire\Mechanics\MechanicDetails;
 use App\Livewire\Mechanics\Mechanics as MechanicsMechanics;
+use App\Livewire\MechanicsJobOrderReport;
 use App\Livewire\Report;
 use App\Livewire\Settings\Category;
 use App\Livewire\Settings\Location;
@@ -42,7 +43,8 @@ Route::middleware(['auth', 'check_default_password', 'is_active'])->group(functi
     Route::get('/incoming', Incoming::class)->name('incoming');
     Route::get('/generate-release-form/{id}', [GeneratePDFController::class, 'generateReleaseForm'])->name('generate-release-form')->middleware('signed');
 
-    Route::get('/report', Report::class)->name('report');
+    Route::get('/report/weekly-depot-repair-bay-vehicle-or-equipment-inventory', Report::class)->name('weekly-depot-repair-bay-vehicle-or-equipment-inventory');
+    Route::get('/report/mechanics-job-order', MechanicsJobOrderReport::class)->name('mechanics-job-order');
 
     Route::get('/mechanics-list', MechanicsMechanics::class)->name('mechanics-list');
     Route::get('/generate-mechanics-list-pdf', [GeneratePDFController::class, 'generateMechanicsListPDF'])->name('generate-mechanics-list-pdf')->middleware('signed'); //* I did not include the date parameter here because I have http_build_query in the Component.
