@@ -103,7 +103,8 @@
             'Sub-section',
             'Pending',
             'Completed',
-            'Total'
+            'Total',
+            'Overall Pending'
         ],
         data: () => {
             return new Promise(resolve => {
@@ -116,7 +117,8 @@
                             item.sub_section?.name ?? '-',
                             item.pending_jobs,
                             item.completed_jobs,
-                            item.total_jobs
+                            item.total_jobs,
+                            item.total_pending_jobs
                         ])
                     ), 1000);
             });
@@ -141,7 +143,8 @@
                                 item.sub_section?.name ?? '-',
                                 item.pending_jobs,
                                 item.completed_jobs,
-                                item.total_jobs
+                                item.total_jobs,
+                                item.total_pending_jobs
                             ])
                         ), 1000);
                 });
