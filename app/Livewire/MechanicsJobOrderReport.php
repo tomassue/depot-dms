@@ -10,8 +10,10 @@ use Dompdf\Dompdf;
 use Dompdf\Options;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
+use Livewire\Attributes\Title;
 use Livewire\Component;
 
+#[Title('Report | DEPOT DMS')]
 class MechanicsJobOrderReport extends Component
 {
     public $filter_date_range_mechanics_job_orders,
@@ -80,6 +82,12 @@ class MechanicsJobOrderReport extends Component
                         AND JSON_CONTAINS(tbl_job_order.ref_mechanics, JSON_QUOTE(CAST(ref_mechanics.id AS CHAR)))
                         " . $this->getDateRangeFilter() . "
                 ) as pending_jobs"),
+                // Total pending jobs without date filter
+                DB::raw("(SELECT COUNT(*)
+                    FROM tbl_job_order
+                    WHERE ref_status_id = 1
+                        AND JSON_CONTAINS(tbl_job_order.ref_mechanics, JSON_QUOTE(CAST(ref_mechanics.id AS CHAR)))
+                ) as total_pending_jobs"),
                 DB::raw("(SELECT COUNT(*)
                     FROM tbl_job_order
                     WHERE ref_status_id = 2
@@ -126,10 +134,10 @@ class MechanicsJobOrderReport extends Component
                 [$startDate, $endDate] = array_map('trim', explode(' to ', $this->filter_date_range_mechanics_job_orders));
                 $startDate = Carbon::parse($startDate)->startOfDay()->toDateTimeString();
                 $endDate = Carbon::parse($endDate)->endOfDay()->toDateTimeString();
-                return "AND created_at BETWEEN '$startDate' AND '$endDate'";
+                return "AND date_and_time_in BETWEEN '$startDate' AND '$endDate'";
             } else {
                 $date = Carbon::parse($this->filter_date_range_mechanics_job_orders)->toDateString();
-                return "AND DATE(created_at) = '$date'";
+                return "AND DATE(date_and_time_in) = '$date'";
             }
         }
         return "";
