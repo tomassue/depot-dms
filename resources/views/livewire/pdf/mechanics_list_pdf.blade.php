@@ -142,20 +142,21 @@
     <table class="content-table" style="margin-top: unset">
         <tr>
             <td class="no-right-border" width="60%">Name</td>
-            <td style="text-align:center" width="13%">Pending</td>
-            <td style="text-align:center" width="13%">Completed</td>
-            <td style="text-align:center" width="13%">Total</td>
+            <td style="text-align:center" width="10%">Pending</td>
+            <td style="text-align:center" width="10%">Completed</td>
+            <td style="text-align:center" width="10%">Total</td>
+            <td style="text-align:center" width="10%">Overall Pending</td>
         </tr>
         @forelse($groupedSections as $sectionName => $subSections)
         {{-- Section Row --}}
         <tr>
-            <td colspan="4" style="font-weight:bold; padding-left: 5px;">{{ $sectionName }}</td>
+            <td colspan="5" style="font-weight:bold; padding-left: 5px;">{{ $sectionName }}</td>
         </tr>
         @forelse ($subSections as $subSectionName => $mechanics)
         @if ($subSectionName)
         {{-- Subsection Row --}}
         <tr>
-            <td colspan="4" style="font-weight:normal; padding-left: 20px;">
+            <td colspan="5" style="font-weight:normal; padding-left: 20px;">
                 {{ $subSectionName }}
             </td>
         </tr>
@@ -167,10 +168,11 @@
             <td style="text-align:center; font-weight:normal;">{{ $item->pending_jobs }}</td>
             <td style="text-align:center; font-weight:normal;">{{ $item->completed_jobs }}</td>
             <td style="text-align:center; font-weight:normal;">{{ $item->total_jobs }}</td>
+            <td style="text-align:center; font-weight:normal;">{{ $item->total_pending_jobs }}</td>
         </tr>
         @empty
         <tr>
-            <td colspan="4" style="padding-left: 40px;">-</td>
+            <td colspan="5" style="padding-left: 40px;">-</td>
         </tr>
         @endforelse
         @empty
@@ -178,7 +180,7 @@
         @endforelse
         @empty
         <tr>
-            <td colspan="4" style="text-align:center">No record found.</td>
+            <td colspan="5" style="text-align:center">No record found.</td>
         </tr>
         @endforelse
     </table>
