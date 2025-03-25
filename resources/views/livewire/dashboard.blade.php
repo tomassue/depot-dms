@@ -111,14 +111,17 @@
                 hidden: true
             },
             "Job Order No.",
+            "Office",
             "Category",
             "Sub-category",
+            "Model",
             "Type",
             "No.",
             "Issue/Concern/Request",
-            "Status",
-            "Date & Time (Out)",
-            "Total Repair Time",
+            {
+                name: "Status",
+                width: "150px"
+            },
             {
                 name: "Actions",
                 sort: false,
@@ -126,7 +129,7 @@
                     const id = row.cells[0].data;
                     return gridjs.html(`
                         @can('read incoming')
-                        <button class="btn btn-success btn-sm btn-icon-text me-3" title="Edit" style="display: ${row.cells[7].data === 'Pending' ? '' : 'none'}" wire:click="readJobOrder('${id}')">
+                        <button class="btn btn-success btn-sm btn-icon-text me-3" title="Edit" style="display: ${row.cells[9].data === 'Pending' ? '' : 'none'}" wire:click="readJobOrder('${id}')">
                             <i class="bx bx-edit bx-sm"></i>
                         </button>
                         @endcan
@@ -147,23 +150,14 @@
                         data.map(item => [
                             item.id, // Primary Key
                             item.id,
+                            item.incoming_request.office.name,
                             item.category_names,
                             item.sub_category_names, // Access the sub_category_names attribute
+                            item.incoming_request.model.name,
                             item.incoming_request.type.name, // Access nested property
                             item.incoming_request.number,
                             item.issue_or_concern,
-                            item.status.name,
-                            item.date_and_time_out ?
-                            new Date(item.date_and_time_out).toLocaleString('en-US', {
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: true
-                            }) :
-                            '-',
-                            item.total_repair_time ? item.total_repair_time : '-'
+                            item.status.name
                         ])
                     ), 1000);
             });
@@ -179,23 +173,14 @@
                             data[0].map(item => [
                                 item.id, // Primary Key
                                 item.id,
+                                item.incoming_request.office.name,
                                 item.category_names,
                                 item.sub_category_names, // Access the sub_category_names attribute
+                                item.incoming_request.model.name,
                                 item.incoming_request.type.name, // Access nested property
                                 item.incoming_request.number,
                                 item.issue_or_concern,
-                                item.status.name,
-                                item.date_and_time_out ?
-                                new Date(item.date_and_time_out).toLocaleString('en-US', {
-                                    year: 'numeric',
-                                    month: 'short',
-                                    day: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                    hour12: true
-                                }) :
-                                '-',
-                                item.total_repair_time ? item.total_repair_time : '-'
+                                item.status.name
                             ])
                         ), 1000);
                 });
