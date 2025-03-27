@@ -22,6 +22,7 @@ use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 use Livewire\Attributes\On;
 use Livewire\Attributes\Title;
 use Livewire\Component;
@@ -83,7 +84,10 @@ class Incoming extends Component
             'ref_office_id'                 => 'required',
             'ref_types_id'                  => 'required',
             'ref_models_id'                 => 'required',
-            'number'                        => 'required'
+            'number'                        => [
+                'required',
+                Rule::unique('tbl_incoming_requests', 'number')->ignore($this->incoming_request_id, 'id')
+            ],
         ];
 
         if ($this->page == 2) {
