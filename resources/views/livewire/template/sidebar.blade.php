@@ -98,14 +98,14 @@
                 <a
                     class="nav-link"
                     data-bs-toggle="collapse"
-                    href="#auth"
+                    href="#settings"
                     aria-expanded="false"
-                    aria-controls="auth">
+                    aria-controls="settings">
                     <i class='bx bxs-cog bx-sm'></i>
                     <span class="menu-title">Settings</span>
                     <i class="menu-arrow"></i>
                 </a>
-                <div class="collapse" id="auth">
+                <div class="collapse" id="settings">
                     @can('read types')
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">

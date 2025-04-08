@@ -1,62 +1,58 @@
 <div>
     @include('livewire.template.loading-spinner')
 
-    <div class="row">
-        <div class="col-xl-12 grid-margin stretch-card flex-column">
-            <div class="row">
-                <div class="col-md-3 my-2">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
-                                <div>
-                                    <p class="mb-2 text-md-center text-lg-left">Total Job Orders</p>
-                                    <h1 class="mb-0">{{ $total }}</h1>
-                                </div>
-                                <i class="bx bx-file bx-lg text-secondary"></i>
-                            </div>
+    <div class="row card-group">
+        <div class="col-md-6 col-lg-6 col-xl-3 my-2">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
+                        <div>
+                            <p class="mb-2 text-md-center text-lg-left">Total J.O.</p>
+                            <h1 class="mb-0">{{ $total }}</h1>
                         </div>
+                        <i class="bx bx-file bx-lg text-secondary"></i>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="col-md-3 my-2">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
-                                <div>
-                                    <p class="mb-2 text-md-center text-lg-left">Pending Job Orders</p>
-                                    <h1 class="mb-0">{{ $pending }}</h1>
-                                </div>
-                                <i class="bx bx-loader-circle bx-lg text-secondary"></i>
-                            </div>
+        <div class="col-md-6 col-lg-6 col-xl-3 my-2">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
+                        <div>
+                            <p class="mb-2 text-md-center text-lg-left">Pending J.O.</p>
+                            <h1 class="mb-0">{{ $pending }}</h1>
                         </div>
+                        <i class="bx bx-loader-circle bx-lg text-secondary"></i>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="col-md-3 my-2">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
-                                <div>
-                                    <p class="mb-2 text-md-center text-lg-left">Accomplished Job Orders</p>
-                                    <h1 class="mb-0">{{ $done }}</h1>
-                                </div>
-                                <i class="bx bx-badge-check bx-lg text-secondary"></i>
-                            </div>
+        <div class="col-md-6 col-lg-6 col-xl-3 my-2">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
+                        <div>
+                            <p class="mb-2 text-md-center text-lg-left">Accomplished J.O.</p>
+                            <h1 class="mb-0">{{ $done }}</h1>
                         </div>
+                        <i class="bx bx-badge-check bx-lg text-secondary"></i>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="col-md-3 my-2">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
-                                <div>
-                                    <p class="mb-2 text-md-center text-lg-left">Referred Job Orders</p>
-                                    <h1 class="mb-0">{{ $referred }}</h1>
-                                </div>
-                                <i class="bx bx-send bx-lg text-secondary"></i>
-                            </div>
+        <div class="col-md-6 col-lg-6 col-xl-3 my-2">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
+                        <div>
+                            <p class="mb-2 text-md-center text-lg-left">Referred J.O.</p>
+                            <h1 class="mb-0">{{ $referred }}</h1>
                         </div>
+                        <i class="bx bx-send bx-lg text-secondary"></i>
                     </div>
                 </div>
             </div>

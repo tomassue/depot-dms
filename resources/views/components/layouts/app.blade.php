@@ -183,6 +183,13 @@
             outline: 1px solid #f3f3f3;
             color: #747474;
         }
+
+        @media (min-width: 100px) {
+
+            .navbar .navbar-menu-wrapper .navbar-nav .nav-item.nav-profile {
+                display: flex !important;
+            }
+        }
     </style>
 </head>
 
