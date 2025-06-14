@@ -1,62 +1,58 @@
 <div>
     @include('livewire.template.loading-spinner')
 
-    <div class="row">
-        <div class="col-xl-12 grid-margin stretch-card flex-column">
-            <div class="row">
-                <div class="col-md-3 my-2">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
-                                <div>
-                                    <p class="mb-2 text-md-center text-lg-left">Total Job Orders</p>
-                                    <h1 class="mb-0">{{ $total }}</h1>
-                                </div>
-                                <i class="bx bx-file bx-lg text-secondary"></i>
-                            </div>
+    <div class="row card-group">
+        <div class="col-md-6 col-lg-6 col-xl-3 my-2">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
+                        <div>
+                            <p class="mb-2 text-md-center text-lg-left">Total J.O.</p>
+                            <h1 class="mb-0">{{ $total }}</h1>
                         </div>
+                        <i class="bx bx-file bx-lg text-secondary"></i>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="col-md-3 my-2">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
-                                <div>
-                                    <p class="mb-2 text-md-center text-lg-left">Pending Job Orders</p>
-                                    <h1 class="mb-0">{{ $pending }}</h1>
-                                </div>
-                                <i class="bx bx-loader-circle bx-lg text-secondary"></i>
-                            </div>
+        <div class="col-md-6 col-lg-6 col-xl-3 my-2">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
+                        <div>
+                            <p class="mb-2 text-md-center text-lg-left">Pending J.O.</p>
+                            <h1 class="mb-0">{{ $pending }}</h1>
                         </div>
+                        <i class="bx bx-loader-circle bx-lg text-secondary"></i>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="col-md-3 my-2">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
-                                <div>
-                                    <p class="mb-2 text-md-center text-lg-left">Accomplished Job Orders</p>
-                                    <h1 class="mb-0">{{ $done }}</h1>
-                                </div>
-                                <i class="bx bx-badge-check bx-lg text-secondary"></i>
-                            </div>
+        <div class="col-md-6 col-lg-6 col-xl-3 my-2">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
+                        <div>
+                            <p class="mb-2 text-md-center text-lg-left">Accomplished J.O.</p>
+                            <h1 class="mb-0">{{ $done }}</h1>
                         </div>
+                        <i class="bx bx-badge-check bx-lg text-secondary"></i>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <div class="col-md-3 my-2">
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
-                                <div>
-                                    <p class="mb-2 text-md-center text-lg-left">Referred Job Orders</p>
-                                    <h1 class="mb-0">{{ $referred }}</h1>
-                                </div>
-                                <i class="bx bx-send bx-lg text-secondary"></i>
-                            </div>
+        <div class="col-md-6 col-lg-6 col-xl-3 my-2">
+            <div class="card h-100">
+                <div class="card-body d-flex flex-column">
+                    <div class="d-flex align-items-center justify-content-between justify-content-md-center justify-content-xl-between flex-wrap mb-4">
+                        <div>
+                            <p class="mb-2 text-md-center text-lg-left">Referred J.O.</p>
+                            <h1 class="mb-0">{{ $referred }}</h1>
                         </div>
+                        <i class="bx bx-send bx-lg text-secondary"></i>
                     </div>
                 </div>
             </div>
@@ -111,14 +107,17 @@
                 hidden: true
             },
             "Job Order No.",
+            "Office",
             "Category",
             "Sub-category",
+            "Model",
             "Type",
             "No.",
             "Issue/Concern/Request",
-            "Status",
-            "Date & Time (Out)",
-            "Total Repair Time",
+            {
+                name: "Status",
+                width: "150px"
+            },
             {
                 name: "Actions",
                 sort: false,
@@ -126,7 +125,7 @@
                     const id = row.cells[0].data;
                     return gridjs.html(`
                         @can('read incoming')
-                        <button class="btn btn-success btn-sm btn-icon-text me-3" title="Edit" style="display: ${row.cells[7].data === 'Pending' ? '' : 'none'}" wire:click="readJobOrder('${id}')">
+                        <button class="btn btn-success btn-sm btn-icon-text me-3" title="Edit" style="display: ${row.cells[9].data === 'Pending' ? '' : 'none'}" wire:click="readJobOrder('${id}')">
                             <i class="bx bx-edit bx-sm"></i>
                         </button>
                         @endcan
@@ -147,23 +146,14 @@
                         data.map(item => [
                             item.id, // Primary Key
                             item.id,
+                            item.incoming_request.office.name,
                             item.category_names,
                             item.sub_category_names, // Access the sub_category_names attribute
+                            item.incoming_request.model.name,
                             item.incoming_request.type.name, // Access nested property
                             item.incoming_request.number,
                             item.issue_or_concern,
-                            item.status.name,
-                            item.date_and_time_out ?
-                            new Date(item.date_and_time_out).toLocaleString('en-US', {
-                                year: 'numeric',
-                                month: 'short',
-                                day: 'numeric',
-                                hour: '2-digit',
-                                minute: '2-digit',
-                                hour12: true
-                            }) :
-                            '-',
-                            item.total_repair_time ? item.total_repair_time : '-'
+                            item.status.name
                         ])
                     ), 1000);
             });
@@ -179,23 +169,14 @@
                             data[0].map(item => [
                                 item.id, // Primary Key
                                 item.id,
+                                item.incoming_request.office.name,
                                 item.category_names,
                                 item.sub_category_names, // Access the sub_category_names attribute
+                                item.incoming_request.model.name,
                                 item.incoming_request.type.name, // Access nested property
                                 item.incoming_request.number,
                                 item.issue_or_concern,
-                                item.status.name,
-                                item.date_and_time_out ?
-                                new Date(item.date_and_time_out).toLocaleString('en-US', {
-                                    year: 'numeric',
-                                    month: 'short',
-                                    day: 'numeric',
-                                    hour: '2-digit',
-                                    minute: '2-digit',
-                                    hour12: true
-                                }) :
-                                '-',
-                                item.total_repair_time ? item.total_repair_time : '-'
+                                item.status.name
                             ])
                         ), 1000);
                 });

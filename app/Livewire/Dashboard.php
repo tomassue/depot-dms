@@ -174,7 +174,7 @@ class Dashboard extends Component
         $referred = TblJobOrderModel::where('ref_status_id', 3)->count();
 
         # Table Pending Job Orders
-        $table_pending_job_orders = TblJobOrderModel::with(['category', 'status', 'incoming_request.type'])->where('ref_status_id', 1)->get();
+        $table_pending_job_orders = TblJobOrderModel::with(['category', 'status', 'incoming_request.type', 'incoming_request.office', 'incoming_request.model'])->where('ref_status_id', 1)->get();
         $table_pending_job_orders->each(function ($table_pending_job_orders) {
             $table_pending_job_orders->append('sub_category_names');
             $table_pending_job_orders->append('category_names');
