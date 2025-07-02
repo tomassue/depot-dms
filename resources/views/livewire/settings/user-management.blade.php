@@ -36,7 +36,7 @@
                         </div>
                         <div class="form-group">
                             <label for="exampleInputName">Name</label>
-                            <input type="text" class="form-control" id="exampleInputName" placeholder="Username" wire:model="name">
+                            <input type="text" class="form-control" id="exampleInputName" placeholder="Name" wire:model="name">
                             @error('name')
                             <div class="custom-invalid-feedback">
                                 {{ $message }}
@@ -148,12 +148,19 @@
 
                     return gridjs.html(`
                     @can('can update user management')
-                    <button class="btn btn-success btn-sm btn-icon-text me-3" wire:click="readUser('${id}')"> Edit <i class="typcn typcn-edit btn-icon-append"></i></button>
-                    <button class="btn btn-warning btn-sm btn-icon-text me-3" wire:click="resetPassword('${id}')"> Reset <i class="bx bx-key btn-icon-append"></i></button>
-                    <button class="btn ${isInactive === 'no' ? 'btn-info' : 'btn-danger'} btn-sm btn-icon-text me-3" wire:click="${isInactive === 'no' ? `activateUser('${id}')` : `deactivateUser('${id}')`}">
-                        ${isInactive === 'no' ? 'Activate' : 'Deactivate'}
-                        <i class="bx bx-key btn-icon-append"></i>
+                    <div class="btn-group" role="group" aria-label="Basic example">
+                    <button class="btn btn-success btn-sm btn-icon-text" title="Edit" wire:click="readUser('${id}')">
+                    <i class='bx  bx-pencil'  ></i> 
                     </button>
+
+                    <button class="btn btn-warning btn-sm btn-icon-text" wire:click="resetPassword('${id}')">
+                    <i class='bx  bx-key'  ></i> 
+                    </button>
+                    
+                    <button class="btn ${isInactive === 'no' ? 'btn-info' : 'btn-danger'} btn-sm btn-icon-text" wire:click="${isInactive === 'no' ? `activateUser('${id}')` : `deactivateUser('${id}')`}">
+                        ${isInactive === 'no' ? '<i class="bx  bx-user-plus"  ></i> ' : '<i class="bx  bx-user-minus"  ></i> '}
+                    </button>
+                    </div>
                     @endcan
                     `);
                 }

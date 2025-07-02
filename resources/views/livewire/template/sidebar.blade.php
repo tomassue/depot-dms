@@ -1,36 +1,14 @@
 <div>
-    <!-- partial:partials/_sidebar.html -->
     <nav class="sidebar sidebar-offcanvas" id="sidebar">
+        @hasanyrole('Super Administrator|Administrator|Regular User|Viewer')
         <ul class="nav">
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('dashboard') }}">
                     <i class='bx bxs-dashboard bx-sm'></i>
                     <span class="menu-title">Dashboard</span>
-                    <!-- <div class="badge badge-danger">new</div> -->
                 </a>
             </li>
-            <!-- <li class="nav-item">
-                <a
-                    class="nav-link"
-                    data-bs-toggle="collapse"
-                    href="#ui-basic"
-                    aria-expanded="false"
-                    aria-controls="ui-basic">
-                    <i class='bx bx-down-arrow-alt bx-sm'></i>
-                    <span class="menu-title">Incoming</span>
-                    <i class="menu-arrow"></i>
-                </a>
-                <div class="collapse" id="ui-basic">
-                    <ul class="nav flex-column sub-menu">
-                        <li class="nav-item">
-                            <a class="nav-link" href="pages/ui-features/buttons.html">Documents</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="pages/ui-features/dropdowns.html">Requests</a>
-                        </li>
-                    </ul>
-                </div>
-            </li> -->
+
             @can('read incoming')
             <li class="nav-item">
                 <a class="nav-link" href="{{ route('incoming') }}">
@@ -40,15 +18,8 @@
             </li>
             @endcan
 
-            <!-- <li class="nav-item">
-                <a class="nav-link" href="#">
-                    <i class='bx bx-up-arrow-alt bx-sm'></i>
-                    <span class="menu-title">Outgoing</span>
-                </a>
-            </li> -->
-
             @can('read reports')
-            <li class="nav-item {{ request()->is('settings*') ? 'active' : '' }}">
+            <li class="nav-item {{ request()->is('reports*') ? 'active' : '' }}">
                 <a
                     class="nav-link"
                     data-bs-toggle="collapse"
@@ -60,6 +31,7 @@
                     <i class="menu-arrow"></i>
                 </a>
                 <div class="collapse" id="auth">
+                    {{-- FIXED: All report links are now inside a single ul --}}
                     <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
                             <a
@@ -69,9 +41,6 @@
                                 Weekly Depot Repair Bay Vehicle / Equipment Inventory Report
                             </a>
                         </li>
-                    </ul>
-
-                    <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
                             <a
                                 class="nav-link text-truncate"
@@ -106,8 +75,8 @@
                     <i class="menu-arrow"></i>
                 </a>
                 <div class="collapse" id="settings">
-                    @can('read types')
-                    <ul class="nav flex-column sub-menu">
+                    <ul class="nav flex-column sub-menu" style="max-height: 300px; overflow-y: auto;">
+                        @can('read types')
                         <li class="nav-item">
                             <a
                                 class="nav-link text-truncate"
@@ -116,10 +85,8 @@
                                 Type (Equipment / Vehicle)
                             </a>
                         </li>
-                    </ul>
-                    @endcan
-                    @can('read models')
-                    <ul class="nav flex-column sub-menu">
+                        @endcan
+                        @can('read models')
                         <li class="nav-item">
                             <a
                                 class="nav-link text-truncate"
@@ -128,20 +95,14 @@
                                 Model (Equipment / Vehicle)
                             </a>
                         </li>
-                    </ul>
-                    @endcan
-                    @can('can read mechanics')
-                    <ul class="nav flex-column sub-menu">
+                        @endcan
+                        @can('can read mechanics')
                         <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="{{ route('mechanics') }}">
+                            <a class="nav-link" href="{{ route('mechanics') }}">
                                 Mechanics
                             </a>
                         </li>
-                    </ul>
-                    @endcan
-                    <ul class="nav flex-column sub-menu">
+                        @endcan
                         <li class="nav-item">
                             <a
                                 class="nav-link text-truncate"
@@ -150,8 +111,6 @@
                                 Sections (Mechanics)
                             </a>
                         </li>
-                    </ul>
-                    <ul class="nav flex-column sub-menu">
                         <li class="nav-item">
                             <a
                                 class="nav-link text-truncate"
@@ -160,119 +119,73 @@
                                 Sub-sections (Mechanics)
                             </a>
                         </li>
-                    </ul>
-                    @can('can read category')
-                    <ul class="nav flex-column sub-menu">
+                        @can('can read category')
                         <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="{{ route('category') }}">
+                            <a class="nav-link" href="{{ route('category') }}">
                                 Category
                             </a>
                         </li>
-                    </ul>
-                    @endcan
-                    @can('read sub-category')
-                    <ul class="nav flex-column sub-menu">
+                        @endcan
+                        @can('read sub-category')
                         <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="{{ route('sub-category') }}">
+                            <a class="nav-link" href="{{ route('sub-category') }}">
                                 Sub-category
                             </a>
                         </li>
-                    </ul>
-                    @endcan
-                    @can('can read location')
-                    <ul class="nav flex-column sub-menu">
+                        @endcan
+                        @can('can read location')
                         <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="{{ route('location') }}">
+                            <a class="nav-link" href="{{ route('location') }}">
                                 Location
                             </a>
                         </li>
-                    </ul>
-                    @endcan
-                    @can('read offices')
-                    <ul class="nav flex-column sub-menu">
+                        @endcan
+                        @can('read offices')
                         <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="{{ route('office') }}">
+                            <a class="nav-link" href="{{ route('office') }}">
                                 Office
                             </a>
                         </li>
-                    </ul>
-                    @endcan
-                    @can('read status')
-                    <!-- <ul class="nav flex-column sub-menu">
+                        @endcan
+                        @can('read type of repair')
                         <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="{{ route('status') }}">
-                                Status
-                            </a>
-                        </li>
-                    </ul> -->
-                    @endcan
-                    @can('read type of repair')
-                    <ul class="nav flex-column sub-menu">
-                        <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="{{ route('type-of-repair') }}">
+                            <a class="nav-link" href="{{ route('type-of-repair') }}">
                                 Type of Repair
                             </a>
                         </li>
-                    </ul>
-                    @endcan
-                    @can('read signatory')
-                    <ul class="nav flex-column sub-menu">
+                        @endcan
+                        @can('read signatory')
                         <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="{{ route('signatories') }}">
+                            <a class="nav-link" href="{{ route('signatories') }}">
                                 Signatories
                             </a>
                         </li>
-                    </ul>
-                    @endcan
-                    @can('can read user management')
-                    <ul class="nav flex-column sub-menu">
+                        @endcan
+                        @can('can read user management')
                         <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="{{ route('user-management') }}">
+                            <a class="nav-link" href="{{ route('user-management') }}">
                                 User Management
                             </a>
                         </li>
-                    </ul>
-                    @endcan
-                    @can('can read roles')
-                    <ul class="nav flex-column sub-menu">
+                        @endcan
+                        @can('can read roles')
                         <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="{{ route('roles') }}">
+                            <a class="nav-link" href="{{ route('roles') }}">
                                 Roles
                             </a>
                         </li>
-                    </ul>
-                    @endcan
-                    @can('can read permissions')
-                    <ul class="nav flex-column sub-menu">
+                        @endcan
+                        @can('can read permissions')
                         <li class="nav-item">
-                            <a
-                                class="nav-link"
-                                href="{{ route('permissions') }}">
+                            <a class="nav-link" href="{{ route('permissions') }}">
                                 Permissions
                             </a>
                         </li>
+                        @endcan
                     </ul>
-                    @endcan
                 </div>
             </li>
         </ul>
+        @endhasanyrole
     </nav>
 </div>

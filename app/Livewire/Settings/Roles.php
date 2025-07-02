@@ -333,6 +333,17 @@ class Roles extends Component
                             'value' => $item->id
                         ];
                     })->toArray()
+            ],
+            [
+                'label' => 'Dashboard (Inventory)',
+                'options' => Permission::whereIn('id', [70])
+                    ->get()
+                    ->map(function ($item) {
+                        return [
+                            'label' => $item->name,
+                            'value' => $item->id
+                        ];
+                    })->toArray()
             ]
         ];
 
